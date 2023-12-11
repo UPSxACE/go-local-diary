@@ -19,17 +19,52 @@ Local Diary is a lightweight and intuitive web application developed in Golang f
 <!-- # Installation
 Some prebuilt packages are provided on the [release page of the GitHub project repository] [LINK]. -->
 
-<!-- # Development Guide -->
+# Development Guide
 <!-- <maybe add index>
-## Prerequisites
-Ensure you have the following tools and dependencies installed on your system before diving into Local Diary development:
+
 -Clone Repository:
 ...
 -Makefile Scripts:
 --Build and run.......
 --run tests...
+ -->
 
-## Setting Up Local Development -->
+## Prerequisites
+Ensure you have the following tools and dependencies installed on your system before diving into Local Diary development:
+* Golang
+* Make GNU
+
+## Setting Up Local Development
+
+**Clone Repository:**
+```bash
+git clone github.com/UPSxACE/go-local-diary
+cd go-local-diary
+```
+**Install Dependencies:**
+```bash
+make dep
+```
+**Run in development mode:**
+```bash
+make dev
+```
+**Run tests:**
+```bash
+# Normal test output in console
+make test
+
+# Test coverage and output html file
+make test-coverage
+```
+**Build executables:**
+```bash
+# Compiles project and outputs 3 executes (windows, linux, mac)
+make build
+
+# Deletes the executables
+make clean
+```
 
 
 <!-- ## Requirements -->
