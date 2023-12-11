@@ -15,7 +15,7 @@ tailwind-watch:
 	tailwindcss -i ./server/public/src/tailwind.css -o ./server/public/dist/css/tailwind.css --watch
 
 dev:
-	go run .
+	go run . -dev
 
 build:
 	GOARCH=amd64 GOOS=darwin go build -o ${BINARY_NAME}-darwin ${TARGET} ${ARGS}

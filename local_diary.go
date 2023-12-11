@@ -6,6 +6,7 @@ the database, and other dependencies.
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"time"
@@ -16,6 +17,10 @@ import (
 )
 
 func main() {
+	devFlag := flag.Bool("dev", false, "Run server on developer mode")
+	flag.Parse()
+
+
 	// Open the my.db data file in the current directory.
 	// It will be created if it doesn't exist.
 	db, err := bolt.Open("my.db", 0600, &bolt.Options{Timeout: 1 * time.Second})
@@ -24,11 +29,11 @@ func main() {
 	}
 	defer db.Close()
 
-	appConfig := app_config.AppConfig{Database: db}
+	appConfig := app_config.AppConfig{Database: db, DevMode: *devFlag}
 
 	// Print database object
-	fmt.Println("Database:")
-	fmt.Println(db)
+	fmt.Println("App Config:")
+	fmt.Println(appConfig)
 
 	server.Init(appConfig)
 }

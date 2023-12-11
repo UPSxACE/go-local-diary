@@ -6,4 +6,5 @@ import (
 
 type AppConfig struct {
 	Database *bolt.DB;
+	DevMode bool;
 }
