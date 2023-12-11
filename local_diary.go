@@ -7,18 +7,28 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"time"
 
-	"github.com/UPSxACE/go-local-diary/database"
+	"github.com/UPSxACE/go-local-diary/app_config"
 	"github.com/UPSxACE/go-local-diary/server"
+	"github.com/boltdb/bolt"
 )
 
 func main() {
-	db := database.Init()
+	// Open the my.db data file in the current directory.
+	// It will be created if it doesn't exist.
+	db, err := bolt.Open("my.db", 0600, &bolt.Options{Timeout: 1 * time.Second})
+	if err != nil {
+		log.Fatal(err)
+	}
 	defer db.Close()
+
+	appConfig := app_config.AppConfig{Database: db}
 
 	// Print database object
 	fmt.Println("Database:")
-	fmt.Println(database.Database)
+	fmt.Println(db)
 
-	server.Init()
+	server.Init(appConfig)
 }
