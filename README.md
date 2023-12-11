@@ -33,6 +33,7 @@ Some prebuilt packages are provided on the [release page of the GitHub project r
 Ensure you have the following tools and dependencies installed on your system before diving into Local Diary development:
 * Golang
 * Make GNU
+* Air CLI
 
 ## Setting Up Local Development
 
