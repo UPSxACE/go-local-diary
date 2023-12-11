@@ -47,6 +47,10 @@ make dep
 ```
 **Run in development mode:**
 ```bash
+# Run with live reload (using air)
+air
+
+# Or, as alternative, just run using golang
 make dev
 ```
 **Run tests:**
