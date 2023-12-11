@@ -37,6 +37,9 @@ func Init(appConfig app_config.AppConfig) {
 
 	// Routes
 	controllers.SetIndexRoutes(e)
+	if(appConfig.DevMode){
+		controllers.SetDevRoutes(e)
+	}
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))
