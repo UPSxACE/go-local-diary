@@ -45,6 +45,11 @@ cd go-local-diary
 ```bash
 make dep
 ```
+**Run tailwind watcher:**
+```bash
+# This script assumes that you have tailwind installed and that you can call it using the name "taildwindcss"
+make tailwind
+```
 **Run in development mode:**
 ```bash
 # Run with live reload (using air)

@@ -8,6 +8,12 @@ test-coverage:
 	go test ./... -coverprofile=coverage.out
 	go tool cover -html=coverage.out -o coverage.html
 
+tailwind:
+	tailwindcss -i ./server/public/src/tailwind.css -o ./server/public/dist/css/tailwind.css
+
+tailwind-watch:
+	tailwindcss -i ./server/public/src/tailwind.css -o ./server/public/dist/css/tailwind.css --watch
+
 dev:
 	go run .
 
