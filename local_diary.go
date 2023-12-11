@@ -5,9 +5,20 @@ the database, and other dependencies.
 */
 package main
 
-import "github.com/UPSxACE/go-local-diary/server"
+import (
+	"fmt"
+
+	"github.com/UPSxACE/go-local-diary/database"
+	"github.com/UPSxACE/go-local-diary/server"
+)
 
 func main() {
-	println("Local Diary executed")
+	db := database.Init()
+	defer db.Close()
+
+	// Print database object
+	fmt.Println("Database:")
+	fmt.Println(database.Database)
+
 	server.Init()
 }
