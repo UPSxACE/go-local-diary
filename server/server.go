@@ -11,12 +11,19 @@ import (
 )
 
 func Init(appConfig app_config.AppConfig) {
-	// Pre-compile templates in views subdirectories, and subdirectories of those subdirectories
-	tBuilder := template.Must(template.ParseGlob("server/views/*/*.html"))
-	// tBuilder = template.Must(tBuilder.ParseGlob("server/views/*/*/*.html"))
-	t := &template_renderer.Template{
-		Templates: tBuilder,
+	var t echo.Renderer;
+	if(appConfig.DevMode){
+		t = &template_renderer.TemplateDevMode{}
 	}
+	if(!appConfig.DevMode){
+		// Pre-compile templates in views subdirectories, and subdirectories of those subdirectories
+		tBuilder := template.Must(template.ParseGlob("server/views/*/*.html"))
+		// tBuilder = template.Must(tBuilder.ParseGlob("server/views/*/*/*.html"))
+		t = &template_renderer.Template{
+			Templates: tBuilder,
+		}
+	}
+	
 
 	// Echo instance
 	e := echo.New()
