@@ -7,7 +7,7 @@ import (
 )
 
 func SetIndexRoutes(e *echo.Echo) {
-	e.GET("/", GetDevComponentsController)
+	e.GET("/", GetIndexController)
 }
 
 func GetIndexController(c echo.Context) error {
