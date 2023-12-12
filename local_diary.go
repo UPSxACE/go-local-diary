@@ -13,6 +13,7 @@ import (
 
 	"github.com/UPSxACE/go-local-diary/app_config"
 	"github.com/UPSxACE/go-local-diary/server"
+	"github.com/UPSxACE/go-local-diary/server/dev_component_parser"
 	"github.com/boltdb/bolt"
 )
 
@@ -31,9 +32,13 @@ func main() {
 
 	appConfig := app_config.AppConfig{Database: db, DevMode: *devFlag}
 
+	// Plugins
+	appConfig.Plugins = map[string]interface{}{}
+	dev_component_parser.LoadPlugin(&appConfig)
+
 	// Print database object
 	fmt.Println("App Config:")
 	fmt.Println(appConfig)
 
-	server.Init(appConfig)
+	server.Init(&appConfig)
 }

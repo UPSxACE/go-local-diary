@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func Init(appConfig app_config.AppConfig) {
+func Init(appConfig *app_config.AppConfig) {
 	var t echo.Renderer;
 	if(appConfig.DevMode){
 		t = &template_renderer.TemplateDevMode{}
@@ -45,7 +45,7 @@ func Init(appConfig app_config.AppConfig) {
 	// Routes
 	controllers.SetIndexRoutes(e)
 	if(appConfig.DevMode){
-		controllers.SetDevRoutes(e)
+		controllers.SetDevRoutes(e, appConfig)
 	}
 
 	// Start server
