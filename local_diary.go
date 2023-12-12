@@ -36,7 +36,7 @@ func main() {
 	appConfig.Plugins = map[string]interface{}{}
 	dev_component_parser.LoadPlugin(&appConfig)
 
-	// Print database object
+	// Print server config
 	fmt.Println("App Config:")
 	fmt.Println(appConfig)
 
