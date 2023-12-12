@@ -30,7 +30,6 @@ func Init() *DevComponentParser {
 
 func (devComponentParser *DevComponentParser) ParseJsonConfigFile() *DevComponentParser {
 	jsonFile, err := os.Open("./server/dev-components.json")
-	fmt.Println("Parsing...")
 	if err != nil {
 		devComponentParser.Data = []Category{}
 		return devComponentParser
