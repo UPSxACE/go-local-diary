@@ -1,0 +1,16 @@
+.sidebar-closed {
+    width: 0px;
+}
+
+#main.info-sidebar-closed #sidebar-info-wrapper{
+    width: 0px!important;
+}
+
+#main.info-sidebar-closed .resize-bar{
+    visibility: hidden;
+}
+
+.tab-active {
+    background-color: rgb(2 132 199 / var(--tw-bg-opacity));
+    color: white;
+}

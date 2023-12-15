@@ -1,18 +1,21 @@
-{{define "dev-components"}}
+{{define "dev-components-render"}}
 {{$extraStyles := list "css/dev.css"}}
 {{template "top" $extraStyles}}
-<main id="main" class="flex h-screen">
+<main id="main" class="flex h-screen bg-slate-100">
     {{template "dev-components-side" .}}
     <section id="showcase" class="z-10 bg-white rounded-s-md border-[1px] border-[bgray] shadow-md flex items-center flex-1"> 
         <div class="flex flex-col h-full flex-1">
             {{template "dev-components-showcase-header"}}
-            <article id="showcase-inner" class="flex-1 flex flex-col justify-center items-center w-full overflow-hidden overflow-y-auto">
-                <h1>Developer Route</h1>   
+            <!-- flex-1 flex flex-col justify-center items-center  -->
+            <article id="showcase-inner" class="w-full overflow-hidden overflow-y-auto p-4 h-full">
+                {{.Content}}
             </article>
         </div>
-        <div id="sidebar-info-wrapper" class="flex w-0 h-full transition-all duration-400">
+        <div id="sidebar-info-wrapper" class="flex w-[400px] h-full transition-all duration-400">
             <div class="resize-bar w-1 h-full bg-bgray cursor-col-resize"></div>
+            {{template "dev-components-showcase-sideinfo" .}}
         </div>
+        
     </section>
 </main>
 {{$extraScripts := list "js/easy-interaction.js" "js/dev/components-page.js"}}

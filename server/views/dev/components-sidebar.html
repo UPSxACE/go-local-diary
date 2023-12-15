@@ -1,0 +1,51 @@
+{{define "dev-components-side"}}
+<aside
+  id="sidebar"
+  class="relative w-[300px] transition-all duration-400 bg-lgray overflow-y-auto overflow-x-hidden"
+>
+  <div
+    class="absolute-wrapper absolute w-full min-w-[300px] overflow-x-hidden h-full"
+  >
+    <header class="border-b-[1px] py-6 border-[bgray]">
+      <a
+        href="/dev/components"
+        class="block text-center p-2 text-xl font-medium"
+        >Components Showcase</a
+      >
+      <a
+        href="/dev/components/refresh"
+        class="block pb-2 text-center text-sm text-blue-600 underline"
+        >refresh</a
+      >
+    </header>
+    {{range $i, $category := .Data}}
+    <button
+      onclick="(()=>{console.log('replace this with a script for an accordion later')})()"
+      class="no-pointer-evs text-white bg-[#2b2b2b] text-left block w-full py-2 px-2 border-b-[0px] border-[bgray] text-lg font-medium"
+    >
+      {{$category.Name}}
+    </button>
+    <ul
+      hx-boost="true"
+      hx-target="#showcase"
+      hx-select="#showcase"
+      hx-swap="outerHTML show:no-scroll"
+    >
+      {{range $j, $component := $category.Components}} {{$a := eq
+      $.CategoryIndex $i}} {{$trueCompIndex := sum $.ComponentIndex -1}} {{$b :=
+      eq $trueCompIndex $j}}
+      <li
+        class="hover:bg-sky-600 hover:text-white text-md font-normal border-b-[0px] border-[bgray] tab{{if and $a $b}} tab-active{{end}}"
+      >
+        <a
+          href="/dev/components?render={{$component.TemplateName}}&ct={{$i}}&cp={{sum $j 1}}&e=1"
+          class="block w-full h-full py-2 px-2"
+          >{{$component.Name}}</a
+        >
+      </li>
+      {{end}}
+    </ul>
+    {{end}}
+  </div>
+</aside>
+{{end}}
