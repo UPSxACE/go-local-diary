@@ -1,0 +1,149 @@
+[
+  {
+    "categoryName": "Category1",
+    "components": [
+      {
+        "componentName": "Component 1",
+        "componentDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+        "templateName": "Template 1",
+        "examples": [
+          {
+            "exampleTitle": "Example 1",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          },
+          {
+            "exampleTitle": "Example 2",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          },
+          {
+            "exampleTitle": "Example 3",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          }
+        ]
+      },
+      {
+        "componentName": "Component 2",
+        "componentDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+        "templateName": "Template 1",
+        "examples": [
+          {
+            "exampleTitle": "Example 1",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          },
+          {
+            "exampleTitle": "Example 2",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          },
+          {
+            "exampleTitle": "Example 3",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "categoryName": "Category2",
+    "components": [
+      {
+        "componentName": "Component 1",
+        "componentDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+        "templateName": "Template 1",
+        "examples": [
+          {
+            "exampleTitle": "Example 1",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          },
+          {
+            "exampleTitle": "Example 2",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          },
+          {
+            "exampleTitle": "Example 3",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          }
+        ]
+      },
+      {
+        "componentName": "Component 2",
+        "componentDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+        "templateName": "Template 1",
+        "examples": [
+          {
+            "exampleTitle": "Example 1",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          },
+          {
+            "exampleTitle": "Example 2",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          },
+          {
+            "exampleTitle": "Example 3",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "categoryName": "Category3",
+    "components": [
+      {
+        "componentName": "Component 1",
+        "componentDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+        "templateName": "Template 1",
+        "examples": [
+          {
+            "exampleTitle": "Example 1",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          },
+          {
+            "exampleTitle": "Example 2",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          },
+          {
+            "exampleTitle": "Example 3",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          }
+        ]
+      },
+      {
+        "componentName": "Component 2",
+        "componentDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+        "templateName": "Template 1",
+        "examples": [
+          {
+            "exampleTitle": "Example 1",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          },
+          {
+            "exampleTitle": "Example 2",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          },
+          {
+            "exampleTitle": "Example 3",
+            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
+            "data": {}
+          }
+        ]
+      }
+    ]
+  }
+]

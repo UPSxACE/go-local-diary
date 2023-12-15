@@ -1,146 +1,32 @@
 [
   {
-    "categoryName": "Category1",
+    "categoryName": "Tailwind Defaults",
     "components": [
       {
-        "componentName": "Component 1",
-        "componentDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-        "templateName": "Template 1",
+        "componentName": "Text",
+        "componentDescription": "1. Sizes\n2. Weight\n3. Color",
+        "templateName": "tailwind-text",
         "examples": [
           {
-            "exampleTitle": "Example 1",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
+            "exampleTitle": "Size",
+            "exampleDescription": "Testing the different tailwind classes for font size",
+            "data": {
+              "Example": 1
+            }
           },
           {
-            "exampleTitle": "Example 2",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
+            "exampleTitle": "Weight",
+            "exampleDescription": "Testing the different tailwind classes for font weight",
+            "data": {
+              "Example": 2
+            }
           },
           {
-            "exampleTitle": "Example 3",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          }
-        ]
-      },
-      {
-        "componentName": "Component 2",
-        "componentDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-        "templateName": "Template 1",
-        "examples": [
-          {
-            "exampleTitle": "Example 1",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          },
-          {
-            "exampleTitle": "Example 2",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          },
-          {
-            "exampleTitle": "Example 3",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "categoryName": "Category2",
-    "components": [
-      {
-        "componentName": "Component 1",
-        "componentDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-        "templateName": "Template 1",
-        "examples": [
-          {
-            "exampleTitle": "Example 1",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          },
-          {
-            "exampleTitle": "Example 2",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          },
-          {
-            "exampleTitle": "Example 3",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          }
-        ]
-      },
-      {
-        "componentName": "Component 2",
-        "componentDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-        "templateName": "Template 1",
-        "examples": [
-          {
-            "exampleTitle": "Example 1",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          },
-          {
-            "exampleTitle": "Example 2",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          },
-          {
-            "exampleTitle": "Example 3",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "categoryName": "Category3",
-    "components": [
-      {
-        "componentName": "Component 1",
-        "componentDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-        "templateName": "Template 1",
-        "examples": [
-          {
-            "exampleTitle": "Example 1",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          },
-          {
-            "exampleTitle": "Example 2",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          },
-          {
-            "exampleTitle": "Example 3",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          }
-        ]
-      },
-      {
-        "componentName": "Component 2",
-        "componentDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-        "templateName": "Template 1",
-        "examples": [
-          {
-            "exampleTitle": "Example 1",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          },
-          {
-            "exampleTitle": "Example 2",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
-          },
-          {
-            "exampleTitle": "Example 3",
-            "exampleDescription": "Blablablabla bla bla bla blablabla bla bla bla",
-            "data": {}
+            "exampleTitle": "Color",
+            "exampleDescription": "Testing the different tailwind classes for font color",
+            "data": {
+              "Example": 3
+            }
           }
         ]
       }

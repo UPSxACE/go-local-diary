@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-type AppConfig struct {
-	Database *bolt.DB;
-	DevMode bool;
-	Plugins PluginsData;
+type AppConfig[DatabaseGeneric any] struct {
+	Database *DatabaseGeneric
+	DevMode  bool
+	Plugins  PluginsData
 }
 
 type PluginsData = map[string]interface{}
