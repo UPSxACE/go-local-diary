@@ -1,4 +1,13 @@
 {{define "bottom"}}
+</div>
+<script src="/public/js/common.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.9"></script>
+<script src="/public/js/easy-dom.js"></script>
+{{if .}}
+      {{range $index, $element := .}}
+      <script src="/public/{{$element}}"></script>
+      {{end}}
+    {{end}}
 </body>
 </html>
 {{end}}

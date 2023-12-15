@@ -1,13 +1,21 @@
 {{define "top"}}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Local Diary</title>
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="/public/dist/css/tailwind.css">
-    <link rel="stylesheet" href="/public/css/common.css">
-</head>
-<body>
+    <link rel="stylesheet" href="/public/dist/css/tailwind.css" />
+    <link rel="stylesheet" href="/public/css/common.css" />
+    {{if .}}
+      {{range $index, $element := .}}
+      <link rel="stylesheet" href="/public/{{$element}}" />
+      {{end}}
+    {{end}}
+    </head>
+    <body>
+      <!-- Wrap the entire DOM to isolate out the scripts, so they are loaded again when
+        popstate event is called (NOTE: dont remove hx-history-elt) -->
+      <div id="local-diary" hx-history-elt>
 {{end}}
