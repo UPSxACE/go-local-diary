@@ -10,7 +10,7 @@ import (
 	"fmt"
 
 	"github.com/UPSxACE/go-local-diary/app_config"
-	"github.com/UPSxACE/go-local-diary/plugins/db_bolt"
+	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
 	"github.com/UPSxACE/go-local-diary/plugins/dev_component_parser"
 	"github.com/UPSxACE/go-local-diary/server"
 )
@@ -20,7 +20,7 @@ func main() {
 	flag.Parse()
 
 	// Init server with BoltDB
-	appConfig := app_config.AppConfig[db_bolt.Database_Bolt]{Database: db_bolt.Init(), DevMode: *devFlag, Plugins: map[string]interface{}{}}
+	appConfig := app_config.AppConfig[db_sqlite3.Database_Sqlite3]{Database: db_sqlite3.Init(), DevMode: *devFlag, Plugins: map[string]interface{}{}}
 
 	// Load Plugins
 	dev_component_parser.LoadPlugin(&appConfig)

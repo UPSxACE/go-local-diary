@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/UPSxACE/go-local-diary/app_config"
+	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
 	"github.com/UPSxACE/go-local-diary/server/controllers"
-	"github.com/UPSxACE/go-local-diary/plugins/db_bolt"	
 	"github.com/UPSxACE/go-local-diary/server/template_renderer"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -35,7 +35,7 @@ func customHTTPErrorHandler(err error, c echo.Context) {
 	}	
 }
 
-func Init(appConfig *app_config.AppConfig[db_bolt.Database_Bolt]) {
+func Init(appConfig *app_config.AppConfig[db_sqlite3.Database_Sqlite3]) {
 	var t echo.Renderer
 	if appConfig.DevMode {
 		t = &template_renderer.TemplateDevMode{}
