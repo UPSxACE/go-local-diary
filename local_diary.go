@@ -19,7 +19,7 @@ func main() {
 	devFlag := flag.Bool("dev", false, "Run server on developer mode")
 	flag.Parse()
 
-	// Init server with BoltDB
+	// Init server with Sqlite
 	appConfig := app_config.AppConfig[db_sqlite3.Database_Sqlite3]{Database: db_sqlite3.Init(), DevMode: *devFlag, Plugins: map[string]interface{}{}}
 
 	// Load Plugins
