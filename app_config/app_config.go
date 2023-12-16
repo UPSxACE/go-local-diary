@@ -15,7 +15,6 @@ type AppConfig[DatabaseGeneric any] struct {
 type PluginsData = map[string]interface{}
 
 var DefaultFuncMap template.FuncMap = template.FuncMap{
-	"devmode": func() bool { return false },
 	"list": func(args ...interface{}) []interface{} {
 		slice := []interface{}{}
 		slice = append(slice, args...)
