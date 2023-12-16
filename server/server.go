@@ -6,8 +6,8 @@ import (
 
 	"github.com/UPSxACE/go-local-diary/app_config"
 	"github.com/UPSxACE/go-local-diary/server/controllers"
-	"github.com/UPSxACE/go-local-diary/server/plugins/db_bolt"
-	"github.com/UPSxACE/go-local-diary/template_renderer"
+	"github.com/UPSxACE/go-local-diary/plugins/db_bolt"	
+	"github.com/UPSxACE/go-local-diary/server/template_renderer"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )

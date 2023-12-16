@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/UPSxACE/go-local-diary/app_config"
-	"github.com/UPSxACE/go-local-diary/server/plugins/db_bolt"
-	"github.com/UPSxACE/go-local-diary/server/plugins/dev_component_parser"
+	"github.com/UPSxACE/go-local-diary/plugins/db_bolt"
+	"github.com/UPSxACE/go-local-diary/plugins/dev_component_parser"
 	"github.com/labstack/echo/v4"
 )
 

@@ -1,3 +1,4 @@
+// Web
 package dev_component_parser
 
 import (
@@ -10,8 +11,7 @@ import (
 	"os"
 
 	"github.com/UPSxACE/go-local-diary/app_config"
-	"github.com/UPSxACE/go-local-diary/server/plugins/db_bolt"
-	"github.com/UPSxACE/go-local-diary/template_renderer"
+	"github.com/UPSxACE/go-local-diary/server/template_renderer"
 	"github.com/UPSxACE/go-local-diary/utils"
 
 	"github.com/labstack/echo/v4"
@@ -21,7 +21,7 @@ type DevComponentParser struct {
 	Data []Category
 }
 
-func LoadPlugin(appConfig *app_config.AppConfig[db_bolt.Database_Bolt]) {
+func LoadPlugin[T any](appConfig *app_config.AppConfig[T]) {
 	fmt.Println("Loading Plugin DevComponentParser...")
 	if appConfig.DevMode {
 		appConfig.Plugins["DevComponentParser"] = Init()
@@ -58,7 +58,7 @@ func (devComponentParser *DevComponentParser) ParseJsonConfigFile() *DevComponen
 	return devComponentParser
 }
 
-func SetDevControllerWrapper(controller echo.HandlerFunc, appConfig *app_config.AppConfig[db_bolt.Database_Bolt]) echo.HandlerFunc {
+func SetDevControllerWrapper[T any](controller echo.HandlerFunc, appConfig *app_config.AppConfig[T]) echo.HandlerFunc {
 	parser, ok := appConfig.Plugins["DevComponentParser"]
 	if ok {
 		parserConverted, conversionOk := parser.(*DevComponentParser)
@@ -147,7 +147,7 @@ type devContextWrapper struct {
 	DevCompParser *DevComponentParser
 }
 
-func SetDevComponentsRefreshRoute(appConfig *app_config.AppConfig[db_bolt.Database_Bolt]) echo.HandlerFunc {
+func SetDevComponentsRefreshRoute[T any](appConfig *app_config.AppConfig[T]) echo.HandlerFunc {
 	handler := func(c echo.Context) error {
 		referer := c.Request().Referer()
 		parser, ok := appConfig.Plugins["DevComponentParser"]
