@@ -6,7 +6,13 @@
   <div
     class="absolute-wrapper absolute w-full min-w-[300px] overflow-x-hidden h-full"
   >
-    <header class="border-b-[1px] py-6 border-[bgray]">
+    <header
+      class="border-b-[1px] py-6 border-[bgray]"
+      hx-boost="true"
+      hx-target="#showcase"
+      hx-select="#showcase"
+      hx-swap="outerHTML show:no-scroll"
+    >
       <a
         href="/dev/components"
         class="block text-center p-2 text-xl font-medium"
