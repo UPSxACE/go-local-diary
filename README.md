@@ -34,6 +34,7 @@ Ensure you have the following tools and dependencies installed on your system be
 * Golang
 * Make GNU
 * Air CLI
+* GCC or MINGW
 
 ## Setting Up Local Development
 
