@@ -1,10 +1,10 @@
 /*
-The app_config package holds the interfaces and structs that will hold
+The app package holds the interfaces and structs that will hold
 
 the application configuration state, instances and plugins,and will be shared
 across the entire app.
 */
-package app_config
+package app
 
 import (
 	"html/template"
@@ -17,7 +17,7 @@ Holds the app configuration state. One instance per app.
 
 The app must be initialized with a Database, whichever type it is.
 */
-type AppConfig[DatabaseGeneric any] struct {
+type App[DatabaseGeneric any] struct {
 	Database *DatabaseGeneric
 	DevMode  bool
 	Plugins  PluginsData

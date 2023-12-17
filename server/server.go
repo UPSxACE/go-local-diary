@@ -4,13 +4,33 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/UPSxACE/go-local-diary/app_config"
+	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
 	"github.com/UPSxACE/go-local-diary/server/controllers"
 	"github.com/UPSxACE/go-local-diary/server/template_renderer"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
+
+func Init(appInstance *app.App[db_sqlite3.Database_Sqlite3]) {
+	t := setupRenderer(appInstance);
+
+	// Create echo instance
+	e := echo.New()
+
+	setupConfig(appInstance, e, &t)
+	
+
+	// Routes
+	controllers.SetIndexRoutes(e)
+	if appInstance.DevMode {
+		controllers.SetDevRoutes(e, appInstance)
+	}
+
+	// Start server
+	e.Logger.Fatal(e.Start(":1323"))
+}
+
 
 func preventCacheMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -35,22 +55,25 @@ func customHTTPErrorHandler(err error, c echo.Context) {
 	}	
 }
 
-func Init(appConfig *app_config.AppConfig[db_sqlite3.Database_Sqlite3]) {
+func setupRenderer(appInstance *app.App[db_sqlite3.Database_Sqlite3]) echo.Renderer{
 	var t echo.Renderer
-	if appConfig.DevMode {
+
+	if appInstance.DevMode {
 		t = &template_renderer.TemplateDevMode{}
 	}
-	if !appConfig.DevMode {
+	if !appInstance.DevMode {
 		// Pre-compile templates in views subdirectories, and subdirectories of those subdirectories
-		tBuilder := template.Must(template.New("").Funcs(app_config.DefaultFuncMap).ParseGlob("server/views/*/*.html"))
+		tBuilder := template.Must(template.New("").Funcs(app.DefaultFuncMap).ParseGlob("server/views/*/*.html"))
 		// tBuilder = template.Must(tBuilder.ParseGlob("server/views/*/*/*.html"))
 		t = &template_renderer.Template{
 			Templates: tBuilder,
 		}
 	}
 
-	// Echo instance
-	e := echo.New()
+	return t;
+}
+
+func setupConfig(appInstance *app.App[db_sqlite3.Database_Sqlite3], e *echo.Echo, t *echo.Renderer) {
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:1323"},
 		AllowHeaders: []string{"*"},
@@ -63,21 +86,13 @@ func Init(appConfig *app_config.AppConfig[db_sqlite3.Database_Sqlite3]) {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	if appConfig.DevMode {
+	if appInstance.DevMode {
 		e.Use(preventCacheMiddleware)
 	}
 
 	// Serve static files
 	e.Static("/public", "server/public")
 
-	e.Renderer = t
-
-	// Routes
-	controllers.SetIndexRoutes(e)
-	if appConfig.DevMode {
-		controllers.SetDevRoutes(e, appConfig)
-	}
-
-	// Start server
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Renderer = *t
 }
+

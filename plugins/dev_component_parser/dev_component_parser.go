@@ -6,7 +6,7 @@ to test templates(including testing them with different data)
 
 To use it a json file("dev-components-json") must be created
 with the right format(so it is parsed by the plugin and converted
-into a []Category variable), a controller route must be 
+into a []Category variable), a controller route must be
 created with its render method wrapped by GetDevComponentParserRenderFunc,
 then that controller must be wrapped by the method SetDevControllerWrapper
 in the SetRoute method of the controller, and then
@@ -31,7 +31,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/UPSxACE/go-local-diary/app_config"
+	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/server/template_renderer"
 	"github.com/UPSxACE/go-local-diary/utils"
 
@@ -54,10 +54,10 @@ func Init() *DevComponentParser {
 }
 
 /* Function used to initialize the plugin. */
-func LoadPlugin[T any](appConfig *app_config.AppConfig[T]) {
+func LoadPlugin[T any](app *app.App[T]) {
 	fmt.Println("Loading Plugin DevComponentParser...")
-	if appConfig.DevMode {
-		appConfig.Plugins["DevComponentParser"] = Init()
+	if app.DevMode {
+		app.Plugins["DevComponentParser"] = Init()
 	}
 }
 
@@ -96,8 +96,8 @@ func (devComponentParser *DevComponentParser) ParseJsonConfigFile() *DevComponen
 High order function to wrap a controller to inject the data
 parsed from the JSON file in the context. 
 */
-func SetDevControllerWrapper[T any](controller echo.HandlerFunc, appConfig *app_config.AppConfig[T]) echo.HandlerFunc {
-	parser, ok := appConfig.Plugins["DevComponentParser"]
+func SetDevControllerWrapper[T any](controller echo.HandlerFunc, app *app.App[T]) echo.HandlerFunc {
+	parser, ok := app.Plugins["DevComponentParser"]
 	if ok {
 		parserConverted, conversionOk := parser.(*DevComponentParser)
 		if conversionOk {
@@ -148,7 +148,7 @@ func GetDevComponentParserRenderFunc(c echo.Context) func(code int, name string)
 
 			if requestData.Render != "" && requestData.Component != 0 && requestData.Example != 0 {
 				// Parse all templates
-				tBuilder := template.Must(template.New("").Funcs(app_config.DefaultFuncMap).ParseGlob("server/views/*/*.html"))
+				tBuilder := template.Must(template.New("").Funcs(app.DefaultFuncMap).ParseGlob("server/views/*/*.html"))
 				// tBuilder = template.Must(tBuilder.ParseGlob("server/views/*/*/*.html"))
 
 				tNew := &template_renderer.Template{
@@ -203,10 +203,10 @@ route. Whenever someone accesses the route, it will
 refresh the JSON, and then the person will be redirected
 back to whichever URL it originally came from.
 */
-func SetDevComponentsRefreshRoute[T any](appConfig *app_config.AppConfig[T]) echo.HandlerFunc {
+func SetDevComponentsRefreshRoute[T any](app *app.App[T]) echo.HandlerFunc {
 	handler := func(c echo.Context) error {
 		referer := c.Request().Referer()
-		parser, ok := appConfig.Plugins["DevComponentParser"]
+		parser, ok := app.Plugins["DevComponentParser"]
 		if ok {
 			parserConverted, conversionOk := parser.(*DevComponentParser)
 			if conversionOk {

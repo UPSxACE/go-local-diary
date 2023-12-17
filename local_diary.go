@@ -9,7 +9,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/UPSxACE/go-local-diary/app_config"
+	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
 	"github.com/UPSxACE/go-local-diary/plugins/dev_component_parser"
 	"github.com/UPSxACE/go-local-diary/server"
@@ -20,14 +20,14 @@ func main() {
 	flag.Parse()
 
 	// Init server with Sqlite
-	appConfig := app_config.AppConfig[db_sqlite3.Database_Sqlite3]{Database: db_sqlite3.Init(), DevMode: *devFlag, Plugins: map[string]interface{}{}}
+	app := app.App[db_sqlite3.Database_Sqlite3]{Database: db_sqlite3.Init(), DevMode: *devFlag, Plugins: map[string]interface{}{}}
 
 	// Load Plugins
-	dev_component_parser.LoadPlugin(&appConfig)
+	dev_component_parser.LoadPlugin(&app)
 
 	// Print server config
 	fmt.Println("App Config:")
-	fmt.Println(appConfig)
+	fmt.Println(app)
 
-	server.Init(&appConfig)
+	server.Init(&app)
 }
