@@ -1,4 +1,25 @@
 // Web
+
+/*
+The package dev_component_parser is a plugin that can be used
+to test templates(including testing them with different data)
+
+To use it a json file("dev-components-json") must be created
+with the right format(so it is parsed by the plugin and converted
+into a []Category variable), a controller route must be 
+created with its render method wrapped by GetDevComponentParserRenderFunc,
+then that controller must be wrapped by the method SetDevControllerWrapper
+in the SetRoute method of the controller, and then
+another controller route must be created using the
+returned value of SetDevComponentsRefreshRoute.
+
+The correct templates/views must also be defined:
+- dev-components
+- dev-components-render
+- dev-components-showcase-header
+- dev-components-side
+- dev-components-showcase-sideinfo
+*/
 package dev_component_parser
 
 import (
@@ -17,10 +38,22 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+/* File that will be parsed to load the examples. */
+var jsonPath string = "./server/dev-components.json";
+
+/* The main struct that will be stored in App.Plugins */
 type DevComponentParser struct {
 	Data []Category
 }
 
+/* Constructor. */
+func Init() *DevComponentParser {
+	devCompPars := DevComponentParser{}
+	devCompPars.ParseJsonConfigFile()
+	return &devCompPars
+}
+
+/* Function used to initialize the plugin. */
 func LoadPlugin[T any](appConfig *app_config.AppConfig[T]) {
 	fmt.Println("Loading Plugin DevComponentParser...")
 	if appConfig.DevMode {
@@ -28,14 +61,15 @@ func LoadPlugin[T any](appConfig *app_config.AppConfig[T]) {
 	}
 }
 
-func Init() *DevComponentParser {
-	devCompPars := DevComponentParser{}
-	devCompPars.ParseJsonConfigFile()
-	return &devCompPars
-}
-
+/*
+Parses data from the JSON file. This will be automatically
+used as soon as the struct is initialized using the Init()
+constructor, and then recalled to refresh the data whenever
+the refresh route set by SetDevComponentsRefreshRoute is
+accessed.
+*/
 func (devComponentParser *DevComponentParser) ParseJsonConfigFile() *DevComponentParser {
-	jsonFile, err := os.Open("./server/dev-components.json")
+	jsonFile, err := os.Open(jsonPath)
 	if err != nil {
 		devComponentParser.Data = []Category{}
 		return devComponentParser
@@ -58,6 +92,10 @@ func (devComponentParser *DevComponentParser) ParseJsonConfigFile() *DevComponen
 	return devComponentParser
 }
 
+/*
+High order function to wrap a controller to inject the data
+parsed from the JSON file in the context. 
+*/
 func SetDevControllerWrapper[T any](controller echo.HandlerFunc, appConfig *app_config.AppConfig[T]) echo.HandlerFunc {
 	parser, ok := appConfig.Plugins["DevComponentParser"]
 	if ok {
@@ -73,13 +111,30 @@ func SetDevControllerWrapper[T any](controller echo.HandlerFunc, appConfig *app_
 	return controller
 }
 
+/*
+Struct to represent the expected data that must be in the
+request.
+*/
 type DevComponentParserRequest struct {
 	Render    string `query:"render"`
-	Category  int    `query:"ct"` //index
-	Component int    `query:"cp"` // index+1
-	Example   int    `query:"e"`  // index+1
+	Category  int    `query:"ct"` // (index)
+	Component int    `query:"cp"` // (index+1)
+	Example   int    `query:"e"`  // (index+1)
 }
 
+
+/*
+Struct to extend the echo.Context fields
+*/
+type devContextWrapper struct {
+	echo.Context
+	DevCompParser *DevComponentParser
+}
+
+/*
+High order function to wrap a controller to inject the data
+parsed from the JSON file in the context.
+*/
 func GetDevComponentParserRenderFunc(c echo.Context) func(code int, name string) error {
 	devContext, ok := c.(*devContextWrapper)
 
@@ -142,11 +197,12 @@ func GetDevComponentParserRenderFunc(c echo.Context) func(code int, name string)
 	}
 }
 
-type devContextWrapper struct {
-	echo.Context
-	DevCompParser *DevComponentParser
-}
-
+/*
+Creates the echo.Handler that shall be used on the refresh
+route. Whenever someone accesses the route, it will
+refresh the JSON, and then the person will be redirected
+back to whichever URL it originally came from.
+*/
 func SetDevComponentsRefreshRoute[T any](appConfig *app_config.AppConfig[T]) echo.HandlerFunc {
 	handler := func(c echo.Context) error {
 		referer := c.Request().Referer()

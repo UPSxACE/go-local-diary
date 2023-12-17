@@ -10,7 +10,7 @@ import (
 )
 
 func SetDevRoutes(e *echo.Echo, appConfig *app_config.AppConfig[db_sqlite3.Database_Sqlite3]) {
-	e.GET("/dev", dev_component_parser.SetDevControllerWrapper(GetDevController, appConfig))
+	e.GET("/dev", GetDevController)
 	e.GET("/dev/components", dev_component_parser.SetDevControllerWrapper(GetDevComponentsController, appConfig))
 	e.GET("/dev/components/refresh", dev_component_parser.SetDevComponentsRefreshRoute(appConfig))
 }

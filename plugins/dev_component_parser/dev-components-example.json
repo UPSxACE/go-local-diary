@@ -1,0 +1,39 @@
+[
+  {
+    "categoryName": "Category1",
+    "components": [
+      {
+        "componentName": "Component1",
+        "componentDescription": "Description1",
+        "templateName": "Template1",
+        "examples": [
+          {
+            "exampleTitle": "Example1",
+            "exampleDescription": "ExDescription1",
+            "data": {
+              "key": "val",
+              "int": 123,
+              "bool": true,
+              "nested": {
+                "key": "val"
+              }
+            }
+          },
+          {
+            "exampleTitle": "Example2",
+            "exampleDescription": "ExDescription2"
+          }
+        ]
+      },
+      {
+        "componentName": "Component2",
+        "componentDescription": "Description2",
+        "templateName": "Template2"
+      }
+    ]
+  },
+  {
+    "categoryName": "Category2",
+    "components": []
+  }
+]
