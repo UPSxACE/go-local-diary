@@ -18,8 +18,7 @@ func Init(appInstance *app.App[db_sqlite3.Database_Sqlite3]) {
 	// Create echo instance
 	e := echo.New()
 
-	setupConfig(appInstance, e, &t)
-	
+	setupConfig(appInstance, e, &t)	
 
 	// Routes
 	controllers.SetIndexRoutes(e)
@@ -28,10 +27,12 @@ func Init(appInstance *app.App[db_sqlite3.Database_Sqlite3]) {
 	}
 
 	// Start server
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
-
+// Middleware used in developer mode so the js and css files aren't cached.
 func preventCacheMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		c.Response().Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
@@ -41,7 +42,7 @@ func preventCacheMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-// Error handling pages
+// Error handling pages.
 func customHTTPErrorHandler(err error, c echo.Context) {
 	code := http.StatusInternalServerError
     if he, ok := err.(*echo.HTTPError); ok {
@@ -55,6 +56,7 @@ func customHTTPErrorHandler(err error, c echo.Context) {
 	}	
 }
 
+// Setups the template renderer and attaches it to the echo instance.
 func setupRenderer(appInstance *app.App[db_sqlite3.Database_Sqlite3]) echo.Renderer{
 	var t echo.Renderer
 
@@ -73,6 +75,7 @@ func setupRenderer(appInstance *app.App[db_sqlite3.Database_Sqlite3]) echo.Rende
 	return t;
 }
 
+// Setups CORS, the middlewares, and the route /public to serve static files.
 func setupConfig(appInstance *app.App[db_sqlite3.Database_Sqlite3], e *echo.Echo, t *echo.Renderer) {
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:1323"},
@@ -84,8 +87,6 @@ func setupConfig(appInstance *app.App[db_sqlite3.Database_Sqlite3], e *echo.Echo
 	e.HTTPErrorHandler = customHTTPErrorHandler
 
 	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
 	if appInstance.DevMode {
 		e.Use(preventCacheMiddleware)
 	}
