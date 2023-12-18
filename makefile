@@ -1,5 +1,9 @@
 dep:
 	go mod tidy
+	cd ./tests_playwright && npm i
+
+dep-browsers:
+	cd ./tests_playwright && npx playwright install
 
 test:
 	go test ./... -v
@@ -7,6 +11,15 @@ test:
 test-coverage:
 	go test ./... -coverprofile=coverage.out
 	go tool cover -html=coverage.out -o coverage.html
+
+test-e2e:
+	cd ./tests_playwright && npx playwright test
+
+test-e2e-report:
+	cd ./tests_playwright && npx playwright show-report
+
+test-e2e-ui:
+	cd ./tests_playwright &&npx playwright test --ui
 
 tailwind:
 	tailwindcss -i ./server/public/src/tailwind.css -o ./server/public/dist/css/tailwind.css

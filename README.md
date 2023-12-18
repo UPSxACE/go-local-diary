@@ -35,6 +35,7 @@ Ensure you have the following tools and dependencies installed on your system be
 * Make GNU
 * Air CLI
 * GCC or MINGW
+* Node and NPM
 
 ## Setting Up Local Development
 
@@ -46,11 +47,17 @@ cd go-local-diary
 **Install Dependencies:**
 ```bash
 make dep
+
+# Install playwright browsers (optional) for E2E tests
+make dep-browsers
 ```
 **Run tailwind watcher:**
 ```bash
-# This script assumes that you have tailwind installed and that you can call it using the name "taildwindcss"
+# This scripts assumes that you have tailwind installed and that you can call it using the name "taildwindcss"
 make tailwind
+
+# or
+make tailwind-watch
 ```
 **Run in development mode:**
 ```bash
@@ -67,6 +74,14 @@ make test
 
 # Test coverage and output html file
 make test-coverage
+
+# Note: Don't forget to initialize the server before trying to run e2e tests
+# Test end-to-end with playwright 
+make test-e2e
+# Show end-to-end report
+make test-e2e-report
+# Test end-to-end with playwright UI
+make test-e2e-ui
 ```
 **Build executables:**
 ```bash
