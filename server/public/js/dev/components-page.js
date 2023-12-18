@@ -21,6 +21,12 @@ $load(() => {
     return parent;
   });
 
+  $("#home-link").click(() => {
+    tabs.forEach((tab) => {
+      tab.toggle("tab-active", false);
+    });
+  });
+
   const setResizeable = () =>
     $resizeableBar($(".resize-bar").node, $("#sidebar-info-wrapper").node);
 
