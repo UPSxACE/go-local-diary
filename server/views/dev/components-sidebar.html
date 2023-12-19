@@ -6,21 +6,19 @@
   <div
     class="absolute-wrapper absolute w-full min-w-[300px] overflow-x-hidden h-full"
   >
-    <header
-      class="border-b-[1px] py-6 border-[bgray]"
-      hx-boost="true"
-      hx-target="#showcase"
-      hx-select="#showcase"
-      hx-swap="outerHTML show:no-scroll"
-    >
+    <header class="border-b-[1px] py-6 border-[bgray]">
       <a
+        hx-boost="true"
+        hx-target="#showcase"
+        hx-select="#showcase"
+        hx-swap="outerHTML show:no-scroll"
         id="home-link"
         href="/dev/components"
         class="block text-center p-2 text-xl font-medium"
         >Components Showcase</a
       >
       <a
-      id="refresh-data"
+        id="refresh-data"
         href="/dev/components/refresh"
         class="block pb-2 text-center text-sm text-blue-600 underline"
         >refresh</a
