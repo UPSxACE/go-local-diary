@@ -55,6 +55,7 @@ test("dev/components ux", async ({ page, request }) => {
   if (tabs.length > 0) {
     // click first tab
     await waitHtmxLoad(() => tabs[0].click());
+    await page.waitForTimeout(500); // wait animation
     expect(page.url(), "check url query params").toContain("&ct=0&cp=1&e=1");
     expect(await tabsActive(), "only one 1 tab should be active").toBe(1);
     expect(await sidebarInfoVisible(), "sidebar should be visible").toBe(true);
@@ -101,6 +102,7 @@ test("dev/components ux", async ({ page, request }) => {
     ).toBe(false);
     // click first tab
     await waitHtmxLoad(() => tabs[0].click());
+    await page.waitForTimeout(500); // wait animation
     expect(await tabsActive(), "only 1 tab should be active").toBe(1);
     expect(await sidebarInfoVisible(), "info sidebar should be visible").toBe(
       true
