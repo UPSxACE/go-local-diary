@@ -53,7 +53,6 @@ make dep-browsers
 ```
 **Run tailwind watcher:**
 ```bash
-# This scripts assumes that you have tailwind installed and that you can call it using the name "taildwindcss"
 make tailwind
 
 # or

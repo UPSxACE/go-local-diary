@@ -1,6 +1,7 @@
 dep:
 	go mod tidy
 	cd ./tests_playwright && npm i
+	cd ./server && npm i
 
 dep-browsers:
 	cd ./tests_playwright && npx playwright install
@@ -19,13 +20,13 @@ test-e2e-report:
 	cd ./tests_playwright && npx playwright show-report
 
 test-e2e-ui:
-	cd ./tests_playwright &&npx playwright test --ui
+	cd ./tests_playwright && npx playwright test --ui
 
 tailwind:
-	tailwindcss -i ./server/public/src/tailwind.css -o ./server/public/dist/css/tailwind.css
+	cd ./server && npm run build:css
 
 tailwind-watch:
-	tailwindcss -i ./server/public/src/tailwind.css -o ./server/public/dist/css/tailwind.css --watch
+	cd ./server && npm run chokidar
 
 dev:
 	go run . -dev
