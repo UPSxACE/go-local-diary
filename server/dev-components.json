@@ -31,5 +31,19 @@
         ]
       }
     ]
+  },
+  {
+    "categoryName": "Main Theme",
+    "components": [
+      {
+        "componentName": "Buttons",
+        "templateName": "example-buttons",
+        "examples": [
+          {
+            "exampleTitle": "Example"
+          }
+        ]
+      }
+    ]
   }
 ]
