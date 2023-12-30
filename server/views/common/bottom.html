@@ -1,8 +1,9 @@
 {{define "bottom"}}
 </div>
+<script src="/public/dist/js/bundle.js"></script>
 <script src="/public/src/js/common.js"></script>
-<script src="https://unpkg.com/htmx.org@1.9.9"></script>
 <script src="/public/src/js/easy-dom.js"></script>
+<script src="/public/dist/js/feather.js"></script>
 {{if .}}
       {{range $index, $element := .}}
       <script src="/public/{{$element}}"></script>
