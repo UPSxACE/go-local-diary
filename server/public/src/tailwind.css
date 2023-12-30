@@ -9,3 +9,27 @@
 .h-screen {
     height: 100svh;
 }
+
+.lc-btn {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+    @apply bg-red-500 hover:bg-red-700 text-white rounded-[0.275rem] py-[0.5rem] px-4 flex w-min items-center
+}
+
+.lc-btn-icon {
+    @apply lc-btn;
+    padding-right: 0.5rem!important;
+}
+
+.lc-btn-icon svg {
+    @apply w-[1.1rem] h-[1.1rem] ml-1;
+}
+
+.lc-btn.secondary, .lc-btn-icon.secondary {
+    @apply bg-white hover:bg-lgray border border-gray-700 text-gray-700 font-medium
+}
+
+.lc-btn.neutral, .lc-btn-icon.neutral {
+    @apply bg-lgray border border-bgray2 hover:border-gray-700 text-gray-700 font-medium
+}
