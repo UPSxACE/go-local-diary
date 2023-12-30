@@ -58,6 +58,13 @@ make tailwind
 # or
 make tailwind-watch
 ```
+**Run webpack watcher:**
+```bash
+make webpack
+
+# or
+make webpack-watch
+```
 **Run in development mode:**
 ```bash
 # Run with live reload (using air)

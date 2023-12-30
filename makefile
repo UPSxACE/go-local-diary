@@ -28,6 +28,12 @@ tailwind:
 tailwind-watch:
 	cd ./server && npm run chokidar
 
+webpack:
+	cd ./server && npm run webpack
+
+webpack-watch:
+	cd ./server && npm run webpack-watch
+
 dev:
 	go run . -dev
 
