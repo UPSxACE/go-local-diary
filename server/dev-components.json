@@ -43,6 +43,15 @@
             "exampleTitle": "Example"
           }
         ]
+      },
+      {
+        "componentName": "Inputs",
+        "templateName": "example-inputs",
+        "examples": [
+          {
+            "exampleTitle": "Example"
+          }
+        ]
       }
     ]
   }

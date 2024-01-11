@@ -3,33 +3,62 @@
 @import "tailwindcss/utilities";
 
 .min-h-screen {
-    min-height: 100svh;
+  min-height: 100svh;
 }
 
 .h-screen {
-    height: 100svh;
+  height: 100svh;
 }
 
+/** Lc Buttons */
 .lc-btn {
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10 and IE 11 */
-    user-select: none; /* Standard syntax */
-    @apply bg-red-500 hover:bg-red-700 text-white rounded-[0.275rem] py-[0.5rem] px-4 flex w-min items-center
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+  @apply bg-red-500 hover:bg-red-700 text-white rounded-[0.275rem] py-[0.5rem] px-4 flex w-min items-center;
 }
 
 .lc-btn-icon {
-    @apply lc-btn;
-    padding-right: 0.5rem!important;
+  @apply lc-btn;
+  padding-right: 0.5rem !important;
 }
 
 .lc-btn-icon svg {
-    @apply w-[1.1rem] h-[1.1rem] ml-1;
+  @apply w-[1.1rem] h-[1.1rem] ml-1;
 }
 
-.lc-btn.secondary, .lc-btn-icon.secondary {
-    @apply bg-white hover:bg-lgray border border-gray-700 text-gray-700 font-medium
+.lc-btn.secondary,
+.lc-btn-icon.secondary {
+  @apply bg-white hover:bg-lgray border border-gray-700 text-gray-700 font-medium;
 }
 
-.lc-btn.neutral, .lc-btn-icon.neutral {
-    @apply bg-lgray border border-bgray2 hover:border-gray-700 text-gray-700 font-medium
+.lc-btn.neutral,
+.lc-btn-icon.neutral {
+  @apply bg-lgray border border-bgray2 hover:border-gray-700 text-gray-700 font-medium;
+}
+
+/** Lc Inputs */
+.lc-input {
+  @apply border border-bgray2 p-2 px-[0.75rem] text-gray-900;
+  outline: none;
+}
+
+fieldset.lc-input-icon {
+    @apply lc-input flex;
+}
+
+fieldset.lc-input-icon input {
+    @apply flex-1;
+    outline: none;
+}
+
+.lc-input.round,
+fieldset.lc-input-icon.round {
+  @apply rounded-[0.15rem];
+}
+
+.lc-input.focusable:focus,
+fieldset.lc-input-icon.focusable:focus-within {
+  @apply border-red-500 shadow-red-400;
+  box-shadow: 0px 0px 4px 0px var(--tw-shadow-color);
 }
