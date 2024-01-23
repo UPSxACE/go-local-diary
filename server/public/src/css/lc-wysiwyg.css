@@ -59,7 +59,6 @@
 #lc-wysiwyg textarea.edit-content-area {
   flex: 1;
   outline: none;
-  overflow-wrap: anywhere;
 }
 
 #lc-wysiwyg .preview-content-area {
@@ -75,8 +74,15 @@
   font-size: 1rem;
 }
 
-#lc-wysiwyg:not(.preview) .preview-content-area, #lc-wysiwyg.preview textarea.edit-content-area {
+#lc-wysiwyg.preview textarea.edit-content-area {
   display: none;
+}
+
+#lc-wysiwyg:not(.preview) .preview-content-area {
+  /* display: none; */
+  height: 0;
+  width: 0;
+  overflow: hidden;
 }
 
 #lc-wysiwyg .word-counter {

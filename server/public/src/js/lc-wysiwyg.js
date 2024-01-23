@@ -8,6 +8,7 @@ class Editor {
   #editButtonNode = null;
   #previewButtonNode = null;
   #wordCounterNode = null;
+  #updatePreviewTimeout = null;
 
   constructor(node) {
     this.#node = node;
@@ -59,7 +60,7 @@ class Editor {
     this.#editContentAreaNode.addEventListener("input", (e) => {
       // NOTE - This implementation might change someday
       this.#contentData = e.target.value;
-      this.#updateWordCount();
+      this.#updatePreviewContent();
     });
     this.#editButtonNode.onclick = () => {
       this.#node.classList.toggle("preview", false);
@@ -220,20 +221,19 @@ class Editor {
 
   /**
    * This function must be called to update the parsed content in the preview mode.
-   * It can be called whenever needed, even if there is a possibility the preview mode
-   * is not currently on, because it checks it before updating.
-   * In that case, the function code won't be run, so the function needs to be called again when the
-   * mode is turned on.
+   * It must be called whenever the content changes.
+   * It also is responsible to call the updateWordCount function.
    */
   #updatePreviewContent() {
-    const previewMode = this.#node.classList.contains("preview");
-    if (previewMode) {
+    this.#updatePreviewTimeout = clearTimeout(this.#updatePreviewTimeout);
+    this.#updatePreviewTimeout = setTimeout(() => {
       // NOTE - This implementation might change someday
       this.#previewContentAreaNode.innerText = this.#contentData;
       this.#previewContentAreaNode.innerHTML = this.#parseSafeHTML(
         this.#previewContentAreaNode.innerHTML
       );
-    }
+      this.#updateWordCount();
+    }, 700);
   }
 
   /**
@@ -243,11 +243,12 @@ class Editor {
   #updateWordCount() {
     // TODO - Replace this by a regular expression after the rest is correctly implemented
     // and make it so it doesn't count symbols as words, or double spaces, or markdown elements
-    const cleanWordsArray = this.#contentData
+    const cleanWordsArray = this.#previewContentAreaNode.innerText
       .replaceAll("\n", " ") // replace line breaks by spaces
       .trim() // remove trailing spaces on end and begin
       .split(" ") // divide string in array of words
       .filter((x) => x !== ""); // remove empty words caused by sequential spaces on the text
+
     this.#wordCounterNode.innerHTML = cleanWordsArray.length;
   }
 
@@ -268,7 +269,6 @@ class Editor {
   setContent(newContent) {
     this.#contentData = newContent;
     this.#editContentAreaNode.value = newContent;
-    this.#updateWordCount();
     this.#updatePreviewContent();
   }
 }
