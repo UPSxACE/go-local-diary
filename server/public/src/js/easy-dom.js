@@ -46,6 +46,7 @@ const $load = (func) => {
   window.addEventListener("popstate", () => setTimeout(func, 0));
 };
 
-const $htmxLoad = (func) => {
+const $htmxLoad = (func, executeNow) => {
+  if (executeNow === true) func();
   window.addEventListener("htmx:load", func);
 };

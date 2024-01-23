@@ -1,0 +1,84 @@
+#lc-wysiwyg {
+  border: 1px solid rgb(217 217 217);
+  width: 100%;
+  min-height: 350px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#lc-wysiwyg header {
+  /* height: 52px; */
+  background-color: rgb(246 249 252);
+  border-bottom: 1px solid rgb(217 217 217);
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+}
+
+#lc-wysiwyg header .buttons {
+  display: flex;
+  background-color: #dfdfdf;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  /** no selection */
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+#lc-wysiwyg header .buttons .button {
+  padding: 2px 14px;
+  display: inline-block;
+  font-weight: 300;
+}
+
+#lc-wysiwyg:not(.preview) header .buttons .button[data-role="edit"],
+#lc-wysiwyg.preview header .buttons .button[data-role="preview"] {
+  border: 1px solid #a4a4a4;
+  border-radius: 0.25rem;
+  background-color: white;
+  font-weight: 500;
+}
+
+#lc-wysiwyg .content {
+  display: flex;
+  flex: 1 1 0;
+  overflow-y: auto;
+}
+
+#lc-wysiwyg .content .wrapper {
+  display: flex;
+  flex: 1;
+  min-height: 100%;
+  height: max-content;
+  padding: 24px 28px;
+}
+
+#lc-wysiwyg textarea.edit-content-area {
+  flex: 1;
+  outline: none;
+  overflow-wrap: anywhere;
+}
+
+#lc-wysiwyg .preview-content-area {
+  /* overflow-wrap: anywhere; */
+}
+
+
+#lc-wysiwyg:not(.preview) textarea.edit-content-area {
+  background-color: transparent;
+  resize: none;
+  font-family: monospace;
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+#lc-wysiwyg:not(.preview) .preview-content-area, #lc-wysiwyg.preview textarea.edit-content-area {
+  display: none;
+}
+
+#lc-wysiwyg .word-counter {
+  margin-left: auto;
+}

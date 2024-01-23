@@ -1,0 +1,20 @@
+{{define "example-editor"}}
+<div class="flex flex-col gap-1">
+  <article id="lc-wysiwyg">
+    <header>
+      <div class="buttons">
+        <button data-role="edit" class="button">Edit</button>
+        <button data-role="preview" class="button">Preview</button>
+      </div>
+      <span class="word-counter">Word count: <span class="counter">0</span></span>
+    </header>
+    <div class="content">
+      <div class="wrapper">
+        <textarea class="edit-content-area" name="content" disabled></textarea>
+        <!-- Recommendation: add a class to the preview-content-area div that will bring the styles -->
+        <div class="preview-content-area"></div>
+      </div>
+    </div>
+  </article>
+</div>
+{{end}}

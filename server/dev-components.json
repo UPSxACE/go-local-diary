@@ -52,6 +52,15 @@
             "exampleTitle": "Example"
           }
         ]
+      },
+      {
+        "componentName": "Text Editor",
+        "templateName": "example-editor",
+        "examples": [
+          {
+            "exampleTitle": "Example"
+          }
+        ]
       }
     ]
   }
