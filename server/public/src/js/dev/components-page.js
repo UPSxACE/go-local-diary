@@ -40,7 +40,7 @@ $load(() => {
     const editorNode = $("#lc-wysiwyg");
     if (editorNode !== null) {
       const editor = new Editor(editorNode.node);
-      editor.setContent("<h1>Loading content test!</h1>");
+      editor.setContent("# Loading content test!");
       editor.enable();
     }
   };

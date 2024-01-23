@@ -20,14 +20,18 @@ func main() {
 	flag.Parse()
 
 	// Init server with Sqlite
-	app := app.App[db_sqlite3.Database_Sqlite3]{Database: db_sqlite3.Init(), DevMode: *devFlag, Plugins: map[string]interface{}{}}
+	app := app.App[db_sqlite3.Database_Sqlite3]{
+		Database: db_sqlite3.Init(), 
+		DevMode: *devFlag, 
+		Plugins: map[string]interface{}{},
+	}
 
 	// Load Plugins
 	dev_component_parser.LoadPlugin(&app)
 
 	// Print server config
 	fmt.Println("App Config:")
-	fmt.Println(app)
+	fmt.Printf("%#v\n", app)
 
 	server.Init(&app)
 }

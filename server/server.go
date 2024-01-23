@@ -1,12 +1,14 @@
 package server
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 
 	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
 	"github.com/UPSxACE/go-local-diary/server/controllers"
+	"github.com/UPSxACE/go-local-diary/server/models"
 	"github.com/UPSxACE/go-local-diary/server/template_renderer"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -18,7 +20,12 @@ func Init(appInstance *app.App[db_sqlite3.Database_Sqlite3]) {
 	// Create echo instance
 	e := echo.New()
 
-	setupConfig(appInstance, e, &t)	
+	setupConfig(appInstance, e, &t)
+
+	// Prepare the database
+	models.PrepareAppConfigTable(appInstance)
+
+	fmt.Printf("Database Tables: %#v", appInstance.Database.GetTables())
 
 	// Routes
 	controllers.SetIndexRoutes(e)

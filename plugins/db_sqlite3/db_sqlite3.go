@@ -10,8 +10,8 @@ import (
 )
 
 type Database_Sqlite3 struct {
-	instance *sql.DB;
-	version string;
+	instance *sql.DB
+	version  string
 }
 
 func Init() *Database_Sqlite3 {
@@ -20,8 +20,6 @@ func Init() *Database_Sqlite3 {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	defer db.Close()
 
 	var version string
 	err = db.QueryRow("SELECT SQLITE_VERSION()").Scan(&version)
@@ -32,7 +30,40 @@ func Init() *Database_Sqlite3 {
 
 	fmt.Println("Sqlite3 version: " + version)
 
-	return &Database_Sqlite3{instance: db,version: version}
+	return &Database_Sqlite3{instance: db, version: version}
+}
+
+func (db *Database_Sqlite3) GetInstance() *sql.DB{
+	return db.instance;
+}
+
+func (db *Database_Sqlite3) GetTables() []string{
+	query := `SELECT name FROM 
+			(SELECT * FROM sqlite_schema UNION ALL
+		 	SELECT * FROM sqlite_temp_schema)
+ 			WHERE type='table'
+ 			ORDER BY name`
+
+	statement,err := db.instance.Prepare(query)
+	if(err != nil){
+		log.Fatal(err)
+	}
+	defer statement.Close()
+
+	rows, err := statement.Query()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var tables []string;
+	for rows.Next() {
+		var name string
+		rows.Scan(&name)
+		tables = append(tables, name)
+	}
+	
+	return tables;
 }
 
 func (db *Database_Sqlite3) Create() any {
