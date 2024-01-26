@@ -20,12 +20,23 @@ func Init(appInstance *app.App[db_sqlite3.Database_Sqlite3]) {
 	// Create echo instance
 	e := echo.New()
 
+	// Set the custom context
+	e.Use(generateCustomContextMiddleware(appInstance))
+
+	// Setup the normal app configs
 	setupConfig(appInstance, e, &t)
 
 	// Prepare the database
-	models.PrepareAppConfigTable(appInstance)
+	sqlFileReader,err := db_sqlite3.OpenSqlFile("./server/sql/initial.sql")
+	if(err != nil){
+		log.Fatal(err)
+	}
+	err, queryThatFailed := sqlFileReader.ExecuteAllFromApp(appInstance)
+	if(err != nil){
+		log.Fatal(err, queryThatFailed)
+	}
 
-	fmt.Printf("Database Tables: %#v", appInstance.Database.GetTables())
+	fmt.Printf("Database Tables: %v\n", appInstance.Database.GetTables())
 
 	// Routes
 	controllers.SetIndexRoutes(e)
