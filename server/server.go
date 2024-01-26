@@ -67,8 +67,8 @@ func customHTTPErrorHandler(err error, c echo.Context) {
         code = he.Code
     }
     c.Logger().Error(err)
-	if(code == 404){
-		c.Redirect(http.StatusPermanentRedirect, "/404")
+	if code == 404 {
+		c.Redirect(http.StatusFound, "/404")
 	} else {
 		c.Echo().DefaultHTTPErrorHandler(err, c)
 	}	

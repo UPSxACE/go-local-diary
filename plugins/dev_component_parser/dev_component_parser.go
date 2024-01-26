@@ -213,7 +213,7 @@ func SetDevComponentsRefreshRoute[T any](app *app.App[T]) echo.HandlerFunc {
 				parserConverted.ParseJsonConfigFile()
 			}
 		}
-		return c.Redirect(http.StatusTemporaryRedirect, referer)
+		return c.Redirect(http.StatusFound, referer)
 	}
 
 	return handler

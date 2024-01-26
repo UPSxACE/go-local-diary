@@ -16,7 +16,7 @@ func SetDevRoutes(e *echo.Echo, app *app.App[db_sqlite3.Database_Sqlite3]) {
 }
 
 func GetDevController(c echo.Context) error {
-	return c.Redirect(http.StatusPermanentRedirect, "/dev/components")
+	return c.Redirect(http.StatusMovedPermanently, "/dev/components")
 }
 
 func GetDevComponentsController(c echo.Context) error {
