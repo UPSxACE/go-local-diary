@@ -15,13 +15,13 @@ import (
 )
 
 func Init(appInstance *app.App[db_sqlite3.Database_Sqlite3]) {
-	t := setupRenderer(appInstance);
+	t := setupRenderer(appInstance)
 
 	// Create echo instance
 	e := echo.New()
 
 	// Set the custom context
-	e.Use(generateCustomContextMiddleware(appInstance))
+	e.Use(echo_custom.GenerateCustomContextMiddleware(appInstance))
 
 	// Setup the normal app configs
 	setupConfig(appInstance, e, &t)
