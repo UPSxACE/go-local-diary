@@ -3,13 +3,13 @@ package server
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 
 	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
 	"github.com/UPSxACE/go-local-diary/server/controllers"
 	"github.com/UPSxACE/go-local-diary/server/echo_custom"
-	"github.com/UPSxACE/go-local-diary/server/models"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -47,8 +47,11 @@ func Init(appInstance *app.App[db_sqlite3.Database_Sqlite3]) {
 	// Start server
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	fmt.Println("Initializing echo HTTP server...")
 	e.Logger.Fatal(e.Start(":1323"))
 }
+
+
 
 // Middleware used in developer mode so the js and css files aren't cached.
 func preventCacheMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -63,15 +66,15 @@ func preventCacheMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 // Error handling pages.
 func customHTTPErrorHandler(err error, c echo.Context) {
 	code := http.StatusInternalServerError
-    if he, ok := err.(*echo.HTTPError); ok {
-        code = he.Code
-    }
-    c.Logger().Error(err)
+	if he, ok := err.(*echo.HTTPError); ok {
+		code = he.Code
+	}
+	c.Logger().Error(err)
 	if code == 404 {
 		c.Redirect(http.StatusFound, "/404")
 	} else {
 		c.Echo().DefaultHTTPErrorHandler(err, c)
-	}	
+	}
 }
 
 // Setups the template renderer and attaches it to the echo instance.
@@ -100,7 +103,7 @@ func setupConfig(appInstance *app.App[db_sqlite3.Database_Sqlite3], e *echo.Echo
 		AllowHeaders: []string{"*"},
 		// echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept
 	}))
-	
+
 	// Set custom error handler (error pages)
 	e.HTTPErrorHandler = customHTTPErrorHandler
 
@@ -114,4 +117,3 @@ func setupConfig(appInstance *app.App[db_sqlite3.Database_Sqlite3], e *echo.Echo
 
 	e.Renderer = *t
 }
-

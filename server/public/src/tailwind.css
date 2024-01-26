@@ -15,7 +15,7 @@
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
-  @apply bg-red-500 hover:bg-red-700 text-white rounded-[0.275rem] py-[0.5rem] px-4 flex w-min items-center;
+  @apply bg-red-500 hover:bg-red-700 text-white rounded-[0.275rem] py-[0.5rem] px-4 flex w-fit items-center;
 }
 
 .lc-btn-icon {

@@ -29,6 +29,7 @@ func Init() *Database_Sqlite3 {
 		log.Fatal(err)
 	}
 
+	fmt.Println("Sqlite3 initialized!")
 	fmt.Println("Sqlite3 version: " + version)
 
 	return &Database_Sqlite3{instance: db, version: version}
@@ -65,26 +66,4 @@ func (db *Database_Sqlite3) GetTables() []string{
 	}
 	
 	return tables;
-}
-
-func (db *Database_Sqlite3) Create() any {
-	panic("not implemented") // TODO: Implement
-}
-func (db *Database_Sqlite3) ReadOne() any {
-	panic("not implemented") // TODO: Implement
-}
-func (db *Database_Sqlite3) ReadAll() any {
-	panic("not implemented") // TODO: Implement
-}
-func (db *Database_Sqlite3) UpdateOne() any {
-	panic("not implemented") // TODO: Implement
-}
-func (db *Database_Sqlite3) UpdateAll() any {
-	panic("not implemented") // TODO: Implement
-}
-func (db *Database_Sqlite3) DeleteOne() any {
-	panic("not implemented") // TODO: Implement
-}
-func (db *Database_Sqlite3) DeleteAll() any {
-	panic("not implemented") // TODO: Implement
 }

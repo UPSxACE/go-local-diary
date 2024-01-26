@@ -30,8 +30,17 @@ func main() {
 	dev_component_parser.LoadPlugin(&app)
 
 	// Print server config
-	fmt.Println("App Config:")
-	fmt.Printf("%#v\n", app)
+	pluginList := make([]string,0, len(app.Plugins))
+	for pluginName := range app.Plugins{
+		pluginList = append(pluginList, pluginName)
+	}
 
+	fmt.Println("App Config:")
+	if(app.DevMode){
+		fmt.Println("Dev Mode Enabled")
+	}
+	fmt.Printf("Extra Plugins: %v\n", pluginList)
+
+	fmt.Println("Initializing app...")
 	server.Init(&app)
 }

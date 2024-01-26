@@ -55,8 +55,8 @@ func Init() *DevComponentParser {
 
 /* Function used to initialize the plugin. */
 func LoadPlugin[T any](app *app.App[T]) {
-	fmt.Println("Loading Plugin DevComponentParser...")
 	if app.DevMode {
+		fmt.Println("Loading Plugin DevComponentParser...")
 		app.Plugins["DevComponentParser"] = Init()
 	}
 }
