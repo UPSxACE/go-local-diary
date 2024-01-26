@@ -77,3 +77,21 @@ func GenerateCustomContextMiddleware(app *app.App[db_sqlite3.Database_Sqlite3]) 
 }
 
 
+/** Middleware at CONTROLLER LEVEL, to redirect requests from other routes to /welcome
+ *  when the app is not configured yet.
+ */
+func RedirectNotConfiguredToWelcomeMiddleware(controller func (c echo.Context) error) (func (c echo.Context) error){
+	fnc := func (c echo.Context) error {
+		cc := c.(*CustomEchoContext)
+		
+		url := cc.Context.Request().URL.String()
+
+		if(!cc.IsConfigured && url != "/welcome"){
+			return cc.Redirect(http.StatusFound, "/welcome")
+		}
+
+		return controller(cc)
+	}	 
+
+	return fnc
+}

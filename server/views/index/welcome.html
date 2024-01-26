@@ -1,0 +1,10 @@
+{{define "welcome"}} {{template "top"}}
+<main class="flex justify-center items-center min-h-screen">
+  <form id="welcome-form" class="flex flex-col items-center" method="post">
+    <h1 class="text-5xl mb-8 text-center">Welcome to Local Diary!</h1>
+    <button type="submit" class="lc-btn-icon flex-grow">
+      SETUP MY DIARY!<i data-feather="chevron-right"></i>
+    </button>
+  </form>
+</main>
+{{template "bottom"}} {{end}}
