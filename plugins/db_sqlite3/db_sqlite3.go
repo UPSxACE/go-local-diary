@@ -16,6 +16,7 @@ type Database_Sqlite3 struct {
 
 func Init() *Database_Sqlite3 {
 	db, err := sql.Open("sqlite3", ":memory:")
+	db.SetMaxOpenConns(1) // NOTE: Necessary when using ":memory:"
 
 	if err != nil {
 		log.Fatal(err)
