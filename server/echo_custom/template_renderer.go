@@ -1,9 +1,9 @@
 /*
-The template_renderer package contains the necessary struct and
-Render function required by the echo server
+The custom package contains the necessary struct and
+Render function required by the echo server and a custom context struct.
 */
 
-package template_renderer
+package echo_custom
 
 import (
 	"fmt"

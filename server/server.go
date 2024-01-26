@@ -8,8 +8,8 @@ import (
 	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
 	"github.com/UPSxACE/go-local-diary/server/controllers"
+	"github.com/UPSxACE/go-local-diary/server/echo_custom"
 	"github.com/UPSxACE/go-local-diary/server/models"
-	"github.com/UPSxACE/go-local-diary/server/template_renderer"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -75,22 +75,22 @@ func customHTTPErrorHandler(err error, c echo.Context) {
 }
 
 // Setups the template renderer and attaches it to the echo instance.
-func setupRenderer(appInstance *app.App[db_sqlite3.Database_Sqlite3]) echo.Renderer{
+func setupRenderer(appInstance *app.App[db_sqlite3.Database_Sqlite3]) echo.Renderer {
 	var t echo.Renderer
 
 	if appInstance.DevMode {
-		t = &template_renderer.TemplateDevMode{}
+		t = &echo_custom.TemplateDevMode{}
 	}
 	if !appInstance.DevMode {
 		// Pre-compile templates in views subdirectories, and subdirectories of those subdirectories
 		tBuilder := template.Must(template.New("").Funcs(app.DefaultFuncMap).ParseGlob("server/views/*/*.html"))
 		// tBuilder = template.Must(tBuilder.ParseGlob("server/views/*/*/*.html"))
-		t = &template_renderer.Template{
+		t = &echo_custom.Template{
 			Templates: tBuilder,
 		}
 	}
 
-	return t;
+	return t
 }
 
 // Setups CORS, the middlewares, and the route /public to serve static files.
