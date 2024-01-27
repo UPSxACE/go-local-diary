@@ -9,3 +9,4 @@ coverage.out
 /tmp
 /server/public
 **/.parcel-cache
+**/.vscode

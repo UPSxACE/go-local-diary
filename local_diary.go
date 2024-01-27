@@ -21,22 +21,22 @@ func main() {
 
 	// Init server with Sqlite
 	app := app.App[db_sqlite3.Database_Sqlite3]{
-		Database: db_sqlite3.Init(), 
-		DevMode: *devFlag, 
-		Plugins: map[string]interface{}{},
+		Database: db_sqlite3.Init(),
+		DevMode:  *devFlag,
+		Plugins:  map[string]interface{}{},
 	}
 
 	// Load Plugins
 	dev_component_parser.LoadPlugin(&app)
 
 	// Print server config
-	pluginList := make([]string,0, len(app.Plugins))
-	for pluginName := range app.Plugins{
+	pluginList := make([]string, 0, len(app.Plugins))
+	for pluginName := range app.Plugins {
 		pluginList = append(pluginList, pluginName)
 	}
 
 	fmt.Println("App Config:")
-	if(app.DevMode){
+	if app.DevMode {
 		fmt.Println("Dev Mode Enabled")
 	}
 	fmt.Printf("Extra Plugins: %v\n", pluginList)

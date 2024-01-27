@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/UPSxACE/go-local-diary/server/echo_custom"
-	"github.com/UPSxACE/go-local-diary/server/models"
+	"github.com/UPSxACE/go-local-diary/server/internal/models"
+	"github.com/UPSxACE/go-local-diary/server/pkg/echo_custom"
 	"github.com/labstack/echo/v4"
 )
 

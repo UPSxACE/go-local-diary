@@ -6,7 +6,7 @@ import (
 
 	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
-	"github.com/UPSxACE/go-local-diary/server/models"
+	"github.com/UPSxACE/go-local-diary/server/internal/models"
 	"github.com/labstack/echo/v4"
 )
 

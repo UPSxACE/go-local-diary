@@ -32,7 +32,7 @@ import (
 	"os"
 
 	"github.com/UPSxACE/go-local-diary/app"
-	"github.com/UPSxACE/go-local-diary/server/echo_custom"
+	"github.com/UPSxACE/go-local-diary/server/pkg/echo_custom"
 	"github.com/UPSxACE/go-local-diary/utils"
 
 	"github.com/labstack/echo/v4"
@@ -148,7 +148,7 @@ func GetDevComponentParserRenderFunc(c echo.Context) func(code int, name string)
 
 			if requestData.Render != "" && requestData.Component != 0 && requestData.Example != 0 {
 				// Parse all templates
-				tBuilder := template.Must(template.New("").Funcs(app.DefaultFuncMap).ParseGlob("server/views/*/*.html"))
+				tBuilder := template.Must(template.New("").Funcs(app.DefaultFuncMap).ParseGlob("server/internal/views/*/*.html"))
 				// tBuilder = template.Must(tBuilder.ParseGlob("server/views/*/*/*.html"))
 
 				tNew := &echo_custom.Template{

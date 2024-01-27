@@ -8,8 +8,8 @@ import (
 
 	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
-	"github.com/UPSxACE/go-local-diary/server/controllers"
-	"github.com/UPSxACE/go-local-diary/server/echo_custom"
+	"github.com/UPSxACE/go-local-diary/server/internal/controllers"
+	"github.com/UPSxACE/go-local-diary/server/pkg/echo_custom"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -86,8 +86,8 @@ func setupRenderer(appInstance *app.App[db_sqlite3.Database_Sqlite3]) echo.Rende
 	}
 	if !appInstance.DevMode {
 		// Pre-compile templates in views subdirectories, and subdirectories of those subdirectories
-		tBuilder := template.Must(template.New("").Funcs(app.DefaultFuncMap).ParseGlob("server/views/*/*.html"))
-		// tBuilder = template.Must(tBuilder.ParseGlob("server/views/*/*/*.html"))
+		tBuilder := template.Must(template.New("").Funcs(app.DefaultFuncMap).ParseGlob("server/internal/views/*/*.html"))
+		// tBuilder = template.Must(tBuilder.ParseGlob("server/internal/views/*/*/*.html"))
 		t = &echo_custom.Template{
 			Templates: tBuilder,
 		}
