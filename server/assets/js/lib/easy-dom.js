@@ -1,6 +1,6 @@
 // Only tested with HTMX
 
-const $wrap = (node) => ({
+export const $wrap = (node) => ({
   node: node,
   toggle: function (className, bool) {
     this.node.classList.toggle(className, bool);
@@ -21,18 +21,18 @@ const $wrap = (node) => ({
   },
 });
 
-const $ = (query) => {
+export const $ = (query) => {
   const node = document.querySelector(query);
   return node === null ? null : $wrap(node);
 };
 
-const $all = (query) => {
+export const $all = (query) => {
   return Array.from(document.querySelectorAll(query)).map((node) =>
     $wrap(node)
   );
 };
 
-const $load = (func) => {
+export const $load = (func) => {
   window.addEventListener("load", func);
 
   // MDN about popstate:
@@ -46,7 +46,7 @@ const $load = (func) => {
   window.addEventListener("popstate", () => setTimeout(func, 0));
 };
 
-const $htmxLoad = (func, executeNow) => {
+export const $htmxLoad = (func, executeNow) => {
   if (executeNow === true) func();
   window.addEventListener("htmx:load", func);
 };

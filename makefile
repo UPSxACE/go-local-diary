@@ -22,17 +22,20 @@ test-e2e-report:
 test-e2e-ui:
 	cd ./tests_playwright && npx playwright test --ui
 
-tailwind:
-	cd ./server && npm run build:css
+assets-clear:
+	cd ./server && npm run cache:clear
 
-tailwind-watch:
-	cd ./server && npm run chokidar
+assets-build:
+	cd ./server && npm run cpx:build
 
-webpack:
-	cd ./server && npm run webpack
+assets-watch:
+	cd ./server && npm run cpx:watch
 
-webpack-watch:
-	cd ./server && npm run webpack-watch
+parcel-build:
+	cd ./server && npm run parcel:build
+
+parcel-watch:
+	cd ./server && npm run parcel:watch
 
 dev:
 	go run . -dev

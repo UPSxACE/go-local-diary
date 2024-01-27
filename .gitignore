@@ -7,3 +7,5 @@ coverage.out
 **/package-lock.json
 **/dist/
 /tmp
+/server/public
+**/.parcel-cache

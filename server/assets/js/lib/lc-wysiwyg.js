@@ -1,6 +1,6 @@
 // TODO - Make it so it's visually clear when it's disabled
 
-class Editor {
+export class Editor {
   #contentData = "";
   #node = null;
   #editContentAreaNode = null;
@@ -233,7 +233,7 @@ class Editor {
         this.#previewContentAreaNode.innerHTML
       );
       this.#updateWordCount();
-    }, 700);
+    }, 500);
   }
 
   /**

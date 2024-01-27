@@ -1,5 +1,5 @@
 {{define "dev-components"}}
-{{$extraStyles := list "css/dev.css"}}
+{{$extraStyles := list "lib/dev-components-parser/page.css"}}
 {{template "top" $extraStyles}}
 <main id="main" class="flex h-screen">
     {{template "dev-components-side" .}}
@@ -15,6 +15,6 @@
         </div>
     </section>
 </main>
-{{$extraScripts := list "src/js/easy-interaction.js" "src/js/lc-wysiwyg.js" "src/js/dev/components-page.js"}}
+{{$extraScripts := list "lib/easy-interaction.js" "lib/lc-wysiwyg.js" "lib/dev-components-parser/page.js"}}
 {{template "bottom" $extraScripts}}
 {{end}}

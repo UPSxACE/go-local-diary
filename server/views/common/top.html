@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Local Diary</title>
     <!-- Stylesheets -->
-    <link rel="preload" href="/public/src/poppins.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    <link rel="stylesheet" href="/public/dist/css/tailwind.css" />
-    <link rel="stylesheet" href="/public/src/css/common.css" />
-    <link rel="stylesheet" href="/public/src/css/lc-wysiwyg.css" />
+    <link rel="preload" href="/public/fonts/poppins/poppins.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href="/public/css/tailwind.css" />
+    <link rel="stylesheet" href="/public/css/pages/common/main.css" />
+    <link rel="stylesheet" href="/public/css/lib/lc-wysiwyg.css" />
     {{if .}}
       {{range $index, $element := .}}
-      <link rel="stylesheet" href="/public/src/{{$element}}" />
+      <link rel="stylesheet" href="/public/css/{{$element}}" />
       {{end}}
     {{end}}
     </head>

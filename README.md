@@ -51,19 +51,17 @@ make dep
 # Install playwright browsers (optional) for E2E tests
 make dep-browsers
 ```
-**Run tailwind watcher:**
+**Run parcel watcher for js and css:**
 ```bash
-make tailwind
-
-# or
-make tailwind-watch
+make parcel-watch
 ```
-**Run webpack watcher:**
+**Run watcher for other assets:**
 ```bash
-make webpack
-
-# or
-make webpack-watch
+make assets-watch
+```
+**Delete the watchers cache:**
+```bash
+make assets-clear
 ```
 **Run in development mode:**
 ```bash
@@ -91,7 +89,10 @@ make test-e2e-ui
 ```
 **Build executables:**
 ```bash
-# Compiles project and outputs 3 executes (windows, linux, mac)
+# Compiles project and outputs 3 executables (windows, linux, mac)
+make assets-clear
+make parcel-build
+make assets-build
 make build
 
 # Deletes the executables

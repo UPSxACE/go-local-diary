@@ -1,12 +1,10 @@
 {{define "bottom"}}
 </div>
-<script src="/public/dist/js/bundle.js"></script>
-<script src="/public/src/js/common.js"></script>
-<script src="/public/src/js/easy-dom.js"></script>
-<script src="/public/dist/js/feather.js"></script>
+<script src="/public/js/lib/easy-dom.js"></script> 
+<script src="/public/js/pages/common/main.js"></script>
 {{if .}}
       {{range $index, $element := .}}
-      <script src="/public/{{$element}}"></script>
+      <script src="/public/js/{{$element}}"></script>
       {{end}}
     {{end}}
 </body>
