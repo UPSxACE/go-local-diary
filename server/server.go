@@ -9,7 +9,7 @@ import (
 	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
 	"github.com/UPSxACE/go-local-diary/server/internal/controllers"
-	"github.com/UPSxACE/go-local-diary/server/pkg/echo_custom"
+	"github.com/UPSxACE/go-local-diary/server/modules/echo_custom"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )

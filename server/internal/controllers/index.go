@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/UPSxACE/go-local-diary/server/internal/models"
-	"github.com/UPSxACE/go-local-diary/server/pkg/echo_custom"
+	"github.com/UPSxACE/go-local-diary/server/modules/echo_custom"
 	"github.com/labstack/echo/v4"
 )
 

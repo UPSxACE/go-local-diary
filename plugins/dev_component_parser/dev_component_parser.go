@@ -32,7 +32,7 @@ import (
 	"os"
 
 	"github.com/UPSxACE/go-local-diary/app"
-	"github.com/UPSxACE/go-local-diary/server/pkg/echo_custom"
+	"github.com/UPSxACE/go-local-diary/server/modules/echo_custom"
 	"github.com/UPSxACE/go-local-diary/utils"
 
 	"github.com/labstack/echo/v4"
