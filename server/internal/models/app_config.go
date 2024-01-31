@@ -3,7 +3,8 @@ package models
 import (
 	"context"
 	"database/sql"
-	"errors"
+	"reflect"
+	"unicode/utf8"
 
 	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
@@ -16,45 +17,102 @@ type AppConfigModel struct {
 }
 
 type AppConfigStore struct {
-	repository      db_sqlite3.Repository
-	transactionMode bool
+	db_sqlite3.StoreBase
+}
+
+func (store *AppConfigStore) validateModelRules(model AppConfigModel) (valid bool) {
+	if model.Id < 0 {
+		return false
+	}
+	if  model.Name == "" {
+		return false;
+	}
+	if utf8.RuneCountInString(model.Name) > 100 {
+		return false
+	}
+	if utf8.RuneCountInString(model.Value) > 255 {
+		return false
+	}
+	return true
+}
+
+func (store *AppConfigStore) validateModelCreate(model AppConfigModel) (valid bool, err error) {
+	rules := store.validateModelRules(model)
+	if !rules {
+		return false, nil
+	}
+	// id can't exist already
+	count, err := store.CountById(model.Id)
+	if count > 0 || err != nil {
+		return false, err
+	}
+	// name can't exist already
+	count, err = store.CountByName(model.Name)
+	if count > 0 || err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+func (store *AppConfigStore) validateModelUpdate(oldModel AppConfigModel, newModel AppConfigModel) (valid bool, err error) {
+	if newModel.Id == 0 {
+		return false, nil
+	}
+	rules := store.validateModelRules(newModel)
+	if !rules {
+		return false, nil
+	}
+	// prevent duplicated Ids
+	count, err := store.CountById(newModel.Id)
+	if err != nil {
+		return false, err;
+	}
+	if count == 1 {
+		modelToCompare, err := store.GetFirstById(newModel.Id)
+		if err != nil {
+			return false, err
+		}
+		if !reflect.DeepEqual(modelToCompare, oldModel) {
+			return false, err
+		}
+	}
+
+	// prevent duplicated Names
+	count, err = store.CountByName(newModel.Name)
+	if err != nil {
+		return false, err;
+	}
+	if count == 1 {
+		modelToCompare, err := store.GetFirstByName(newModel.Name)
+		if err != nil {
+			return false, err
+		}
+		if !reflect.DeepEqual(modelToCompare, oldModel) {
+			return false, err
+		}
+	}
+
+	return true, nil
+
+}
+
+func (store *AppConfigStore) validateModelDelete(model AppConfigModel) (valid bool, err error) {
+	return true, nil
 }
 
 func CreateStoreAppConfig(appInstance *app.App[db_sqlite3.Database_Sqlite3], useTransactions bool, context context.Context) (AppConfigStore, error) {
-	rep, err := db_sqlite3.CreateRepository(appInstance, useTransactions, context)
-	if err != nil {
-		return AppConfigStore{}, err
-	}
-
-	return AppConfigStore{repository: rep, transactionMode: useTransactions}, nil
-}
-
-func (store *AppConfigStore) Close() []error {
-	errs := store.repository.Close()
-	return errs
-}
-
-func (store *AppConfigStore) CloseAndResetTransaction() []error {
-	if !store.transactionMode {
-		return []error{errors.New("db_sqlite3.*AppConfigStore.CloseAndResetTransaction(): This function should never be called when the model was created with useTransactions argument set to false")}
-	}
-	errs := store.repository.Close()
-	if len(errs) != 0 {
-		return errs
-	}
-	err := store.repository.Reset()
-	if err != nil {
-		errs = append(errs, err)
-	}
-	return errs
+	sb, err := db_sqlite3.CreateStore(appInstance, useTransactions, context)
+	return AppConfigStore{StoreBase: sb}, err
 }
 
 func (store *AppConfigStore) CheckById(id int) (itExists bool, model AppConfigModel, err error) {
 	modelFound, err := store.GetFirstById(id)
 	if err != nil {
-		return false, AppConfigModel{}, err
-	}
-	if modelFound.Id == 0 {
+		_, noResultsError := err.(*db_sqlite3.EmptyQueryResults)
+		if noResultsError {
+			return false, AppConfigModel{}, nil
+		}
+
 		return false, AppConfigModel{}, err
 	}
 	return true, modelFound, nil
@@ -63,58 +121,63 @@ func (store *AppConfigStore) CheckById(id int) (itExists bool, model AppConfigMo
 func (store *AppConfigStore) CheckByName(name string) (itExists bool, model AppConfigModel, err error) {
 	modelFound, err := store.GetFirstByName(name)
 	if err != nil {
-		return false, AppConfigModel{}, err
-	}
-	if modelFound.Id == 0 {
+		_, noResultsError := err.(*db_sqlite3.EmptyQueryResults)
+		if noResultsError {
+			return false, AppConfigModel{}, nil
+		}
+
 		return false, AppConfigModel{}, err
 	}
 	return true, modelFound, nil
 }
 
-
 func (store *AppConfigStore) GetFirstById(id int) (AppConfigModel, error) {
-	query := `SELECT * FROM app_config WHERE id = ?`
+	query := `SELECT * FROM app_config WHERE id = ? ORDER BY id`
 
-	statement, err := store.repository.Prepare(query)
+	statement, err := store.Repository().Prepare(query)
 	if err != nil {
-		return AppConfigModel{}, nil
+		return AppConfigModel{}, err
 	}
 
-	rows, err := store.repository.Query(statement, id)
-	if err != nil {
-		return AppConfigModel{}, nil
-	}
-
+	row := store.Repository().QueryRow(statement, id)
 	var result AppConfigModel
-	if rows.Next() {
-		rows.Scan(&result.Id, &result.Name, &result.Value)
+	row.Scan(&result.Id, &result.Name, &result.Value)
+
+	if result.Id == 0 {
+		return result, &db_sqlite3.EmptyQueryResults{}
 	}
 
 	return result, nil
 }
 
 func (store *AppConfigStore) GetFirstByName(name string) (AppConfigModel, error) {
-	query := `SELECT * FROM app_config WHERE name = ?`
+	query := `SELECT * FROM app_config WHERE name = ? ORDER BY id`
 
-	statement, err := store.repository.Prepare(query)
+	statement, err := store.Repository().Prepare(query)
 	if err != nil {
-		return AppConfigModel{}, nil
+		return AppConfigModel{}, err
 	}
 
-	rows, err := store.repository.Query(statement, name)
-	if err != nil {
-		return AppConfigModel{}, nil
-	}
-
+	row := store.Repository().QueryRow(statement, name)
 	var result AppConfigModel
-	if rows.Next() {
-		rows.Scan(&result.Id, &result.Name, &result.Value)
+	row.Scan(&result.Id, &result.Name, &result.Value)
+
+	if result.Id == 0 {
+		return result, &db_sqlite3.EmptyQueryResults{}
 	}
 
 	return result, nil
 }
 
 func (store *AppConfigStore) Create(model AppConfigModel) (AppConfigModel, error) {
+	valid, err := store.validateModelCreate(model)
+	if err != nil {
+		return AppConfigModel{}, err
+	}
+	if !valid {
+		return AppConfigModel{}, &db_sqlite3.InvalidModelAction{}
+	}
+
 	var query string
 	if model.Id != 0 {
 		query = `INSERT INTO app_config(id, name, value) VALUES (?, ?, ?)`
@@ -122,16 +185,16 @@ func (store *AppConfigStore) Create(model AppConfigModel) (AppConfigModel, error
 		query = `INSERT INTO app_config(name, value) VALUES (?, ?)`
 	}
 
-	statement, err := store.repository.Prepare(query)
+	statement, err := store.Repository().Prepare(query)
 	if err != nil {
 		return AppConfigModel{}, err
 	}
 
 	var res sql.Result
 	if model.Id != 0 {
-		res, err = store.repository.Exec(statement, model.Id, model.Name, model.Value)
+		res, err = store.Repository().Exec(statement, model.Id, model.Name, model.Value)
 	} else {
-		res, err = store.repository.Exec(statement, model.Name, model.Value)
+		res, err = store.Repository().Exec(statement, model.Name, model.Value)
 	}
 	if err != nil {
 		return AppConfigModel{}, err
@@ -151,6 +214,18 @@ func (store *AppConfigStore) Create(model AppConfigModel) (AppConfigModel, error
 }
 
 func (store *AppConfigStore) UpdateById(id int, model AppConfigModel) (AppConfigModel, error) {
+	oldModel, err := store.GetFirstById(id)
+	if err != nil {
+		return AppConfigModel{}, err
+	}
+	valid, err := store.validateModelUpdate(oldModel, model)
+	if err != nil {
+		return AppConfigModel{}, err
+	}
+	if !valid {
+		return AppConfigModel{}, &db_sqlite3.InvalidModelAction{}
+	}
+
 	query := `UPDATE app_config SET
 	id = ?,
 	name = ?,
@@ -159,17 +234,17 @@ func (store *AppConfigStore) UpdateById(id int, model AppConfigModel) (AppConfig
 	id = ?
 	`
 
-	statement, err := store.repository.Prepare(query)
+	statement, err := store.Repository().Prepare(query)
 	if err != nil {
 		return AppConfigModel{}, err
 	}
 
-	_, err = store.repository.Exec(statement, model.Id, model.Name, model.Value, id)
+	_, err = store.Repository().Exec(statement, model.Id, model.Name, model.Value, id)
 	if err != nil {
 		return AppConfigModel{}, err
 	}
 
-	updated, err := store.GetFirstById(id)
+	updated, err := store.GetFirstById(model.Id)
 	if err != nil {
 		return AppConfigModel{}, err
 	}
@@ -178,6 +253,18 @@ func (store *AppConfigStore) UpdateById(id int, model AppConfigModel) (AppConfig
 }
 
 func (store *AppConfigStore) UpdateByName(name string, model AppConfigModel) (AppConfigModel, error) {
+	oldModel, err := store.GetFirstByName(name)
+	if err != nil {
+		return AppConfigModel{}, err
+	}
+	valid, err := store.validateModelUpdate(oldModel, model)
+	if err != nil {
+		return AppConfigModel{}, err
+	}
+	if !valid {
+		return AppConfigModel{}, &db_sqlite3.InvalidModelAction{}
+	}
+
 	query := `UPDATE app_config SET
 	id = ?,
 	name = ?,
@@ -186,20 +273,114 @@ func (store *AppConfigStore) UpdateByName(name string, model AppConfigModel) (Ap
 	name = ?
 	`
 
-	statement, err := store.repository.Prepare(query)
+	statement, err := store.Repository().Prepare(query)
 	if err != nil {
 		return AppConfigModel{}, err
 	}
 
-	_, err = store.repository.Exec(statement, model.Id, model.Name, model.Value, name)
+	_, err = store.Repository().Exec(statement, model.Id, model.Name, model.Value, name)
 	if err != nil {
 		return AppConfigModel{}, err
 	}
 
-	updated, err := store.GetFirstByName(name)
+	updated, err := store.GetFirstByName(model.Name)
 	if err != nil {
 		return AppConfigModel{}, err
 	}
 
 	return updated, nil
+}
+
+func (store *AppConfigStore) DeleteById(id int) (deleted bool, err error){
+	modelToDelete, err := store.GetFirstById(id)
+	if err != nil {
+		return false, err
+	}
+	valid, err := store.validateModelDelete(modelToDelete)
+	if err != nil {
+		return false, err
+	}
+	if !valid {
+		return false,  &db_sqlite3.InvalidModelAction{}
+	}
+
+	query := "DELETE FROM app_config WHERE id = ?";
+	statement, err := store.Repository().Prepare(query)
+	if err != nil {
+		return false, err
+	}
+
+	_, err = store.Repository().Exec(statement, id)
+	if err != nil {
+		return false, err
+	}
+
+	count, err := store.CountById(modelToDelete.Id)
+	if err != nil {
+		return false, err
+	}
+
+	deleted = count == 0;
+	return deleted, nil
+}
+
+func (store *AppConfigStore) DeleteByName(name string) (deleted bool, err error){
+	modelToDelete, err := store.GetFirstByName(name)
+	if err != nil {
+		return false, err
+	}
+	valid, err := store.validateModelDelete(modelToDelete)
+	if err != nil {
+		return false, err
+	}
+	if !valid {
+		return false,  &db_sqlite3.InvalidModelAction{}
+	}
+
+	query := "DELETE FROM app_config WHERE name = ?";
+	statement, err := store.Repository().Prepare(query)
+	if err != nil {
+		return false, err
+	}
+
+	_, err = store.Repository().Exec(statement, name)
+	if err != nil {
+		return false, err
+	}
+
+	count, err := store.CountByName(modelToDelete.Name)
+	if err != nil {
+		return false, err
+	}
+
+	deleted = count == 0;
+	return deleted, nil
+}
+
+func (store *AppConfigStore) CountById(id int) (int, error) {
+	query := `SELECT count(*) FROM app_config WHERE id = ? ORDER BY id`
+
+	statement, err := store.Repository().Prepare(query)
+	if err != nil {
+		return 0, err
+	}
+
+	var count int
+	store.Repository().QueryRow(statement, id).Scan(&count)
+
+	return count, nil
+}
+
+func (store *AppConfigStore) CountByName(name string) (int, error) {
+	query := `SELECT count(*) FROM app_config WHERE name = ? ORDER BY id`
+
+	statement, err := store.Repository().Prepare(query)
+	if err != nil {
+		return 0, err
+	}
+
+	var count int
+	store.Repository().QueryRow(statement, name).Scan(&count)
+
+	return count, nil
 }
