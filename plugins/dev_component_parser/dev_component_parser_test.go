@@ -56,7 +56,7 @@ func TestParseJsonConfigFile(t *testing.T) {
 
 	// Check if the output matches the expected result
 	if !reflect.DeepEqual(expectedOutput, output) {
-		t.Errorf("Expected %#v, got %#v", expectedOutput, output)
+		t.Fatalf("Expected %#v, got %#v", expectedOutput, output)
 	}
 }
 
@@ -108,6 +108,6 @@ func TestInit(t *testing.T){
 
 	// Check if the output matches the expected result
 	if !reflect.DeepEqual(expectedData, parser.Data) {
-		t.Errorf("Expected %#v, got %#v", expectedData, parser.Data)
+		t.Fatalf("Expected %#v, got %#v", expectedData, parser.Data)
 	}
 }
