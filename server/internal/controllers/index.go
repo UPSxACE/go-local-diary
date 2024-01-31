@@ -3,72 +3,73 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/UPSxACE/go-local-diary/server/internal/models"
+	"github.com/UPSxACE/go-local-diary/app"
+	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
+	"github.com/UPSxACE/go-local-diary/server/internal/services"
 	"github.com/UPSxACE/go-local-diary/server/modules/echo_custom"
 	"github.com/labstack/echo/v4"
 )
 
-func SetIndexRoutes(e *echo.Echo) {
-	e.GET("/", echo_custom.RedirectNotConfiguredToWelcomeMiddleware(GetIndexController))
-	e.GET("/welcome", echo_custom.RedirectNotConfiguredToWelcomeMiddleware(GetWelcomeController))
-	e.POST("/welcome", echo_custom.RedirectNotConfiguredToWelcomeMiddleware(PostWelcomeController))
-	e.GET("/404", Get404Controller)
+type IndexController struct {
+	echo *echo.Echo
+	app  *app.App[db_sqlite3.Database_Sqlite3]
 }
 
-func GetIndexController(c echo.Context) error {
-	return c.Render(http.StatusOK, "index", nil)
+func SetIndexController(e *echo.Echo, appInstance *app.App[db_sqlite3.Database_Sqlite3]) {
+	ctrl := &IndexController{echo: e, app: appInstance}
+	ctrl.SetRoutes()
 }
 
-func GetWelcomeController(c echo.Context) error {
-	cc := c.(*echo_custom.CustomEchoContext)
+func (ctrl *IndexController) SetRoutes() {
+	welcomeMiddleware := echo_custom.RedirectNotConfiguredToWelcomeMiddleware
 
-	if cc.IsConfigured {
+	ctrl.echo.GET("/", welcomeMiddleware(ctrl.getIndexRoute()))
+	ctrl.echo.GET("/welcome", welcomeMiddleware(ctrl.getWelcomeRoute()))
+	ctrl.echo.POST("/welcome", welcomeMiddleware(ctrl.postWelcomeRoute()))
+	ctrl.echo.GET("/404", ctrl.get404Route())
+}
+
+func (ctrl *IndexController) getIndexRoute() func(c echo.Context) error {
+	return func(c echo.Context) error {
+		return c.Render(http.StatusOK, "index", nil)
+	}
+}
+
+func (ctrl *IndexController) getWelcomeRoute() func(c echo.Context) error {
+	return func(c echo.Context) error {
+		cc := c.(*echo_custom.CustomEchoContext)
+
+		if cc.IsConfigured {
+			return cc.Redirect(http.StatusMovedPermanently, "/")
+		}
+
+		return cc.Render(http.StatusOK, "welcome", nil)
+	}
+}
+
+func (ctrl *IndexController) postWelcomeRoute() func(c echo.Context) error {
+	return func(c echo.Context) error {
+		cc := c.(*echo_custom.CustomEchoContext)
+
+		if cc.IsConfigured {
+			return cc.Redirect(http.StatusMovedPermanently, "/")
+		}
+
+		ctx := cc.Request().Context();
+		
+		_, err := services.AppConfig.SetConfiguration(ctrl.app, ctx, "configured", "1")
+		if(err != nil){
+			return nil
+		}
+
 		return cc.Redirect(http.StatusMovedPermanently, "/")
 	}
 
-	return cc.Render(http.StatusOK, "welcome", nil)
 }
 
-func PostWelcomeController(c echo.Context) error {
-	cc := c.(*echo_custom.CustomEchoContext)
+func (ctrl *IndexController) get404Route() func(c echo.Context) error {
+	return func(c echo.Context) error {
 
-	if cc.IsConfigured {
-		return cc.Redirect(http.StatusMovedPermanently, "/")
+		return c.Render(http.StatusOK, "404", nil)
 	}
-
-	store, err := models.CreateStoreAppConfig(cc.App, true, cc.Request().Context())
-	if err != nil {
-		return err;
-	}
-
-	exists, model, err := store.CheckByName("configured")
-	if err != nil {
-		return err
-	}
-
-	if !exists {
-		model = models.AppConfigModel{Name: "configured", Value: "1"}
-		model, err = store.Create(model)
-		if err != nil {
-			return err
-		}
-	}
-	if exists {
-		model.Value = "1";
-		model, err = store.UpdateByName(model.Name, model)
-		if err != nil{
-			return err;
-		}
-	}
-
-	errs := store.Close()
-	if(len(errs) != 0){
-		return err;
-	}
-
-	return cc.Redirect(http.StatusMovedPermanently, "/")
-}
-
-func Get404Controller(c echo.Context) error {
-	return c.Render(http.StatusOK, "404", nil)
 }

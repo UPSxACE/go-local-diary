@@ -31,7 +31,7 @@ func Init(appInstance *app.App[db_sqlite3.Database_Sqlite3]) {
 	if(err != nil){
 		log.Fatal(err)
 	}
-	err, queryThatFailed := sqlFileReader.ExecuteAllFromApp(appInstance)
+	queryThatFailed, err := sqlFileReader.ExecuteAllFromApp(appInstance)
 	if(err != nil){
 		log.Fatal(err, queryThatFailed)
 	}
@@ -39,9 +39,9 @@ func Init(appInstance *app.App[db_sqlite3.Database_Sqlite3]) {
 	fmt.Printf("Database Tables: %v\n", appInstance.Database.GetTables())
 
 	// Routes
-	controllers.SetIndexRoutes(e)
+	controllers.SetIndexController(e, appInstance)
 	if appInstance.DevMode {
-		controllers.SetDevRoutes(e, appInstance)
+		controllers.SetDevController(e, appInstance)
 	}
 
 	// Start server
