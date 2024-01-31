@@ -13,6 +13,21 @@ type RepositoryTx struct {
 	cleanupQueue []func() error
 	failed       bool
 	done         bool
+	openRows     *sql.Rows // prevent leaving rows open
+}
+
+// TODO: Add a wrapper to the statements returned by these functions
+//       that limits the user to only use those in the interface Repository
+//       and so it detects when one of them is used after the connection was 
+//       closed already
+
+type emptyResult struct {
+}
+func (er *emptyResult) LastInsertId() (int64, error){
+	panic("This is an empty sql.Result, originated by an error.")
+}
+func (er *emptyResult) RowsAffected() (int64, error){
+	panic("This is an empty sql.Result, originated by an error.")
 }
 
 func (repository *RepositoryTx) queueCleanup(closeFunction func() error) {
@@ -24,6 +39,19 @@ func (repository *RepositoryTx) GetContext() context.Context {
 }
 
 func (repository *RepositoryTx) Prepare(query string) (*sql.Stmt, error) {
+	if(repository.failed){
+		return &sql.Stmt{},errors.New("the transaction has failed. Please use Close() to rollback the transaction, and then Reset() to start a new one");
+	}
+	if(repository.done){
+		return &sql.Stmt{},errors.New("this transaction was closed over already. Please use Reset() to start a new one");
+	}
+
+	// prevent leaving rows open
+	if(repository.openRows != nil){
+		repository.openRows.Close()
+		repository.openRows = nil;
+	}
+
 	statement, err := repository.tx.PrepareContext(repository.context, query)
 	if err != nil {
 		repository.failed = true
@@ -35,16 +63,30 @@ func (repository *RepositoryTx) Prepare(query string) (*sql.Stmt, error) {
 }
 
 func (repository *RepositoryTx) Query(statement *sql.Stmt, args ...any) (*sql.Rows, error) {
+	if(repository.failed){
+		return &sql.Rows{},errors.New("the transaction has failed. Please use Close() to rollback the transaction, and then Reset() to start a new one");
+	}
+	if(repository.done){
+		return &sql.Rows{},errors.New("this transaction was closed over already. Please use Reset() to start a new one");
+	}
+	// prevent leaving rows open
+	if(repository.openRows != nil){
+		repository.openRows.Close()
+		repository.openRows = nil;
+	}
+	
 	rows, err := statement.QueryContext(repository.context, args...)
 	if err != nil {
 		repository.failed = true
 		return rows, err
 	}
 
-	repository.queueCleanup(rows.Close)
+	// prevent leaving rows open
+	repository.openRows = rows
 
 	return rows, nil
 }
+
 func (repository *RepositoryTx) QueryRow(statement *sql.Stmt, args ...any) *sql.Row {
 	if(repository.failed){
 		return &sql.Row{};
@@ -63,7 +105,20 @@ func (repository *RepositoryTx) QueryRow(statement *sql.Stmt, args ...any) *sql.
 }
 
 
+
 func (repository *RepositoryTx) Exec(statement *sql.Stmt, args ...any) (sql.Result, error) {
+	if(repository.failed){
+		return &emptyResult{},errors.New("the transaction has failed. Please use Close() to rollback the transaction, and then Reset() to start a new one");
+	}
+	if(repository.done){
+		return &emptyResult{},errors.New("this transaction was closed over already. Please use Reset() to start a new one");
+	}
+	// prevent leaving rows open
+	if(repository.openRows != nil){
+		repository.openRows.Close()
+		repository.openRows = nil;
+	}
+	
 	result, err := statement.ExecContext(repository.context, args...)
 	if err != nil {
 		repository.failed = true
@@ -78,6 +133,24 @@ func (repository *RepositoryTx) Close() []error {
 	if(repository.done){
 		return errors;
 	}
+
+	// prevent leaving rows open
+	if(repository.openRows != nil){
+		repository.openRows.Close()
+		repository.openRows = nil;
+	}
+
+	var newQueue []func()error;
+
+	for _, cleanupFunction := range repository.cleanupQueue {
+		err := cleanupFunction()
+		if err != nil {
+			newQueue = append(newQueue, cleanupFunction)
+			errors = append(errors, err)
+		}
+	}
+
+	repository.cleanupQueue = newQueue;
 	
 	if repository.failed {
 		err := repository.tx.Rollback()
@@ -95,13 +168,6 @@ func (repository *RepositoryTx) Close() []error {
 	repository.failed = false
 	repository.done = true
 
-	for _, cleanupFunction := range repository.cleanupQueue {
-		err := cleanupFunction()
-		if err != nil {
-			errors = append(errors, err)
-		}
-	}
-
 	return errors
 }
 
@@ -113,6 +179,7 @@ func (repository *RepositoryTx) Reset() error {
 	if err != nil {
 		return err
 	}
+	repository.done = false;
 	repository.tx = newTx
 	return nil
 }
