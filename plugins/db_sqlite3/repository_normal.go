@@ -43,6 +43,17 @@ func (repository *RepositoryNormal) Query(statement *sql.Stmt, args ...any) (*sq
 	return rows, nil
 }
 
+func (repository *RepositoryNormal) QueryRow(statement *sql.Stmt, args ...any) *sql.Row {
+	// prevent leaving rows open
+	if(repository.openRows != nil){
+		repository.openRows.Close()
+		repository.openRows = nil;
+	}
+
+	row := statement.QueryRow(args...)
+	return row
+}
+
 func (repository *RepositoryNormal) Exec(statement *sql.Stmt, args ...any) (sql.Result, error) {
 	result, err := statement.Exec(args)
 	if err != nil {

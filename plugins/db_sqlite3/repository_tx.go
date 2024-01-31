@@ -45,6 +45,23 @@ func (repository *RepositoryTx) Query(statement *sql.Stmt, args ...any) (*sql.Ro
 
 	return rows, nil
 }
+func (repository *RepositoryTx) QueryRow(statement *sql.Stmt, args ...any) *sql.Row {
+	if(repository.failed){
+		return &sql.Row{};
+	}
+	if(repository.done){
+		return &sql.Row{};
+	}
+	// prevent leaving rows open
+	if(repository.openRows != nil){
+		repository.openRows.Close()
+		repository.openRows = nil;
+	}
+	
+	row := statement.QueryRowContext(repository.context, args...)
+	return row
+}
+
 
 func (repository *RepositoryTx) Exec(statement *sql.Stmt, args ...any) (sql.Result, error) {
 	result, err := statement.ExecContext(repository.context, args...)

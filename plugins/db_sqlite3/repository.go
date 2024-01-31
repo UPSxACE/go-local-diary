@@ -14,6 +14,7 @@ type Repository interface {
 	GetContext() context.Context;
 	Prepare(query string) (*sql.Stmt, error)
 	Query(statement *sql.Stmt, args ...any) (*sql.Rows, error)
+	QueryRow(statement *sql.Stmt, args ...any) *sql.Row
 	Exec(statement *sql.Stmt, args ...any) (sql.Result, error)
 	Close() []error
 	Reset() error
