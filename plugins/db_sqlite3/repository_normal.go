@@ -9,6 +9,7 @@ import (
 type RepositoryNormal struct {
 	db           *sql.DB
 	cleanupQueue []func() error
+	openRows     *sql.Rows // prevent leaving rows open
 }
 
 func (repository *RepositoryNormal) queueCleanup(closeFunction func() error) {
@@ -20,25 +21,35 @@ func (repository *RepositoryNormal) GetContext() context.Context {
 }
 
 func (repository *RepositoryNormal) Prepare(query string) (*sql.Stmt, error) {
+	// prevent leaving rows open
+	if(repository.openRows != nil){
+		repository.openRows.Close()
+		repository.openRows = nil;
+	}
+
 	statement, err := repository.db.Prepare(query)
 	if err != nil {
 		return statement, err
 	}
-	repository.queueCleanup(func() error {
-		return statement.Close()
-	})
+	repository.queueCleanup(statement.Close)
 
 	return statement, nil
 }
 
 func (repository *RepositoryNormal) Query(statement *sql.Stmt, args ...any) (*sql.Rows, error) {
-	rows, err := statement.Query(args)
+	// prevent leaving rows open
+	if(repository.openRows != nil){
+		repository.openRows.Close()
+		repository.openRows = nil;
+	}
+	
+	rows, err := statement.Query(args...)
 	if err != nil {
 		return rows, err
 	}
-	repository.queueCleanup(func() error {
-		return rows.Close()
-	})
+
+	// prevent leaving rows open
+	repository.openRows = rows
 
 	return rows, nil
 }
@@ -55,7 +66,13 @@ func (repository *RepositoryNormal) QueryRow(statement *sql.Stmt, args ...any) *
 }
 
 func (repository *RepositoryNormal) Exec(statement *sql.Stmt, args ...any) (sql.Result, error) {
-	result, err := statement.Exec(args)
+	// prevent leaving rows open
+	if(repository.openRows != nil){
+		repository.openRows.Close()
+		repository.openRows = nil;
+	}
+
+	result, err := statement.Exec(args...)
 	if err != nil {
 		return result, err
 	}
@@ -65,17 +82,26 @@ func (repository *RepositoryNormal) Exec(statement *sql.Stmt, args ...any) (sql.
 
 func (repository *RepositoryNormal) Close() []error {
 	var errors []error
+	var newQueue []func()error;
+
+	// prevent leaving rows open
+	if(repository.openRows != nil){
+		repository.openRows.Close()
+		repository.openRows = nil;
+	}
 
 	for _, closeFunction := range repository.cleanupQueue {
 		err := closeFunction()
 		if err != nil {
+			newQueue = append(newQueue, closeFunction)
 			errors = append(errors, err)
 		}
 	}
 
+	repository.cleanupQueue = newQueue;
 	return errors
 }
 
 func (repository *RepositoryNormal) Reset() error {
-	return errors.New("db_sqlite3.*RepositoryNormal.Reset(): this method should never be called in normal repositories")
+	return errors.New("db_sqlite3.*RepositoryNormal.Reset(): this method should never be called in normal repositories (you don't need to reset it to use it again)")
 }
