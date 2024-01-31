@@ -1,4 +1,10 @@
 // Web, Api, App
+
+/*
+The package db_sqlite is a plugin that shall be used to plug a sqlite3 database driver
+into the app. It comes also with the Repository interface that must be used to create models,
+and the SqlFileReader class that can be used to read sql files and execute their instructions.
+*/
 package db_sqlite3
 
 import (
