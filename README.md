@@ -73,10 +73,13 @@ make dev
 ```
 **Run tests:**
 ```bash
-# Normal test output in console
+# Run golang server tests
 make test
 
-# Test coverage and output html file
+# Run golang server tests (verbose)
+make test
+
+# Run golang server tests (coverage) and output html file
 make test-coverage
 
 # Note: Don't forget to initialize the server before trying to run e2e tests

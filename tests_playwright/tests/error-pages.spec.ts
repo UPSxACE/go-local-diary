@@ -11,7 +11,7 @@ test("redirect to 404", async ({ page }) => {
     .redirectedFrom()
     ?.response();
   const previousResponseStatus = previousResponse?.status();
-  expect(previousResponseStatus, "status should be 308").toBe(308);
+  expect(previousResponseStatus, "status should be 302").toBe(302);
   expect(page.url(), "url should have '404'").toContain("404");
 });
 

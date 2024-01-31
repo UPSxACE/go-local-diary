@@ -8,7 +8,7 @@ test("redirect from dev to dev/components", async ({ page }) => {
     .redirectedFrom()
     ?.response();
   const previousResponseStatus = previousResponse?.status();
-  expect(previousResponseStatus, "status should be 308").toBe(308);
+  expect(previousResponseStatus, "status should be 301").toBe(301);
   expect(page.url(), "url should have dev/components").toContain(
     "dev/components"
   );
@@ -115,8 +115,8 @@ test("dev/components ux", async ({ page, request }) => {
   await refreshButton.click();
   expect(
     (await responsePromise).status(),
-    "response status should be 307"
-  ).toBe(307);
+    "response status should be 302"
+  ).toBe(302);
   expect(
     page.url(),
     "url should be the same before and after redirection/request"

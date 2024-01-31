@@ -7,6 +7,9 @@ dep-browsers:
 	cd ./tests_playwright && npx playwright install
 
 test:
+	go test ./...
+
+test-v:
 	go test ./... -v
 
 test-coverage:
