@@ -16,7 +16,7 @@
       {{end}}
     {{end}}
     </head>
-    <body>
+    <body hx-ext="morphdom-swap">
       <!-- Wrap the entire DOM to isolate out the scripts, so they are loaded again when
         popstate event is called (NOTE: dont remove hx-history-elt) -->
       <div id="local-diary" hx-history-elt>

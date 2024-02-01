@@ -1,5 +1,7 @@
 my.db
 my.db.lock
+my_dev.db
+my_dev.db.lock
 coverage.html
 coverage.out
 **/docs/
