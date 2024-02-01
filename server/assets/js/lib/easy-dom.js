@@ -46,6 +46,23 @@ export const $load = (func) => {
   window.addEventListener("popstate", () => setTimeout(func, 0));
 };
 
+export const $realLoad = (func) => {
+  function wrapper() {
+    if (!document.hidden) {
+      func();
+    }
+    if (document.hidden) {
+      // Sometimes browser load the page before the user enters it.
+      // in that case don't add the loaded class.
+      // Add the class when user actually enters then
+      window.addEventListener("visibilitychange", func, { once: true });
+    }
+  }
+
+  window.addEventListener("load", wrapper);
+  window.addEventListener("popstate", () => setTimeout(func, 0));
+};
+
 export const $htmxLoad = (func, executeNow) => {
   if (executeNow === true) func();
   window.addEventListener("htmx:load", func);
