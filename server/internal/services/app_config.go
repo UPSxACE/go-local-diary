@@ -3,6 +3,8 @@ package services
 import (
 	"context"
 	"fmt"
+	"regexp"
+	"unicode/utf8"
 
 	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
@@ -14,6 +16,10 @@ import (
 var AppConfig = AppConfigService{}
 
 type AppConfigService struct{}
+
+func (service *AppConfigService) validateChars(str string) bool{
+	return regexp.MustCompile("^[a-zA-ZÀ-ÖØ-öø-ÿ0-9_@#+-]*$").MatchString(str)
+}
 
 /*
 Returns true if the configuration of name "configured" is set to "1" in the app_config table.
@@ -90,4 +96,55 @@ func (service *AppConfigService) SetConfiguration(app *app.App[db_sqlite3.Databa
 	}
 
 	return model.Value, nil;
+}
+
+/*
+Updates user name configuration. 
+*/
+func (service *AppConfigService) SetNameConfiguration(app *app.App[db_sqlite3.Database_Sqlite3], context context.Context, newName string) (valid bool, validationErrorMessage string, err error) {
+	size := utf8.RuneCountInString(newName)
+	if(size == 0){
+		return false, "Please pick a name.", nil
+	}
+	if(size < 3){
+		return false, "Please pick a bigger name.", nil;
+	}
+	if(size > 100){
+		return false, "The chosen name is too big.", nil;
+	}
+	
+	if(!service.validateChars(newName)){
+		return false, "There are invalid characters in the name.", nil;
+	}
+
+	store, err := models.CreateStoreAppConfig(app, true, context)
+	if err != nil {
+		return false, "",  err
+	}
+	defer store.Close()
+
+	// check if exists
+	exists, model, err := store.CheckByName("name")
+	if err != nil {
+		return false, "", err
+	}
+
+	// does not exist
+	if !exists {
+		model = models.AppConfigModel{Name: "name", Value: newName}
+		model, err = store.Create(model)
+		if err != nil {
+			return false, "", err
+		}
+	}
+	// exists 
+	if exists {
+		model.Value = newName
+		model, err = store.UpdateByName(model.Name, model)
+		if err != nil {
+			return false, "", err
+		}
+	}
+
+	return true, model.Value, nil;
 }
