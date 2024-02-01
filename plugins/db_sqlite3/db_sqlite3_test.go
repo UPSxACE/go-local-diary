@@ -7,13 +7,13 @@ import (
 )
 
 func TestInit(t *testing.T) {
-	dbWrapper := Init()
+	dbWrapper := Init(true)
 	db := dbWrapper.GetInstance()
 	db.Close()
 }
 
 func TestGetTables(t *testing.T) {
-	dbWrapper := Init();
+	dbWrapper := Init(true);
 	db := dbWrapper.GetInstance()
 	defer db.Close()
 

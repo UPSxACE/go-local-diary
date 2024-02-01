@@ -11,6 +11,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -20,9 +21,23 @@ type Database_Sqlite3 struct {
 	version  string
 }
 
-func Init() *Database_Sqlite3 {
-	db, err := sql.Open("sqlite3", ":memory:")
-	db.SetMaxOpenConns(1) // NOTE: Necessary when using ":memory:"
+func Init(devMode bool) *Database_Sqlite3 {
+	// Setup db file
+	dbPath := "my.db"
+	if devMode {
+		os.Remove("my_dev.db")
+		file, err := os.Create("my_dev.db")
+		if err != nil {
+			log.Fatal(err)
+		}
+		file.Close()
+		dbPath = "my_dev.db"
+	}
+
+	db, err := sql.Open("sqlite3", dbPath)
+	if devMode {
+		db.SetMaxOpenConns(1) // NOTE: Necessary when using ":memory:" connection
+	}
 
 	if err != nil {
 		log.Fatal(err)
@@ -41,19 +56,19 @@ func Init() *Database_Sqlite3 {
 	return &Database_Sqlite3{instance: db, version: version}
 }
 
-func (db *Database_Sqlite3) GetInstance() *sql.DB{
-	return db.instance;
+func (db *Database_Sqlite3) GetInstance() *sql.DB {
+	return db.instance
 }
 
-func (db *Database_Sqlite3) GetTables() []string{
+func (db *Database_Sqlite3) GetTables() []string {
 	query := `SELECT name FROM 
 			(SELECT * FROM sqlite_schema UNION ALL
 		 	SELECT * FROM sqlite_temp_schema)
  			WHERE type='table'
  			ORDER BY name`
 
-	statement,err := db.instance.Prepare(query)
-	if(err != nil){
+	statement, err := db.instance.Prepare(query)
+	if err != nil {
 		log.Fatal(err)
 	}
 	defer statement.Close()
@@ -64,12 +79,12 @@ func (db *Database_Sqlite3) GetTables() []string{
 	}
 	defer rows.Close()
 
-	var tables []string;
+	var tables []string
 	for rows.Next() {
 		var name string
 		rows.Scan(&name)
 		tables = append(tables, name)
 	}
-	
-	return tables;
+
+	return tables
 }

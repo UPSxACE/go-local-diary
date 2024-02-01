@@ -21,7 +21,7 @@ func main() {
 
 	// Init server with Sqlite
 	app := app.App[db_sqlite3.Database_Sqlite3]{
-		Database: db_sqlite3.Init(),
+		Database: db_sqlite3.Init(*devFlag),
 		DevMode:  *devFlag,
 		Plugins:  map[string]interface{}{},
 	}

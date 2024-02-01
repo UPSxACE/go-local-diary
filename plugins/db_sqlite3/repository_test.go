@@ -11,7 +11,7 @@ import (
 
 func getTestAppInstance() *app.App[Database_Sqlite3] {
 	app := app.App[Database_Sqlite3]{
-		Database: Init(),
+		Database: Init(true),
 	}
 	return &app
 }

@@ -19,7 +19,7 @@ var test_db *sql.DB
 
 func getTestAppInstance() *app.App[db_sqlite3.Database_Sqlite3] {
 	app := app.App[db_sqlite3.Database_Sqlite3]{
-		Database: db_sqlite3.Init(),
+		Database: db_sqlite3.Init(true),
 	}
 	return &app
 }
