@@ -1,13 +1,32 @@
 .no-pointer-evs {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 .no-select {
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10 and IE 11 */
-    user-select: none; /* Standard syntax */
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 .no-transition {
-    transition: none;
+  transition: none;
+}
+
+/** Transitions */
+.fade-in {
+    opacity: 0;
+}
+
+body.loaded .fade-in {
+  opacity: 1;
+  transition: opacity 2s ease;
+}
+
+body.loaded .fade-in.htmx-swapping {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+body.loaded .fade-in.htmx-added {
+  opacity: 0;
 }

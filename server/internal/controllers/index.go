@@ -43,6 +43,11 @@ func (ctrl *IndexController) getWelcomeRoute() func(c echo.Context) error {
 			return cc.Redirect(http.StatusMovedPermanently, "/")
 		}
 
+		step := c.QueryParam("step")
+		if step == "2" {
+			return cc.Render(http.StatusOK, "welcome-step-2", nil)
+		}
+
 		return cc.Render(http.StatusOK, "welcome", nil)
 	}
 }
@@ -51,18 +56,33 @@ func (ctrl *IndexController) postWelcomeRoute() func(c echo.Context) error {
 	return func(c echo.Context) error {
 		cc := c.(*echo_custom.CustomEchoContext)
 
-		if cc.IsConfigured {
+		step := cc.QueryParam("step")
+		if cc.IsConfigured || step != "2" {
 			return cc.Redirect(http.StatusMovedPermanently, "/")
 		}
 
-		ctx := cc.Request().Context();
-		
-		_, err := services.AppConfig.SetConfiguration(ctrl.app, ctx, "configured", "1")
-		if(err != nil){
+		ctx := cc.Request().Context()
+		name := cc.FormValue("name")
+		valid, errMsg, err := services.AppConfig.SetNameConfiguration(ctrl.app, ctx, name)
+		if err != nil {
+			return err
+		}
+		if !valid {
+			data := map[string]interface{}{
+				"form_err": map[string]string{
+					"name": errMsg,
+				},
+			}
+			return cc.Render(http.StatusOK, "welcome-step-2", data)
+		}
+
+		_, err = services.AppConfig.SetConfiguration(ctrl.app, ctx, "configured", "1")
+		if err != nil {
 			return nil
 		}
 
-		return cc.Redirect(http.StatusMovedPermanently, "/")
+		cc.Response().Header().Set("HX-Redirect", "/")
+		return cc.NoContent(http.StatusMovedPermanently)
 	}
 
 }

@@ -30,7 +30,7 @@ func GenerateCustomContextMiddleware(app *app.App[db_sqlite3.Database_Sqlite3]) 
 		return func(c echo.Context) error {
 			cc := &CustomEchoContext{Context: c}
 			context := cc.Request().Context()
-
+			
 			configured, err := services.AppConfig.IsAppConfigured(app,context)
 			if err != nil {
 				return err;
@@ -52,9 +52,9 @@ func RedirectNotConfiguredToWelcomeMiddleware(controller func (c echo.Context) e
 	fnc := func (c echo.Context) error {
 		cc := c.(*CustomEchoContext)
 		
-		url := cc.Context.Request().URL.String()
+		path := cc.Context.Request().URL.Path
 
-		if(!cc.IsConfigured && url != "/welcome"){
+		if(!cc.IsConfigured && path != "/welcome"){
 			return cc.Redirect(http.StatusFound, "/welcome")
 		}
 

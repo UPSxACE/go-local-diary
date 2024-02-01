@@ -1,0 +1,37 @@
+{{define "welcome-step-2"}} {{template "top"}}
+<main class="flex justify-center items-center min-h-screen">
+  <form
+    id="welcome-form"
+    class="flex flex-col items-center fade-in"
+    method="post"
+    action="/welcome?step=2"
+    hx-boost="true"
+    hx-target="#welcome-form"
+    hx-select="#welcome-form"
+    hx-swap="morphdom"
+  >
+      <h1 class="text-5xl mb-8 text-center">What is your name?</h1>
+      <div class="field flex-col{{if .form_err.name}} error{{end}}">
+        <div hx-preserve="true" id="row1">
+          <div class="flex form-field">
+            <fieldset class="lc-input-icon round focusable flex-1 min-w-[300px]">
+              <i class="mr-2" data-feather="user"></i>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Name"
+                autocomplete="name"
+              />
+            </fieldset>
+            <button type="submit" class="lc-btn-icon ml-4">
+              OK<i data-feather="chevron-right"></i>
+            </button>
+          </div>
+          <span class="form-error" id="name-error"></span>
+          {{with .form_err.name}}<span class="form-error" id="name-error" hx-swap-oob="true">{{.}}</span>{{end}}
+        </div>
+      </div>
+  </form>
+</main>
+{{template "bottom"}} {{end}}
