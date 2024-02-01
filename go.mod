@@ -3,7 +3,6 @@ module github.com/UPSxACE/go-local-diary
 go 1.21.3
 
 require (
-	github.com/boltdb/bolt v1.3.1
 	github.com/labstack/echo/v4 v4.11.3
 	github.com/mattn/go-sqlite3 v1.14.19
 )
