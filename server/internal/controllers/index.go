@@ -26,6 +26,7 @@ func (ctrl *IndexController) SetRoutes() {
 	ctrl.echo.GET("/", welcomeMiddleware(ctrl.getIndexRoute()))
 	ctrl.echo.GET("/welcome", welcomeMiddleware(ctrl.getWelcomeRoute()))
 	ctrl.echo.POST("/welcome", welcomeMiddleware(ctrl.postWelcomeRoute()))
+	ctrl.echo.GET("/new", welcomeMiddleware(ctrl.getNewRoute()))
 	ctrl.echo.GET("/404", ctrl.get404Route())
 }
 
@@ -41,6 +42,21 @@ func (ctrl *IndexController) getIndexRoute() func(c echo.Context) error {
 		}
 
 		return c.Render(http.StatusOK, "index", data)
+	}
+}
+
+func (ctrl *IndexController) getNewRoute() func(c echo.Context) error {
+	return func(c echo.Context) error {
+		name, err := services.AppConfig.GetName(ctrl.app)
+		if err != nil {
+			return err;
+		}
+		
+		data := map[string]string{
+			"Name": name,
+		}
+
+		return c.Render(http.StatusOK, "new", data)
 	}
 }
 
