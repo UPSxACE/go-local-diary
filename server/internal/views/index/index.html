@@ -1,8 +1,20 @@
-{{define "index"}}
-{{template "top"}}
-{{template "main-navbar" .Name}}
-<main class="flex justify-center items-center min-h-screen-nav">
-    <h1>Index page</h1>
+{{define "index"}} {{template "top"}} {{template "main-navbar" .Name}}
+<main class="flex flex-col min-h-screen-nav px-5 py-4 md:px-10 md:py-8">
+  <header class="flex w-full">
+    <fieldset class="lc-input-icon round focusable w-[50%] md:w-[unset] min-w-[100px] md:min-w-[450px]">
+      <input class="min-w-0"  type="text" placeholder="Search" />
+        <i data-feather="search"></i></span>
+    </fieldset>
+    <button class="lc-btn secondary ml-auto">Add Note</button>
+  </header>
+  <section id="notes" class="flex flex-col flex-1">
+    {{if not .Notes}}
+    <div class="flex flex-col flex-1 w-full justify-center items-center">
+      <img class="w-[40vw] max-h-[50vh] min-w-[180px]" src="/public/img/notes-girl.svg" alt="" />
+      <h1 class="text-3xl mt-8 font-medium">Go ahead, and add your first note!</h1>
+    </div>
+    
+    {{end}}
+  </section>
 </main>
-{{template "bottom"}}
-{{end}}
+{{template "bottom"}} {{end}}
