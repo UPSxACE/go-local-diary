@@ -61,6 +61,21 @@ func (service *AppConfigService) IsAppConfigured(app *app.App[db_sqlite3.Databas
 	}
 }
 
+func (service *AppConfigService) GetName(app *app.App[db_sqlite3.Database_Sqlite3]) (name string, err error){
+	store, err := models.CreateStoreAppConfig(app, false, nil);
+	if err != nil {
+		return "", err;
+	}
+	defer store.Close()
+
+	model, err := store.GetFirstByName("name")
+	if err != nil {
+		return "", err
+	}
+
+	return model.Value, nil
+}
+
 /*
 Sets a configuration in app_config table.
 If the configuration already exists it will be updated, if it doesn't it will  be created.

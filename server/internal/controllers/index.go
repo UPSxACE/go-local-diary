@@ -31,7 +31,16 @@ func (ctrl *IndexController) SetRoutes() {
 
 func (ctrl *IndexController) getIndexRoute() func(c echo.Context) error {
 	return func(c echo.Context) error {
-		return c.Render(http.StatusOK, "index", nil)
+		name, err := services.AppConfig.GetName(ctrl.app)
+		if err != nil {
+			return err;
+		}
+
+		data := map[string]string{
+			"Name": name,
+		}
+
+		return c.Render(http.StatusOK, "index", data)
 	}
 }
 
