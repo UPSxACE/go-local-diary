@@ -1,30 +1,52 @@
 {{define "new"}} {{template "top"}} {{template "main-navbar" .Name}}
-<main class="flex flex-col min-h-screen-nav px-5 py-4 md:px-10 md:py-8">
-<header class="flex items-center">
+<main
+  id="main"
+  class="flex flex-col min-h-screen-nav px-5 py-4 md:px-10 md:py-8"
+>
+  <header
+    hx-boost="true"
+    hx-target="#main"
+    hx-select="#main"
+    hx-swap="outerHTML show:no-scroll"
+    class="flex items-center"
+  >
     <span class="text-2xl text-gray-900 font-medium">Create new note</span>
     <button class="lc-btn neutral ml-auto">Discard</button>
     <button class="lc-btn ml-3">Save Note</button>
-</header>
-<form id="note-editor" class="flex flex-col flex-1">
-    <input class="lc-input w-full mt-3  text-xl" type="text" placeholder="Note Title">
+  </header>
+  <form id="note-editor" class="flex flex-col flex-1">
+    <input
+      id="title"
+      name="title"
+      class="lc-input w-full mt-3 text-xl"
+      type="text"
+      placeholder="Note Title"
+    />
     <article id="lc-wysiwyg" class="mt-3 flex-1 !rounded-none">
-        <header>
-          <div class="buttons">
-            <button data-role="edit" class="button" type="button">Edit</button>
-            <button data-role="preview" class="button" type="button">Preview</button>
-          </div>
-          <span class="word-counter">Word count: <span class="counter">0</span></span>
-        </header>
-        <div class="content">
-          <div class="wrapper">
-            <textarea class="edit-content-area" name="content" disabled></textarea>
-            <!-- Recommendation: add a class to the preview-content-area div that will bring the styles -->
-            <div class="preview-content-area"></div>
-          </div>
+      <header>
+        <div class="buttons">
+          <button data-role="edit" class="button" type="button">Edit</button>
+          <button data-role="preview" class="button" type="button">
+            Preview
+          </button>
         </div>
-      </article>
-</form>
+        <span class="word-counter"
+          >Word count: <span class="counter">0</span></span
+        >
+      </header>
+      <div class="content">
+        <div class="wrapper">
+          <textarea
+            class="edit-content-area"
+            name="content"
+            disabled
+          ></textarea>
+          <!-- Recommendation: add a class to the preview-content-area div that will bring the styles -->
+          <div class="preview-content-area"></div>
+        </div>
+      </div>
+    </article>
+  </form>
 </main>
-{{$extraScripts := list "lib/lc-wysiwyg.js" "pages/add/page.js"}}
-{{template "bottom" $extraScripts}}
-{{end}}
+{{$extraScripts := list "lib/lc-wysiwyg.js"}} {{template "bottom"
+$extraScripts}} {{end}}
