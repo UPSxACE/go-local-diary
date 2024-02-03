@@ -67,3 +67,7 @@ export const $htmxLoad = (func, executeNow) => {
   if (executeNow === true) func();
   window.addEventListener("htmx:load", func);
 };
+
+export const $htmxHistory = (func) => {
+  window.addEventListener("htmx:historyRestore", func);
+};
