@@ -27,12 +27,12 @@ func Init(appInstance *app.App[db_sqlite3.Database_Sqlite3]) {
 	setupConfig(appInstance, e, &t)
 
 	// Prepare the database
-	sqlFileReader,err := db_sqlite3.OpenSqlFile("./server/sql/initial.sql")
-	if(err != nil){
+	sqlFileReader, err := db_sqlite3.OpenSqlFile("./server/sql/initial.sql")
+	if err != nil {
 		log.Fatal(err)
 	}
 	queryThatFailed, err := sqlFileReader.ExecuteAllFromApp(appInstance)
-	if(err != nil){
+	if err != nil {
 		log.Fatal(err, queryThatFailed)
 	}
 
@@ -45,13 +45,13 @@ func Init(appInstance *app.App[db_sqlite3.Database_Sqlite3]) {
 	}
 
 	// Start server
-	e.Use(middleware.Logger())
+	if appInstance.DevMode {
+		e.Use(middleware.Logger())
+	}
 	e.Use(middleware.Recover())
 	fmt.Println("Initializing echo HTTP server...")
 	e.Logger.Fatal(e.Start(":1323"))
 }
-
-
 
 // Middleware used in developer mode so the js and css files aren't cached.
 func preventCacheMiddleware(next echo.HandlerFunc) echo.HandlerFunc {

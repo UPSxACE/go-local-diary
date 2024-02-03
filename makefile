@@ -1,3 +1,7 @@
+BINARY_NAME=build
+TARGET=./
+ARGS=
+
 dep:
 	go mod tidy
 	cd ./tests_playwright && npm i
@@ -44,12 +48,12 @@ dev:
 	go run . -dev
 
 build:
+	GOARCH=amd64 GOOS=windows go build -o ${BINARY_NAME}-windows ${TARGET} ${ARGS}
 	GOARCH=amd64 GOOS=darwin go build -o ${BINARY_NAME}-darwin ${TARGET} ${ARGS}
 	GOARCH=amd64 GOOS=linux go build -o ${BINARY_NAME}-linux ${TARGET} ${ARGS}
-	GOARCH=amd64 GOOS=windows go build -o ${BINARY_NAME}-windows ${TARGET} ${ARGS}
 
 clean:
 	go clean
+	rm ${BINARY_NAME}-windows
 	rm ${BINARY_NAME}-darwin
 	rm ${BINARY_NAME}-linux
-	rm ${BINARY_NAME}-windows

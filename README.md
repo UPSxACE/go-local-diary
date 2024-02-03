@@ -35,6 +35,7 @@ Ensure you have the following tools and dependencies installed on your system be
 * Make GNU
 * Air CLI
 * GCC or MINGW
+* Clang
 * Node and NPM
 
 ## Setting Up Local Development

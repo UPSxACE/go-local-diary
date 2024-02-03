@@ -15,7 +15,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "cache:clear": "del-cli ./public -f",
+    "cache:clear": "del-cli ./public -f && del-cli ./parcel-cache",
     "cpx:build": "cpx ./assets/**/*.* ./public -u -i assets/css,assets/js",
     "cpx:watch": "cpx ./assets/**/*.* ./public -u -w -i assets/css,assets/js",
     "parcel:build": "parcel build ./assets/js/**/*.js ./assets/css/**/*.css ./assets/css/tailwind.css --no-scope-hoist",
