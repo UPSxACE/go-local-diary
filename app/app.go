@@ -7,9 +7,12 @@ across the entire app.
 package app
 
 import (
+	"fmt"
 	"html/template"
 	"strconv"
 	"strings"
+	"time"
+	"unicode/utf8"
 )
 
 /*
@@ -33,6 +36,7 @@ var DefaultFuncMap template.FuncMap = template.FuncMap{
 	"sum":        sum,
 	"sumStr":     sumStr,
 	"htmlbreaks": htmlBreaks,
+	"easydate": easyDate,
 }
 
 type DefMapInvalidArgs struct{
@@ -100,4 +104,20 @@ func htmlBreaks(str string) template.HTML {
 	safeHtmlWithBreaks := strings.ReplaceAll(safeHtml, "\n", "<br>")
 	finalHtml := template.HTML(safeHtmlWithBreaks)
 	return finalHtml
+}
+
+func easyDate(str string) string {
+	if(utf8.RuneCountInString(str) != 8){
+		return ""
+	}
+	parsedTime, err := time.Parse("20060102", str)
+	if(err != nil){
+		return ""
+	}
+
+	year := parsedTime.Year()
+	month := parsedTime.Month()
+	day := parsedTime.Day()
+
+	return fmt.Sprintf("%v %v %v", day, month, year)
 }
