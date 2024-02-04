@@ -12,9 +12,16 @@
   >
     <span class="text-2xl text-gray-900 font-medium">Create new note</span>
     <button class="lc-btn neutral ml-auto">Discard</button>
-    <button class="lc-btn ml-3">Save Note</button>
+    <button
+      class="lc-btn ml-3"
+      onclick="submitNewNote()"
+      hx-encoding="multipart/form-data"
+      hx-trigger="none"
+    >
+      Save Note
+    </button>
   </header>
-  <form id="note-editor" class="flex flex-col flex-1">
+  <form hx-preserve="true" id="note-editor" class="flex flex-col flex-1">
     <input
       id="title"
       name="title"
