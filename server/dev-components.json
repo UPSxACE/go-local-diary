@@ -61,6 +61,15 @@
             "exampleTitle": "Example"
           }
         ]
+      },
+      {
+        "componentName": "Notes",
+        "templateName": "example-notes",
+        "examples": [
+          {
+            "exampleTitle": "Example"
+          }
+        ]
       }
     ]
   }

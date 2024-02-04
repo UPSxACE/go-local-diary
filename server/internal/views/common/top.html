@@ -4,20 +4,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- In test... -->
+    <!-- <meta
+      name="htmx-config"
+      content='{"historyCacheSize": 0, "refreshOnHistoryMiss": false}'
+    /> -->
     <title>Local Diary</title>
     <!-- Stylesheets -->
-    <link rel="preload" href="/public/fonts/poppins/poppins.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link
+      rel="preload"
+      href="/public/fonts/poppins/poppins.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
     <link rel="stylesheet" href="/public/css/tailwind.css" />
     <link rel="stylesheet" href="/public/css/pages/common/main.css" />
     <link rel="stylesheet" href="/public/css/lib/lc-wysiwyg.css" />
-    {{if .}}
-      {{range $index, $element := .}}
-      <link rel="stylesheet" href="/public/css/{{$element}}" />
-      {{end}}
-    {{end}}
-    </head>
-    <body hx-ext="morphdom-swap">
-      <!-- Wrap the entire DOM to isolate out the scripts, so they are loaded again when
+    {{if .}} {{range $index, $element := .}}
+    <link rel="stylesheet" href="/public/css/{{$element}}" />
+    {{end}} {{end}}
+  </head>
+  <body hx-ext="morphdom-swap">
+    <!-- Wrap the entire DOM to isolate out the scripts, so they are loaded again when
         popstate event is called (NOTE: dont remove hx-history-elt) -->
-      <div id="local-diary" hx-history-elt>
-{{end}}
+    <div id="local-diary" hx-history-elt>{{end}}</div>
+  </body>
+</html>

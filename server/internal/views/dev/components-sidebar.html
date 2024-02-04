@@ -41,7 +41,7 @@
       $.CategoryIndex $i}} {{$trueCompIndex := sum $.ComponentIndex -1}} {{$b :=
       eq $trueCompIndex $j}}
       <li
-        class="hover:bg-sky-600 hover:text-white text-md font-normal border-b-[0px] border-[bgray] tab{{if and $a $b}} tab-active{{end}}"
+        class="hover:bg-sky-600 hover:text-white text-base font-normal border-b-[0px] border-[bgray] tab{{if and $a $b}} tab-active{{end}}"
       >
         <a
           href="/dev/components?render={{$component.TemplateName}}&ct={{$i}}&cp={{sum $j 1}}&e=1"

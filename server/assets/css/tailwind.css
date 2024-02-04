@@ -2,6 +2,10 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+* {
+  @apply text-gray-900
+}
+
 .min-h-screen {
   min-height: 100svh;
 }
@@ -32,7 +36,7 @@
 }
 
 .lc-btn-icon svg {
-  @apply w-[1.1rem] h-[1.1rem] ml-1;
+  @apply w-[1.1rem] h-[1.1rem] ml-1 stroke-white;
 }
 
 .lc-btn.secondary,
@@ -47,7 +51,7 @@
 
 /** Lc Inputs */
 .lc-input {
-  @apply border border-bgray2 p-2 px-[0.75rem] text-gray-900;
+  @apply border border-bgray2 p-2 px-[0.75rem];
   outline: none;
 }
 
@@ -60,6 +64,10 @@ fieldset.lc-input-icon input {
     outline: none;
 }
 
+fieldset.lc-input-icon svg {
+  @apply stroke-gray-400
+}
+
 .lc-input.round,
 fieldset.lc-input-icon.round {
   @apply rounded-[0.15rem];
@@ -69,6 +77,56 @@ fieldset.lc-input-icon.round {
 fieldset.lc-input-icon.focusable:focus-within {
   @apply border-red-500 shadow-red-400;
   box-shadow: 0px 0px 4px 0px var(--tw-shadow-color);
+}
+
+.lc-input.focusable:focus svg,
+fieldset.lc-input-icon.focusable:focus-within svg {
+  
+  @apply stroke-gray-500
+}
+
+/** Lc Notes */
+article.lc-note-preview {
+  @apply overflow-hidden w-[300px] aspect-[300/220] border-4 border-gray-300 px-4 py-3 rounded-md
+}
+
+article.lc-note-preview .wrapper {
+  @apply overflow-hidden h-full
+}
+
+article.lc-note-preview header {
+  @apply flex items-center
+}
+
+article.lc-note-preview .menu-icon {
+  @apply stroke-gray-400
+  
+}
+
+article.lc-note-preview .date-creation{
+  @apply text-gray-400;
+
+  @apply text-xs;
+  @apply xs:text-sm;
+  @apply sm:text-sm;
+}
+
+article.lc-note-preview h1 {
+  @apply font-semibold py-1;
+
+  @apply text-base;
+  @apply xs:text-xl;
+  @apply sm:text-xl;
+}
+
+article.lc-note-preview p {
+  @apply overflow-hidden flex-1 text-gray-700;
+
+  @apply text-xs h-[7rem] [-webkit-line-clamp:7];
+  @apply xs:text-base xs:h-[10.5rem];
+  @apply sm:text-base;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 }
 
 /** Form error styles */

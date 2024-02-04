@@ -5,6 +5,9 @@ module.exports = {
   content: ["./internal/views/**/*.{html,js}", "./assets/**/*.{html,js}"],
   theme: {
     extend: {
+      screens: {
+        xs: "450px",
+      },
       colors: {
         lgray: "#f6f9fc", // backgrounds (light gray)
         bgray: "#e1e4e6", // borders (border gray)
