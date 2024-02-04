@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/UPSxACE/go-local-diary/app"
@@ -40,8 +39,14 @@ func (ctrl *IndexController) getIndexRoute() func(c echo.Context) error {
 			return err
 		}
 
-		data := map[string]string{
+		notes, err := services.Note.GetNotesOrderByCreateDateDesc(ctrl.app)
+		if err != err {
+			return err;
+		}
+
+		data := map[string]any{
 			"Name": name,
+			"Notes": notes,
 		}
 
 		return c.Render(http.StatusOK, "index", data)
@@ -65,18 +70,9 @@ func (ctrl *IndexController) getNewRoute() func(c echo.Context) error {
 
 func (ctrl *IndexController) postNewRoute() func(c echo.Context) error {
 	return func(c echo.Context) error {
-		name, err := services.AppConfig.GetName(ctrl.app)
-		if err != nil {
-			return err
-		}
-
-		data := map[string]string{
-			"Name": name,
-		}
-
 		ctx := c.Request().Context()
 
-		err = c.Request().ParseMultipartForm(1073741824) // 1gb
+		err := c.Request().ParseMultipartForm(1073741824) // 1gb
 		if(err != nil){
 			return nil
 		}
@@ -93,20 +89,20 @@ func (ctrl *IndexController) postNewRoute() func(c echo.Context) error {
 		}
 		// FIXME send back validation errors
 
-		hxObject := map[string]map[string]models.NoteModel{
-			"hx:new-note": {
-				"data": newNote,
-			},
-		}
+		// hxObject := map[string]map[string]models.NoteModel{
+		// 	"hx:new-note": {
+		// 		"data": newNote,
+		// 	},
+		// }
 
-		hxObjectJson, err := json.Marshal(hxObject)
-		if err != nil {
-			return err
-		}
+		// hxObjectJson, err := json.Marshal(hxObject)
+		// if err != nil {
+		// 	return err
+		// }
 
-		c.Response().Header().Set("HX-Trigger", string(hxObjectJson))
-
-		return c.Render(http.StatusOK, "new", data)
+		// c.Response().Header().Set("HX-Trigger", string(hxObjectJson))
+		
+		return c.Redirect(http.StatusFound, "/")
 	}
 }
 

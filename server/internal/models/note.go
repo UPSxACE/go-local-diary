@@ -68,6 +68,31 @@ func (store *NoteStore) GetFirstById(id int) (NoteModel, error) {
 	return result, nil
 }
 
+func (store *NoteStore) GetAllOrderByCreateDateDesc() ([]NoteModel, error) {
+	query := `SELECT * FROM note ORDER BY created_at DESC`
+
+	statement, err := store.Repository().Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := store.Repository().Query(statement)
+	if err != nil {
+		return nil, err;
+	}
+
+	var result []NoteModel
+	for rows.Next() {
+		model := NoteModel{}
+		var deletedInt int;
+		rows.Scan(&model.Id, &model.Title, &model.Content, &model.Views, &model.LastreadAt, &model.CreatedAt, &model.UpdatedAt, &model.DeletedAt, &deletedInt)
+		model.Deleted = utils.IntToBool(deletedInt)
+		result = append(result, model)
+	}
+
+	return result, nil
+}
+
 func (store *NoteStore) Create(model NoteModel) (NoteModel, error) {
 	dateNow := time.Now().Format("20060102")
 

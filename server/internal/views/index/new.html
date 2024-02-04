@@ -1,17 +1,17 @@
 {{define "new"}} {{template "top"}} {{template "main-navbar" .Name}}
 <main
   id="main"
-  class="flex flex-col min-h-screen-nav px-5 py-4 md:px-10 md:py-8"
+  class="flex flex-col items-center min-h-screen-nav px-5 py-4 md:px-10 md:py-8"
 >
   <header
     hx-boost="true"
     hx-target="#main"
     hx-select="#main"
     hx-swap="outerHTML show:no-scroll"
-    class="flex items-center"
+    class="flex w-full items-center max-w-screen-2xl"
   >
-    <span class="text-2xl text-gray-900 font-medium">Create new note</span>
-    <button class="lc-btn neutral ml-auto">Discard</button>
+    <span class="text-2xl  font-medium">Create new note</span>
+    <a href="/" class="lc-btn neutral ml-auto">Discard</a>
     <button
       class="lc-btn ml-3"
       onclick="submitNewNote()"
@@ -21,7 +21,7 @@
       Save Note
     </button>
   </header>
-  <form hx-preserve="true" id="note-editor" class="flex flex-col flex-1">
+  <form hx-preserve="true" id="note-editor" class="flex w-full flex-col flex-1 max-w-screen-2xl">
     <input
       id="title"
       name="title"

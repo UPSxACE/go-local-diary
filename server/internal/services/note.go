@@ -29,3 +29,18 @@ func (service *NoteService) CreateNote(app *app.App[db_sqlite3.Database_Sqlite3]
 
 	return true, model, "", nil
 }
+
+func (service *NoteService) GetNotesOrderByCreateDateDesc(app *app.App[db_sqlite3.Database_Sqlite3]) (notes []models.NoteModel, err error){
+	store, err := models.CreateStoreNote(app, false, nil);
+	if err != nil {
+		return nil, err;
+	}
+	defer store.Close()
+
+	models, err := store.GetAllOrderByCreateDateDesc()
+	if err != nil {
+		return nil, err
+	}
+
+	return models, nil
+}
