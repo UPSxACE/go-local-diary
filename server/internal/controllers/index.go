@@ -115,6 +115,13 @@ func (ctrl *IndexController) getWelcomeRoute() func(c echo.Context) error {
 		cc := c.(*echo_custom.CustomEchoContext)
 
 		if cc.IsConfigured {
+			isHtmxBoosted := cc.Request().Header.Get("HX-Boosted") != ""
+
+			if(isHtmxBoosted){
+				cc.Response().Header().Set("HX-Redirect", "/")
+				return cc.Render(http.StatusOK, "", nil)
+			}
+
 			return cc.Redirect(http.StatusMovedPermanently, "/")
 		}
 
@@ -133,6 +140,13 @@ func (ctrl *IndexController) postWelcomeRoute() func(c echo.Context) error {
 
 		step := cc.QueryParam("step")
 		if cc.IsConfigured || step != "2" {
+			isHtmxBoosted := cc.Request().Header.Get("HX-Boosted") != ""
+
+			if(isHtmxBoosted){
+				cc.Response().Header().Set("HX-Redirect", "/")
+				return cc.Render(http.StatusOK, "", nil)
+			}
+
 			return cc.Redirect(http.StatusMovedPermanently, "/")
 		}
 

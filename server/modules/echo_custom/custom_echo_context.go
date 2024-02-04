@@ -55,6 +55,13 @@ func RedirectNotConfiguredToWelcomeMiddleware(controller func (c echo.Context) e
 		path := cc.Context.Request().URL.Path
 
 		if(!cc.IsConfigured && path != "/welcome"){
+			isHtmxBoosted := cc.Request().Header.Get("HX-Boosted") != ""
+
+			if(isHtmxBoosted){
+				cc.Response().Header().Set("HX-Redirect", "/welcome")
+				return cc.Render(http.StatusOK, "", nil)
+			}
+
 			return cc.Redirect(http.StatusFound, "/welcome")
 		}
 
