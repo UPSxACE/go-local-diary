@@ -40,6 +40,7 @@ func Init(appInstance *app.App[db_sqlite3.Database_Sqlite3]) {
 
 	// Routes
 	controllers.SetIndexController(e, appInstance)
+	controllers.SetNoteController(e, appInstance)
 	if appInstance.DevMode {
 		controllers.SetDevController(e, appInstance)
 	}

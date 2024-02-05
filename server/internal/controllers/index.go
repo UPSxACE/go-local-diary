@@ -41,11 +41,11 @@ func (ctrl *IndexController) getIndexRoute() func(c echo.Context) error {
 
 		notes, err := services.Note.GetNotesOrderByCreateDateDesc(ctrl.app)
 		if err != err {
-			return err;
+			return err
 		}
 
 		data := map[string]any{
-			"Name": name,
+			"Name":  name,
 			"Notes": notes,
 		}
 
@@ -73,7 +73,7 @@ func (ctrl *IndexController) postNewRoute() func(c echo.Context) error {
 		ctx := c.Request().Context()
 
 		err := c.Request().ParseMultipartForm(1073741824) // 1gb
-		if(err != nil){
+		if err != nil {
 			return nil
 		}
 
@@ -101,7 +101,7 @@ func (ctrl *IndexController) postNewRoute() func(c echo.Context) error {
 		// }
 
 		// c.Response().Header().Set("HX-Trigger", string(hxObjectJson))
-		
+
 		return c.Redirect(http.StatusFound, "/")
 	}
 }
@@ -113,9 +113,9 @@ func (ctrl *IndexController) getWelcomeRoute() func(c echo.Context) error {
 		if cc.IsConfigured {
 			isHtmxBoosted := cc.Request().Header.Get("HX-Boosted") != ""
 
-			if(isHtmxBoosted){
+			if isHtmxBoosted {
 				cc.Response().Header().Set("HX-Redirect", "/")
-				return cc.Render(http.StatusOK, "", nil)
+				return cc.NoContent(http.StatusOK)
 			}
 
 			return cc.Redirect(http.StatusMovedPermanently, "/")
@@ -138,9 +138,9 @@ func (ctrl *IndexController) postWelcomeRoute() func(c echo.Context) error {
 		if cc.IsConfigured || step != "2" {
 			isHtmxBoosted := cc.Request().Header.Get("HX-Boosted") != ""
 
-			if(isHtmxBoosted){
+			if isHtmxBoosted {
 				cc.Response().Header().Set("HX-Redirect", "/")
-				return cc.Render(http.StatusOK, "", nil)
+				return cc.NoContent(http.StatusOK)
 			}
 
 			return cc.Redirect(http.StatusMovedPermanently, "/")

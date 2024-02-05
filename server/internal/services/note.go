@@ -44,3 +44,18 @@ func (service *NoteService) GetNotesOrderByCreateDateDesc(app *app.App[db_sqlite
 
 	return models, nil
 }
+
+func (service *NoteService) GetNote(app *app.App[db_sqlite3.Database_Sqlite3], id int) (note models.NoteModel, err error){
+	store, err := models.CreateStoreNote(app, false, nil);
+	if err != nil {
+		return models.NoteModel{}, err;
+	}
+	defer store.Close()
+
+	model, err := store.GetFirstById(id)
+	if err != nil {
+		return models.NoteModel{}, err
+	}
+
+	return model, nil
+}

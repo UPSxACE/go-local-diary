@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"database/sql"
+	"strings"
 	"time"
 
 	"github.com/UPSxACE/go-local-diary/app"
@@ -102,6 +103,9 @@ func (store *NoteStore) Create(model NoteModel) (NoteModel, error) {
 	model.UpdatedAt = dateNow;
 	model.DeletedAt = "";
 	model.Deleted = false;
+
+	// CRLF to LF
+	model.Content = strings.ReplaceAll(model.Content, "\r\n", "\n");
 	
 	valid, err := store.validateModelCreate(model)
 	if err != nil {

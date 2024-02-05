@@ -5,6 +5,7 @@
 >
   <header
     hx-boost="true"
+    hx-push-url="true"
     hx-target="#main"
     hx-select="#main"
     hx-swap="outerHTML show:no-scroll"
@@ -49,7 +50,9 @@
             disabled
           ></textarea>
           <!-- Recommendation: add a class to the preview-content-area div that will bring the styles -->
-          <div class="preview-content-area"></div>
+          <div class="preview-content-area note-view">
+            <section class="content flex-col"></section>
+          </div>
         </div>
       </div>
     </article>

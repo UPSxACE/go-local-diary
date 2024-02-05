@@ -2,8 +2,36 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+.light-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #d8d9da #f4f4f4;
+}
+
+/* Chrome, Edge, and Safari */
+.light-scroll::-webkit-scrollbar {
+  width: 16px;
+  height: 8px;
+}
+
+.light-scroll::-webkit-scrollbar-track {
+  background: #f4f4f4;
+}
+
+.light-scroll::-webkit-scrollbar-thumb {
+  background-color: #d8d9da;
+  border-radius: 0px;
+  border: 0px solid #f4f4f4;
+}
+
 * {
-  @apply text-gray-900
+  @apply text-gray-900;
+  /** [word-break:break-word]; */
+}
+
+.disabled {
+  pointer-events: none;
 }
 
 .min-h-screen {
@@ -15,11 +43,11 @@
 }
 
 .min-h-screen-nav {
-  min-height: calc(100vh - 80px)
+  min-height: calc(100vh - 80px);
 }
 
 .min-h-screen-nav {
-  min-height: calc(100svh - 80px)
+  min-height: calc(100svh - 80px);
 }
 
 /** Lc Buttons */
@@ -56,16 +84,16 @@
 }
 
 fieldset.lc-input-icon {
-    @apply lc-input flex;
+  @apply lc-input flex;
 }
 
 fieldset.lc-input-icon input {
-    @apply flex-1;
-    outline: none;
+  @apply flex-1;
+  outline: none;
 }
 
 fieldset.lc-input-icon svg {
-  @apply stroke-gray-400
+  @apply stroke-gray-400;
 }
 
 .lc-input.round,
@@ -81,29 +109,27 @@ fieldset.lc-input-icon.focusable:focus-within {
 
 .lc-input.focusable:focus svg,
 fieldset.lc-input-icon.focusable:focus-within svg {
-  
-  @apply stroke-gray-500
+  @apply stroke-gray-500;
 }
 
-/** Lc Notes */
+/** Lc Notes Preview */
 article.lc-note-preview {
-  @apply overflow-hidden w-[300px] aspect-[300/220] border-4 border-gray-300 px-4 py-3 rounded-md
+  @apply overflow-hidden w-[300px] border-4 border-gray-300 px-4 py-3 rounded-md;
 }
 
 article.lc-note-preview .wrapper {
-  @apply overflow-hidden h-full
+  @apply overflow-hidden h-full;
 }
 
 article.lc-note-preview header {
-  @apply flex items-center
+  @apply flex items-center;
 }
 
 article.lc-note-preview .menu-icon {
-  @apply stroke-gray-400
-  
+  @apply stroke-gray-400;
 }
 
-article.lc-note-preview .date-creation{
+article.lc-note-preview .date-creation {
   @apply text-gray-400;
 
   @apply text-xs;
@@ -112,15 +138,19 @@ article.lc-note-preview .date-creation{
 }
 
 article.lc-note-preview h1 {
+  @apply [word-break:break-word] [-webkit-line-clamp:1];
+  overflow: hidden;
   @apply font-semibold py-1;
 
   @apply text-base;
   @apply xs:text-xl;
   @apply sm:text-xl;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 }
 
 article.lc-note-preview p {
-  @apply overflow-hidden flex-1 text-gray-700;
+  @apply [word-break:break-word] overflow-hidden flex-1 text-gray-700;
 
   @apply text-xs h-[7rem] [-webkit-line-clamp:7];
   @apply xs:text-base xs:h-[10.5rem];
@@ -129,8 +159,17 @@ article.lc-note-preview p {
   -webkit-box-orient: vertical;
 }
 
+article.lc-note-preview.compact p {
+  @apply [word-break:break-word] overflow-hidden flex-1 text-gray-700;
+
+  @apply text-xs h-[3rem] [-webkit-line-clamp:3];
+  @apply xs:text-base xs:h-[4.5rem];
+  @apply sm:text-base;
+}
+
 /** Form error styles */
-.error .lc-input, .error fieldset.lc-input-icon {
+.error .lc-input,
+.error fieldset.lc-input-icon {
   @apply shadow-red-600;
   box-shadow: 0px 0px 4px 0px var(--tw-shadow-color);
   transition: box-shadow 1s;
@@ -139,10 +178,65 @@ article.lc-note-preview p {
 }
 
 .form-error {
-  @apply text-xs text-red-600
+  @apply text-xs text-red-600;
+}
+
+/** Note View */
+
+.note-view header h1.note-title {
+  @apply text-4xl font-bold;
+}
+
+.note-view header .bottom {
+  @apply border-t border-b pt-2 pb-2 border-[#1b1f232b] mt-2 mb-2;
+}
+
+.note-view header .author-name {
+  @apply font-medium text-gray-500;
+}
+
+.note-view header .author-avatar {
+  height: 2rem;
+  width: auto;
+}
+
+.note-view header svg.author-avatar {
+  @apply fill-gray-500;
+}
+
+.note-view header .date-creation {
+  @apply text-gray-500;
+}
+
+.note-view section.content {
+  text-align: justify;
+}
+
+.note-view section.content h1 {
+  @apply text-3xl mb-[0.3rem] font-semibold;
+}
+.note-view section.content h2 {
+  @apply text-2xl mb-[0.3rem] font-medium;
+}
+.note-view section.content h3 {
+  @apply text-xl mb-[0.3rem] font-medium;
+}
+
+.note-view section.content p {
+  @apply mb-2;
+  min-height: 0.25rem;
+}
+
+.note-view footer {
+  @apply border-t border-[#1b1f232b];
+}
+
+.note-view footer h1 {
+  @apply text-2xl font-semibold
 }
 
 /** Shadows */
 .shadow1 {
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }

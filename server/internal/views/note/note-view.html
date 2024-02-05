@@ -1,0 +1,64 @@
+{{define "note-view"}} {{template "top"}} {{template "main-navbar" .Name}}
+<main
+  id="main"
+  class="flex flex-col items-center min-h-screen-nav px-5 py-4 md:px-10 md:py-8"
+>
+  <article
+    class="note-view mt-2 mb-2 md:mt-4 md:mb-4 lg:mt-6 lg:mb-6 w-full flex-1 max-w-[800px] flex flex-col gap-2"
+  >
+    <header class="flex w-full flex-col gap-2">
+      <div class="top">
+        <a class="lc-btn neutral float-right" href="/note/{{.Note.Id}}">Edit</a>
+        <h1 class="note-title inline">{{.Note.Title}}</h1>
+      </div>
+      <div class="bottom flex w-full items-center gap-4">
+        <div class="author flex items-center gap-[0.35rem]">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24"
+            viewBox="0 -960 960 960"
+            width="24"
+            class="author-avatar"
+          >
+            <path
+              d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"
+            />
+          </svg>
+          <span class="author-name">{{.Name}}</span>
+        </div>
+        <span class="date-creation ml-auto">{{easydate .Note.CreatedAt}}</span>
+      </div>
+    </header>
+    <section id="note-content" class="content flex w-full flex-col">
+      {{.ContentHTML}}
+    </section>
+    <footer class="mt-2 md:mt-4">
+      <h1 class="mb-2 mt-6">Other Notes</h1>
+      <section
+        id="other-notes"
+        class="light-scroll flex gap-4 md:gap-6 overflow-hidden overflow-x-auto pb-3"
+        hx-boost="true"
+        hx-push-url="true"
+        hx-target="#main"
+        hx-select="#main"
+        hx-swap="outerHTML show:window:top"
+      >
+        {{range .Notes}}
+        <a href="/note/{{.Id}}" class="block">
+          <article class="lc-note-preview compact !w-[250px]">
+            <div class="wrapper">
+              <header>
+                <span class="date-creation">{{easydate .CreatedAt}}</span>
+                <i class="ml-auto menu-icon" data-feather="more-horizontal"></i>
+              </header>
+              <h1>{{.Title}}</h1>
+              <p>{{.Content}}</p>
+            </div>
+          </article>
+        </a>
+        {{end}}
+      </section>
+    </footer>
+  </article>
+</main>
+{{template "bottom"}} {{end}}

@@ -14,6 +14,7 @@ module.exports = {
         bgray2: "#d9d9d9",
         bgray3: "#a4a4a4",
         dgray: "#dfdfdf", // backgrounds (dark gray)
+        bsep: "#1b1f232b", // border (separation)
       },
       fontFamily: {
         sans: ['"Poppins"', ...defaultTheme.fontFamily.sans],
