@@ -28,6 +28,9 @@ $load(() => {
         content: formData.get("content"),
       },
       source: sourceButton,
+      headers: {
+        "HX-Boosted": "true",
+      },
     });
   };
 

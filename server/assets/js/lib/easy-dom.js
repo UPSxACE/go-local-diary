@@ -1,4 +1,7 @@
 // Only tested with HTMX
+export const $disableSelf = (event) => {
+  event.target.classList.toggle("disabled", true);
+};
 
 export const $wrap = (node) => ({
   node: node,
