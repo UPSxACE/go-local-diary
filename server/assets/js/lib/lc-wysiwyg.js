@@ -14,7 +14,7 @@ export class Editor {
     this.#node = node;
     this.#editContentAreaNode = this.#node.querySelector(".edit-content-area");
     this.#previewContentAreaNode = this.#node.querySelector(
-      ".preview-content-area"
+      ".preview-content-area .content"
     );
     this.#editButtonNode = this.#node.querySelector('button[data-role="edit"]');
     this.#previewButtonNode = this.#node.querySelector(
@@ -58,7 +58,6 @@ export class Editor {
     this.#editContentAreaNode.addEventListener("input", onInput, false);
 
     this.#editContentAreaNode.addEventListener("input", (e) => {
-      // NOTE - This implementation might change someday
       this.#contentData = e.target.value;
       this.#updatePreviewContent();
     });
@@ -73,32 +72,25 @@ export class Editor {
   }
 
   /**
-   * This function is supposed to receive SAFE(sanitized) HTML as string argument,
-   * ,parse all the allowed markdowns inside that HTML, and then return the result.
-   * @param {string} safeHTML safe/sanitized HTML
-   * @returns {string} HTML with some of the things inside it parsed
+   * This function converts #contentData to safe HTML,
+   * parses all the allowed markdowns inside that HTML,
+   * and then return the result.
+   * @returns {string} safe HTML with some of the things inside it parsed
    */
-  #parseSafeHTML(safeHTML) {
-    let result = safeHTML;
-
-    const lineFinishers = ["<br>", "</h1>", "</h2>", "</h3>"];
-
+  #parseHTMLSafely() {
     const lineStartMatches = [
       {
         matchStart: "### ",
-        matchEnd: "<br>",
         replaceStart: "<h3>",
         replaceEnd: "</h3>",
       },
       {
         matchStart: "## ",
-        matchEnd: "<br>",
         replaceStart: "<h2>",
         replaceEnd: "</h2>",
       },
       {
         matchStart: "# ",
-        matchEnd: "<br>",
         replaceStart: "<h1>",
         replaceEnd: "</h1>",
       },
@@ -131,90 +123,71 @@ export class Editor {
       // },
     ];
 
-    while (lineStartMatches.length > 0 || pairMatches.length > 0) {
-      if (lineStartMatches.length > 0) {
-        const nextMatch = lineStartMatches.shift();
-        let noneFound = false;
-        let ignoreIndexes = -1;
-        while (!noneFound) {
-          const initialPosition = ignoreIndexes + 1;
+    const tempElement = document.createElement("div");
+    tempElement.innerText = this.#contentData;
+    const safeHTML = tempElement.innerHTML.replaceAll("<br>", "\n");
 
-          const indexStart = result.indexOf(
-            nextMatch.matchStart,
-            initialPosition
-          );
-          const indexEnd = result.indexOf(nextMatch.matchEnd, indexStart + 1);
+    let result = "";
 
-          const followsBreak = lineFinishers.some((lineFinisher) => {
-            const len = lineFinisher.length;
-            if (indexStart < len) return false;
+    const lines = safeHTML.split("\n");
 
-            return (
-              result.substring(indexStart - len).indexOf(lineFinisher) === 0
+    lines.forEach((line) => {
+      let finalLine = "";
+      let foundMatch = false;
+      // Apply line starter matches, and <p>'s
+      lineStartMatches.forEach((lineStartMatch) => {
+        const lenMStart = lineStartMatch.matchStart.length;
+        if (line.length >= lenMStart) {
+          const startOfLine = line.substring(0, lenMStart);
+          if (startOfLine === lineStartMatch.matchStart) {
+            finalLine =
+              lineStartMatch.replaceStart +
+              line.substring(lenMStart) +
+              lineStartMatch.replaceEnd;
+            foundMatch = true;
+          }
+        }
+      });
+      if (!foundMatch) {
+        finalLine = "<p>" + line + "</p>";
+      }
+
+      // Apply pair matches
+      pairMatches.forEach((pairMatch) => {
+        const countStart = finalLine.split(pairMatch.matchStart).length - 1;
+        const equalMatchers = pairMatch.matchStart === pairMatch.matchEnd;
+        if (equalMatchers) {
+          const validMatches = Math.floor(countStart / 2);
+          for (let i = validMatches; i > 0; i--) {
+            finalLine = finalLine.replace(
+              pairMatch.matchStart,
+              pairMatch.replaceStart
             );
-          });
-
-          let lineStart = indexStart === 0 || followsBreak;
-
-          if (lineStart) {
-            if (indexStart !== -1 && indexEnd !== -1) {
-              let temp1 = result.substring(0, indexStart);
-              let temp2 = result.substring(indexStart);
-
-              temp2 = temp2.replace(
-                nextMatch.matchStart,
-                nextMatch.replaceStart
-              );
-              temp2 = temp2.replace(nextMatch.matchEnd, nextMatch.replaceEnd);
-
-              result = temp1 + temp2;
-            }
-            if (indexStart !== -1 && indexEnd === -1) {
-              let temp1 = result.substring(0, indexStart);
-              let temp2 = result.substring(indexStart);
-
-              temp2 = temp2.replace(
-                nextMatch.matchStart,
-                nextMatch.replaceStart
-              );
-              temp2 += nextMatch.replaceEnd;
-
-              result = temp1 + temp2;
-            }
-          }
-
-          if (!lineStart) {
-            ignoreIndexes = indexStart;
-          }
-
-          if (indexStart === -1) {
-            noneFound = true;
+            finalLine = finalLine.replace(
+              pairMatch.matchEnd,
+              pairMatch.replaceEnd
+            );
           }
         }
-      }
-
-      if (pairMatches.length > 0) {
-        const nextMatch = pairMatches.shift();
-        let noneFound = false;
-
-        while (!noneFound) {
-          const indexStart = result.indexOf(nextMatch.matchStart);
-          const indexEnd = result.indexOf(nextMatch.matchEnd, indexStart + 1);
-          if (indexStart !== -1 && indexEnd !== -1) {
-            let temp1 = result.substring(0, indexStart);
-            let temp2 = result.substring(indexStart);
-
-            temp2 = temp2.replace(nextMatch.matchStart, nextMatch.replaceStart);
-            temp2 = temp2.replace(nextMatch.matchEnd, nextMatch.replaceEnd);
-
-            result = temp1 + temp2;
-          }
-          if (indexStart === -1 || indexEnd === -1) {
-            noneFound = true;
+        if (!equalMatchers) {
+          const countEnd = finalLine.split(pairMatch.matchEnd).length - 1;
+          const validMatches = Math.min(countStart, countEnd);
+          for (let i = validMatches; i > 0; i--) {
+            finalLine = finalLine.replace(
+              pairMatch.matchStart,
+              pairMatch.replaceStart
+            );
+            finalLine = finalLine.replace(
+              pairMatch.matchEnd,
+              pairMatch.replaceEnd
+            );
           }
         }
-      }
-    }
+      });
+
+      // add parsed line to the result string
+      result += finalLine;
+    });
 
     return result;
   }
@@ -227,11 +200,7 @@ export class Editor {
   #updatePreviewContent() {
     this.#updatePreviewTimeout = clearTimeout(this.#updatePreviewTimeout);
     this.#updatePreviewTimeout = setTimeout(() => {
-      // NOTE - This implementation might change someday
-      this.#previewContentAreaNode.innerText = this.#contentData;
-      this.#previewContentAreaNode.innerHTML = this.#parseSafeHTML(
-        this.#previewContentAreaNode.innerHTML
-      );
+      this.#previewContentAreaNode.innerHTML = this.#parseHTMLSafely();
       this.#updateWordCount();
     }, 500);
   }
