@@ -31,21 +31,21 @@ type PluginsData = map[string]interface{}
 
 /* Some useful extra funcs for the templating system of html/template. */
 var DefaultFuncMap template.FuncMap = template.FuncMap{
-	"list":       list,
-	"obj":        obj,
-	"sum":        sum,
-	"sumStr":     sumStr,
-	"htmlbreaks": htmlBreaks,
-	"easydate": easyDate,
+	"list":               list,
+	"obj":                obj,
+	"sum":                sum,
+	"sumStr":             sumStr,
+	"htmlbreaks":         htmlBreaks,
+	"easydate":           easyDate,
 }
 
-type DefMapInvalidArgs struct{
-	code int;
-	message string;
+type DefMapInvalidArgs struct {
+	code    int
+	message string
 }
 
 func (m *DefMapInvalidArgs) Error() string {
-	return m.message;
+	return m.message
 }
 
 /* Returns everything it got as argument, inside a slice. */
@@ -67,7 +67,7 @@ func obj(str string) map[string]string {
 	for _, pair := range pairs {
 		keyVal := strings.Split(pair, ":")
 
-		if(len(keyVal) != 2){
+		if len(keyVal) != 2 {
 			panic(&DefMapInvalidArgs{1, "The strings used as arguments are not well formated"})
 		}
 
@@ -107,11 +107,11 @@ func htmlBreaks(str string) template.HTML {
 }
 
 func easyDate(str string) string {
-	if(utf8.RuneCountInString(str) != 8){
+	if utf8.RuneCountInString(str) != 8 {
 		return ""
 	}
 	parsedTime, err := time.Parse("20060102", str)
-	if(err != nil){
+	if err != nil {
 		return ""
 	}
 
@@ -119,5 +119,5 @@ func easyDate(str string) string {
 	month := parsedTime.Month()
 	day := parsedTime.Day()
 
-	return fmt.Sprintf("%v %v %v", day, month, year)
+	return fmt.Sprintf("%v %v, %v", day, month, year)
 }
