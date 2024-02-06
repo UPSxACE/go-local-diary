@@ -1,4 +1,4 @@
-{{define "new"}} {{template "top"}} {{template "main-navbar" .Name}}
+{{define "note-edit"}} {{template "top"}} {{template "main-navbar" .Name}}
 <main
   id="main"
   class="flex flex-col items-center min-h-screen-nav px-5 py-4 md:px-10 md:py-8"
@@ -12,10 +12,10 @@
     class="flex w-full items-center max-w-screen-2xl"
   >
     <span class="text-2xl  font-medium">Create new note</span>
-    <a href="/" class="lc-btn neutral ml-auto">Discard</a>
+    <a href="/note/{{.Note.Id}}" class="lc-btn neutral ml-auto">Discard</a>
     <button
       class="lc-btn ml-3"
-      onclick="noteEditor.submitNewNote()"
+      onclick="noteEditor.updateNote({{.Note.Id}})"
       hx-encoding="multipart/form-data"
       hx-trigger="none"
     >
@@ -29,8 +29,9 @@
       class="lc-input w-full mt-3 text-xl"
       type="text"
       placeholder="Note Title"
+      value="{{.Note.Title}}"
     />
-    <article id="lc-wysiwyg" x-init="noteEditor.setupEditor($el)" class="mt-3 flex-1 !rounded-none">
+    <article id="lc-wysiwyg" x-init="noteEditor.setupEditor($el,`{{.Note.Content}}`)" class="mt-3 flex-1 !rounded-none">
       <header>
         <div class="buttons">
           <button data-role="edit" class="button" type="button">Edit</button>
@@ -59,3 +60,4 @@
   </form>
 </main>
 {{template "bottom"}} {{end}}
+

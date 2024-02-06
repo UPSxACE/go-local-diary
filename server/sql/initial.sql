@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS note (
 'created_at' VARCHAR(8) NOT NULL,
 'updated_at' VARCHAR(8),
 'deleted_at' VARCHAR(8),
-'deleted' TINYINT(1)
+'deleted' TINYINT(1) NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS note_title ON note('title');
 CREATE INDEX IF NOT EXISTS note_content ON note('content');

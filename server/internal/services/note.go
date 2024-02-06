@@ -8,29 +8,35 @@ import (
 	"github.com/UPSxACE/go-local-diary/server/internal/models"
 )
 
-var Note = NoteService{}
+var Note = noteService{}
 
-type NoteService struct{}
+type noteService struct{}
 
-func (service *NoteService) CreateNote(app *app.App[db_sqlite3.Database_Sqlite3], context context.Context, newNote models.NoteModel) (valid bool, createdNote models.NoteModel, validationErrorMessage string, err error) {
+func (service *noteService) CreateNote(app *app.App[db_sqlite3.Database_Sqlite3], context context.Context, title string, content string) (valid bool, validationErrorMessage string, err error) {
 	// FIXME validation
+
+	// AFTER VALIDATION
+
+	newNote := models.NoteModel{
+		Title:   title,
+		Content: content,
+	}
 
 	store, err := models.CreateStoreNote(app, true, context)
 	if err != nil {
-		return false, models.NoteModel{}, "", err
+		return false, "", err
 	}
 	defer store.Close()
 
-	// check if exists
-	model, err := store.Create(newNote)
+	_, err = store.Create(newNote)
 	if err != nil {
-		return false, models.NoteModel{}, "", err
+		return false, "", err
 	}
 
-	return true, model, "", nil
+	return true, "", nil
 }
 
-func (service *NoteService) GetNotesOrderByCreateDateDesc(app *app.App[db_sqlite3.Database_Sqlite3]) (notes []models.NoteModel, err error){
+func (service *noteService) GetNotesOrderByCreateDateDesc(app *app.App[db_sqlite3.Database_Sqlite3]) (notes []models.NoteModel, err error){
 	store, err := models.CreateStoreNote(app, false, nil);
 	if err != nil {
 		return nil, err;
@@ -45,7 +51,7 @@ func (service *NoteService) GetNotesOrderByCreateDateDesc(app *app.App[db_sqlite
 	return models, nil
 }
 
-func (service *NoteService) GetNote(app *app.App[db_sqlite3.Database_Sqlite3], id int) (note models.NoteModel, err error){
+func (service *noteService) GetNote(app *app.App[db_sqlite3.Database_Sqlite3], id int) (note models.NoteModel, err error){
 	store, err := models.CreateStoreNote(app, false, nil);
 	if err != nil {
 		return models.NoteModel{}, err;
@@ -58,4 +64,35 @@ func (service *NoteService) GetNote(app *app.App[db_sqlite3.Database_Sqlite3], i
 	}
 
 	return model, nil
+}
+
+/*
+Updates user name configuration. 
+*/
+func (service *noteService) UpdateNote(app *app.App[db_sqlite3.Database_Sqlite3], context context.Context, id int, title string, content string) (valid bool, validationErrorMessage string, err error) {
+	// FIXME validation
+
+	// After validation
+
+	updatedNote := models.NoteModel{
+		Title:   title,
+		Content: content,
+	}
+
+	store, err := models.CreateStoreNote(app, true, context)
+	if err != nil {
+		return false, "",  err
+	}
+	defer store.Close()
+
+	_, err = store.UpdateById(id, updatedNote)
+	if err != nil {
+		return false, "", err
+	}
+
+	if(err != nil){
+		return false, "", err
+	}
+
+	return true, "", nil;
 }

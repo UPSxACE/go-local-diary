@@ -5,7 +5,6 @@ import (
 
 	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
-	"github.com/UPSxACE/go-local-diary/server/internal/models"
 	"github.com/UPSxACE/go-local-diary/server/internal/services"
 	"github.com/UPSxACE/go-local-diary/server/modules/echo_custom"
 	"github.com/labstack/echo/v4"
@@ -74,33 +73,18 @@ func (ctrl *IndexController) postNewRoute() func(c echo.Context) error {
 
 		err := c.Request().ParseMultipartForm(1073741824) // 1gb
 		if err != nil {
-			return nil
+			return err
 		}
 
-		newNote := models.NoteModel{
-			Title:   c.FormValue("title"),
-			Content: c.FormValue("content"),
-		}
+		title := c.FormValue("title")
+		content := c.FormValue("content")
 
-		valid, newNote, errMsg, err := services.Note.CreateNote(ctrl.app, ctx, newNote)
+		valid, errMsg, err := services.Note.CreateNote(ctrl.app, ctx, title, content)
 		if err != nil {
 			println(valid, errMsg)
 			return err
 		}
 		// FIXME send back validation errors
-
-		// hxObject := map[string]map[string]models.NoteModel{
-		// 	"hx:new-note": {
-		// 		"data": newNote,
-		// 	},
-		// }
-
-		// hxObjectJson, err := json.Marshal(hxObject)
-		// if err != nil {
-		// 	return err
-		// }
-
-		// c.Response().Header().Set("HX-Trigger", string(hxObjectJson))
 
 		return c.Redirect(http.StatusFound, "/")
 	}
@@ -163,9 +147,9 @@ func (ctrl *IndexController) postWelcomeRoute() func(c echo.Context) error {
 
 		_, err = services.AppConfig.SetConfiguration(ctrl.app, ctx, "configured", "1")
 		if err != nil {
-			return nil
+			return err
 		}
-
+		
 		cc.Response().Header().Set("HX-Redirect", "/")
 		return cc.NoContent(http.StatusMovedPermanently)
 	}

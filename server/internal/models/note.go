@@ -35,7 +35,7 @@ func (store *NoteStore) validateModelCreate(model NoteModel) (valid bool, err er
 	return true, nil
 }
 
-func (store *NoteStore) validateModelUpdate(oldModel NoteStore, newModel NoteStore) (valid bool, err error) {
+func (store *NoteStore) validateModelUpdate(oldModel NoteModel, newModel NoteModel) (valid bool, err error) {
 	return true, nil
 }
 
@@ -70,7 +70,7 @@ func (store *NoteStore) GetFirstById(id int) (NoteModel, error) {
 }
 
 func (store *NoteStore) GetAllOrderByCreateDateDesc() ([]NoteModel, error) {
-	query := `SELECT * FROM note ORDER BY created_at DESC`
+	query := `SELECT * FROM note WHERE deleted != 1 ORDER BY created_at DESC`
 
 	statement, err := store.Repository().Prepare(query)
 	if err != nil {
@@ -148,4 +148,57 @@ func (store *NoteStore) Create(model NoteModel) (NoteModel, error) {
 	}
 
 	return inserted, nil
+}
+
+func (store *NoteStore) UpdateById(id int, model NoteModel) (NoteModel, error) {
+	oldModel, err := store.GetFirstById(id)
+	if err != nil {
+		return NoteModel{}, err
+	}
+
+	dateNow := time.Now().Format("20060102")
+
+	newModel := oldModel;
+	newModel.Title = model.Title;
+	newModel.Content = model.Content;
+	newModel.UpdatedAt = dateNow;
+
+	// CRLF to LF
+	newModel.Content = strings.ReplaceAll(model.Content, "\r\n", "\n");
+
+
+	valid, err := store.validateModelUpdate(oldModel, newModel)
+	if err != nil {
+		return NoteModel{}, err
+	}
+	if !valid {
+		return NoteModel{}, &db_sqlite3.InvalidModelAction{}
+	}
+
+	// TODO: implement note_dif
+
+	query := `UPDATE note SET
+	title = ?,
+	content = ?,
+	updated_at = ?
+	WHERE
+	id = ?
+	`
+
+	statement, err := store.Repository().Prepare(query)
+	if err != nil {
+		return NoteModel{}, err
+	}
+
+	_, err = store.Repository().Exec(statement, newModel.Title, newModel.Content, newModel.UpdatedAt, oldModel.Id)
+	if err != nil {
+		return NoteModel{}, err
+	}
+
+	updated, err := store.GetFirstById(newModel.Id)
+	if err != nil {
+		return NoteModel{}, err
+	}
+
+	return updated, nil
 }

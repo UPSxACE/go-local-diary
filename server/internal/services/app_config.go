@@ -13,11 +13,11 @@ import (
 
 // NOTE: Do not call service methods inside each other, to avoid multiple instances of stores at the same time
 
-var AppConfig = AppConfigService{}
+var AppConfig = appConfigService{}
 
-type AppConfigService struct{}
+type appConfigService struct{}
 
-func (service *AppConfigService) validateChars(str string) bool{
+func (service *appConfigService) validateChars(str string) bool{
 	return regexp.MustCompile("^[a-zA-ZÀ-ÖØ-öø-ÿ0-9_@#+-]*$").MatchString(str)
 }
 
@@ -28,7 +28,7 @@ Returns false if it is set to "0".
 If the value is not set in the app_config table yet, the record will be created with the value "0",
 and then false will be returned.
 */
-func (service *AppConfigService) IsAppConfigured(app *app.App[db_sqlite3.Database_Sqlite3], context context.Context) (appConfigured bool, err error) {
+func (service *appConfigService) IsAppConfigured(app *app.App[db_sqlite3.Database_Sqlite3], context context.Context) (appConfigured bool, err error) {
 	appConfigStore, err := models.CreateStoreAppConfig(app, true, context)
 	if err != nil {
 		return false, err
@@ -61,7 +61,7 @@ func (service *AppConfigService) IsAppConfigured(app *app.App[db_sqlite3.Databas
 	}
 }
 
-func (service *AppConfigService) GetName(app *app.App[db_sqlite3.Database_Sqlite3]) (name string, err error){
+func (service *appConfigService) GetName(app *app.App[db_sqlite3.Database_Sqlite3]) (name string, err error){
 	store, err := models.CreateStoreAppConfig(app, false, nil);
 	if err != nil {
 		return "", err;
@@ -80,7 +80,7 @@ func (service *AppConfigService) GetName(app *app.App[db_sqlite3.Database_Sqlite
 Sets a configuration in app_config table.
 If the configuration already exists it will be updated, if it doesn't it will  be created.
 */
-func (service *AppConfigService) SetConfiguration(app *app.App[db_sqlite3.Database_Sqlite3], context context.Context, configName string, configValue string) (newValue string, err error) {
+func (service *appConfigService) SetConfiguration(app *app.App[db_sqlite3.Database_Sqlite3], context context.Context, configName string, configValue string) (newValue string, err error) {
 	store, err := models.CreateStoreAppConfig(app, true, context)
 	if err != nil {
 		return "", err
@@ -116,7 +116,7 @@ func (service *AppConfigService) SetConfiguration(app *app.App[db_sqlite3.Databa
 /*
 Updates user name configuration. 
 */
-func (service *AppConfigService) SetNameConfiguration(app *app.App[db_sqlite3.Database_Sqlite3], context context.Context, newName string) (valid bool, validationErrorMessage string, err error) {
+func (service *appConfigService) SetNameConfiguration(app *app.App[db_sqlite3.Database_Sqlite3], context context.Context, newName string) (valid bool, validationErrorMessage string, err error) {
 	size := utf8.RuneCountInString(newName)
 	if(size == 0){
 		return false, "Please pick a name.", nil
@@ -163,3 +163,4 @@ func (service *AppConfigService) SetNameConfiguration(app *app.App[db_sqlite3.Da
 
 	return true, model.Value, nil;
 }
+
