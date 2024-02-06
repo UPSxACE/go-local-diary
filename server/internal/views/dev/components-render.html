@@ -12,12 +12,11 @@
             </article>
         </div>
         <div id="sidebar-info-wrapper" class="flex w-[400px] h-full transition-all duration-400">
-            <div class="resize-bar w-1 h-full bg-bgray cursor-col-resize"></div>
+            <div x-init="$resizeableBar($el, $el.parentNode);" class="resize-bar w-1 h-full bg-bgray cursor-col-resize"></div>
             {{template "dev-components-showcase-sideinfo" .}}
         </div>
         
     </section>
 </main>
-{{$extraScripts := list "lib/easy-interaction.js" "lib/lc-wysiwyg.js" "lib/dev-components-parser/page.js"}}
-{{template "bottom" $extraScripts}}
+{{template "bottom"}}
 {{end}}

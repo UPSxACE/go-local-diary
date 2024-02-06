@@ -9,6 +9,11 @@ export class Editor {
   #previewButtonNode = null;
   #wordCounterNode = null;
   #updatePreviewTimeout = null;
+  #manualResize() {
+    this.#editContentAreaNode.style.height = "auto";
+    this.#editContentAreaNode.style.height =
+      this.#editContentAreaNode.scrollHeight + "px";
+  }
 
   constructor(node) {
     this.#node = node;
@@ -239,5 +244,6 @@ export class Editor {
     this.#contentData = newContent;
     this.#editContentAreaNode.value = newContent;
     this.#updatePreviewContent();
+    this.#manualResize();
   }
 }

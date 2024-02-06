@@ -1,5 +1,5 @@
 // Throttling Function
-export const throttleFunction = (func, delay) => {
+window.$throttleFunction = (func, delay) => {
   // Previously called time of the function
   let prev = 0;
   return (...args) => {
@@ -10,7 +10,8 @@ export const throttleFunction = (func, delay) => {
     }
   };
 };
-export const $resizeableBar = (nodeBar, nodeTarget) => {
+
+window.$resizeableBar = (nodeBar, nodeTarget) => {
   if (window.$state.infobarW) {
     nodeTarget.style.width = window.$state.infobarW;
   }

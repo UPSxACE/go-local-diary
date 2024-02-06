@@ -1,6 +1,6 @@
 {{define "dev-components-showcase-header"}}
 <header hx-preserve="true" id="showcase-header" class="gap-x-2 px-4 flex items-center h-[40px] border-b-[1px] border-[bgray] w-full justify-self-start shrink-0">
-    <button id="showcase-header-button-sidebar" class="hover:bg-lgray text-sm font-medium ml-auto h-min block border-black border-[1px] py-1 px-2 rounded-md">SIDEBAR</button>
-    <button id="showcase-header-button-info" class="hover:bg-lgray text-sm font-medium h-min block border-black border-[1px] py-1 px-2 rounded-md">INFO</button>
+    <button id="showcase-header-button-sidebar" @click="$('#sidebar').toggle('sidebar-closed');" class="hover:bg-lgray text-sm font-medium ml-auto h-min block border-black border-[1px] py-1 px-2 rounded-md">SIDEBAR</button>
+    <button id="showcase-header-button-info" @click="$('#main').toggle('info-sidebar-closed');" class="hover:bg-lgray text-sm font-medium h-min block border-black border-[1px] py-1 px-2 rounded-md">INFO</button>
 </header>
 {{end}}

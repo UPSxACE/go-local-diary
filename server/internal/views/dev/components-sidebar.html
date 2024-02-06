@@ -36,13 +36,14 @@
       hx-target="#showcase"
       hx-select="#showcase"
       hx-swap="outerHTML show:no-scroll"
+      x-data="{currentTab: [{{$.CategoryIndex}},{{sum $.ComponentIndex -1}}]}"
     >
-      {{range $j, $component := $category.Components}} {{$a := eq
-      $.CategoryIndex $i}} {{$trueCompIndex := sum $.ComponentIndex -1}} {{$b :=
-      eq $trueCompIndex $j}}
+      {{range $j, $component := $category.Components}}
       <li
-        class="hover:bg-sky-600 hover:text-white text-base font-normal border-b-[0px] border-[bgray] tab{{if and $a $b}} tab-active{{end}}"
-      >
+        class="hover:bg-sky-600 hover:text-white text-base font-normal border-b-[0px] border-[bgray] tab"
+        :class="currentTab[0] === {{$i}} && currentTab[1] === {{$j}} && 'tab-active'"
+        x-on:click="currentTab = [{{$i}},{{$j}}]"
+        >
         <a
           href="/dev/components?render={{$component.TemplateName}}&ct={{$i}}&cp={{sum $j 1}}&e=1"
           class="block w-full h-full py-2 px-2"

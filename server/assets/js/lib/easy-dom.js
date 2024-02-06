@@ -1,9 +1,10 @@
 // Only tested with HTMX
-export const $disableSelf = (event) => {
+
+window.$disableSelf = (event) => {
   event.target.classList.toggle("disabled", true);
 };
 
-export const $wrap = (node) => ({
+window.$wrap = (node) => ({
   node: node,
   toggle: function (className, bool) {
     this.node.classList.toggle(className, bool);
@@ -24,18 +25,18 @@ export const $wrap = (node) => ({
   },
 });
 
-export const $ = (query) => {
+window.$ = (query) => {
   const node = document.querySelector(query);
   return node === null ? null : $wrap(node);
 };
 
-export const $all = (query) => {
+window.$all = (query) => {
   return Array.from(document.querySelectorAll(query)).map((node) =>
     $wrap(node)
   );
 };
 
-export const $load = (func) => {
+window.$load = (func) => {
   window.addEventListener("load", func);
 
   // MDN about popstate:
@@ -49,7 +50,7 @@ export const $load = (func) => {
   window.addEventListener("popstate", () => setTimeout(func, 0));
 };
 
-export const $realLoad = (func) => {
+window.$realLoad = (func) => {
   function wrapper() {
     if (!document.hidden) {
       func();
@@ -66,11 +67,11 @@ export const $realLoad = (func) => {
   window.addEventListener("popstate", () => setTimeout(func, 0));
 };
 
-export const $htmxLoad = (func, executeNow) => {
+window.$htmxLoad = (func, executeNow) => {
   if (executeNow === true) func();
   window.addEventListener("htmx:load", func);
 };
 
-export const $htmxHistory = (func) => {
+window.$htmxHistory = (func) => {
   window.addEventListener("htmx:historyRestore", func);
 };
