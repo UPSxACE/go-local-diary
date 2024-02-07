@@ -3,26 +3,22 @@
 @import "tailwindcss/utilities";
 
 /* ===== Scrollbar CSS ===== */
-/* Firefox */
-.light-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: #d8d9da #f4f4f4;
-}
-
 /* Chrome, Edge, and Safari */
 .light-scroll::-webkit-scrollbar {
   width: 16px;
-  height: 8px;
+  height: 16px;
 }
 
 .light-scroll::-webkit-scrollbar-track {
-  background: #f4f4f4;
+  background: #f6f6f6;
+  /* -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); */
 }
 
 .light-scroll::-webkit-scrollbar-thumb {
-  background-color: #d8d9da;
-  border-radius: 0px;
-  border: 0px solid #f4f4f4;
+  background-color: #ebebeb;
+  border: 0 solid #f4f4f4;
+  border-radius: 0;
+  -webkit-box-shadow: inset 0 0 1px rgb(0 0 0 / 10%);
 }
 
 * {
@@ -159,11 +155,19 @@ article.lc-note-preview p {
   -webkit-box-orient: vertical;
 }
 
+article.lc-note-preview.compact header {
+  display: none;
+}
+
+article.lc-note-preview.compact h1 {
+  padding: 0;
+}
+
 article.lc-note-preview.compact p {
   @apply [word-break:break-word] overflow-hidden flex-1 text-gray-700;
 
-  @apply text-xs h-[3rem] [-webkit-line-clamp:3];
-  @apply xs:text-base xs:h-[4.5rem];
+  @apply text-xs h-[4rem] [-webkit-line-clamp:4];
+  @apply xs:text-base xs:h-[6rem];
   @apply sm:text-base;
 }
 
@@ -184,11 +188,11 @@ article.lc-note-preview.compact p {
 /** Note View */
 
 .note-view header h1.note-title {
-  @apply text-4xl font-bold;
+  @apply text-4xl font-bold leading-[1.4];
 }
 
 .note-view header .bottom {
-  @apply border-t border-b pt-2 pb-2 border-[#1b1f232b] mt-2 mb-2;
+  @apply border-t border-b pt-2 pb-2 border-[#1b1f232b] mt-8 mb-8;
 }
 
 .note-view header .author-name {
@@ -209,30 +213,38 @@ article.lc-note-preview.compact p {
 }
 
 .note-view section.content {
-  text-align: justify;
+  font-family: 'Noto Sans Georgian', sans-serif;
 }
 
 .note-view section.content h1 {
-  @apply text-3xl mb-[0.3rem] font-semibold;
+  @apply text-2xl font-extrabold mt-12 leading-7;
 }
 .note-view section.content h2 {
-  @apply text-2xl mb-[0.3rem] font-medium;
+  @apply text-xl font-bold mt-12;
 }
 .note-view section.content h3 {
-  @apply text-xl mb-[0.3rem] font-medium;
+  @apply text-xl font-semibold mt-12; 
 }
 
 .note-view section.content p {
-  @apply mb-2;
-  min-height: 0.25rem;
+  @apply mb-0 leading-8 text-lg text-justify;
+}
+
+.note-view section.content p:empty + p{
+  @apply mt-8;
+}
+.note-view section.content h1 + p,
+.note-view section.content h2 + p,
+.note-view section.content h3 + p {
+  @apply mt-3;
 }
 
 .note-view footer {
-  @apply border-t border-[#1b1f232b];
+  @apply border-t border-[#1b1f232b] mt-8 pt-8;
 }
 
 .note-view footer h1 {
-  @apply text-2xl font-semibold
+  @apply text-2xl font-semibold mb-6
 }
 
 /** Shadows */

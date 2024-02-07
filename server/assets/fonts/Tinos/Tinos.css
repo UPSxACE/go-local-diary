@@ -1,0 +1,36 @@
+@font-face {
+    font-family: 'Tinos';
+    src: url('Tinos-Bold.woff2') format('woff2'),
+        url('Tinos-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Tinos';
+    src: url('Tinos-BoldItalic.woff2') format('woff2'),
+        url('Tinos-BoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Tinos';
+    src: url('Tinos-Italic.woff2') format('woff2'),
+        url('Tinos-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Tinos';
+    src: url('Tinos-Regular.woff2') format('woff2'),
+        url('Tinos-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+

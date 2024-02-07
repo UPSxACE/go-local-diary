@@ -9,7 +9,7 @@
     hx-target="#main"
     hx-select="#main"
     hx-swap="outerHTML show:window:top"
-    class="note-view mt-2 mb-2 md:mt-4 md:mb-4 lg:mt-6 lg:mb-6 w-full flex-1 max-w-[800px] flex flex-col gap-2"
+    class="note-view mt-2 mb-2 md:mt-4 md:mb-4 lg:mt-6 lg:mb-6 w-full flex-1 max-w-[700px] flex flex-col gap-2"
   >
     <header class="flex w-full flex-col gap-2">
       <div class="top">
@@ -39,15 +39,15 @@
     <section id="note-content" class="content flex w-full flex-col">
       {{.ContentHTML}}
     </section>
-    <footer class="mt-2 md:mt-4">
-      <h1 class="mb-2 mt-6">Other Notes</h1>
+    <footer>
+      <h1>Other Notes</h1>
       <section
         id="other-notes"
-        class="light-scroll flex gap-4 md:gap-6 overflow-hidden overflow-x-auto pb-3"
+        class="light-scroll flex gap-3 md:gap-3 overflow-hidden flex-wrap pb-3"
       >
         {{range .Notes}}
-        <a href="/note/{{.Id}}" class="block">
-          <article class="lc-note-preview compact !w-[250px]">
+        <a href="/note/{{.Id}}" class="block !w-[calc(100%/2-0.75rem/2)] md:!w-[calc(100%/3-1.5rem/3)]">
+          <article class="lc-note-preview compact !w-full">
             <div class="wrapper">
               <header>
                 <span class="date-creation">{{easydate .CreatedAt}}</span>
