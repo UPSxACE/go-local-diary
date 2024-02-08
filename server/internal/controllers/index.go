@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
+	"github.com/UPSxACE/go-local-diary/server/internal/models"
 	"github.com/UPSxACE/go-local-diary/server/internal/services"
 	"github.com/UPSxACE/go-local-diary/server/modules/echo_custom"
 	"github.com/labstack/echo/v4"
@@ -38,14 +40,24 @@ func (ctrl *IndexController) getIndexRoute() func(c echo.Context) error {
 			return err
 		}
 
-		notes, err := services.Note.GetNotesOrderByCreateDateDesc(ctrl.app)
+		search := c.QueryParam("search");
+
+		notes, err := services.Note.GetNotesOrderByCreateDateDesc(ctrl.app, search, false)
 		if err != err {
 			return err
+		}
+		
+		notesPreview := make([]models.NoteModelPreview, 0, len(notes))
+		for _, note := range notes {
+			abc := models.NewNotePreviewModel(note, 0, 500);
+			colored := fmt.Sprintf("\033[34m%#v\033[0m", abc)
+			fmt.Println(colored)
+			notesPreview = append(notesPreview, models.NewNotePreviewModel(note, 0, 500)) 
 		}
 
 		data := map[string]any{
 			"Name":  name,
-			"Notes": notes,
+			"Notes": notesPreview,
 		}
 
 		return c.Render(http.StatusOK, "index", data)

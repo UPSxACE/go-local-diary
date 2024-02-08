@@ -15,12 +15,13 @@ type NoteModel struct {
 	Id         int    `json:"id"`
 	Title      string `json:"title"`
 	Content    string `json:"content"`
-	Views      int `json:"-"` // automatic
-	LastreadAt string `json:"-"`// automatic
+	ContentRaw string `json:"contentRaw"` // automatic
+	Views      int    `json:"-"`         // automatic
+	LastreadAt string `json:"-"`         // automatic
 	CreatedAt  string `json:"createdAt"` // automatic
 	UpdatedAt  string `json:"updatedAt"` // automatic
-	DeletedAt string `json:"-"`// automatic
-	Deleted bool `json:"-"`// automatic
+	DeletedAt  string `json:"-"`         // automatic
+	Deleted    bool   `json:"-"`         // automatic
 }
 
 type NoteStore struct {
@@ -58,8 +59,8 @@ func (store *NoteStore) GetFirstById(id int) (NoteModel, error) {
 
 	row := store.Repository().QueryRow(statement, id)
 	var result NoteModel
-	var deletedInt int;
-	row.Scan(&result.Id, &result.Title, &result.Content, &result.Views, &result.LastreadAt, &result.CreatedAt, &result.UpdatedAt, &result.DeletedAt, &deletedInt)
+	var deletedInt int
+	row.Scan(&result.Id, &result.Title, &result.Content, &result.ContentRaw, &result.Views, &result.LastreadAt, &result.CreatedAt, &result.UpdatedAt, &result.DeletedAt, &deletedInt)
 	result.Deleted = utils.IntToBool(deletedInt)
 
 	if result.Id == 0 {
@@ -69,24 +70,29 @@ func (store *NoteStore) GetFirstById(id int) (NoteModel, error) {
 	return result, nil
 }
 
-func (store *NoteStore) GetAllOrderByCreateDateDesc() ([]NoteModel, error) {
-	query := `SELECT * FROM note WHERE deleted != 1 ORDER BY created_at DESC`
+func (store *NoteStore) GetAllOrderByCreateDateDesc(searchFilter string, includePreParsed bool) ([]NoteModel, error) {
+	query := `SELECT * FROM note WHERE deleted != 1 AND LOWER(content) LIKE ? ESCAPE '\' ORDER BY created_at DESC`
 
 	statement, err := store.Repository().Prepare(query)
 	if err != nil {
 		return nil, err
 	}
 
-	rows, err := store.Repository().Query(statement)
+	rows, err := store.Repository().Query(statement, "%"+searchFilter+"%")
 	if err != nil {
-		return nil, err;
+		return nil, err
 	}
 
 	var result []NoteModel
 	for rows.Next() {
 		model := NoteModel{}
-		var deletedInt int;
-		rows.Scan(&model.Id, &model.Title, &model.Content, &model.Views, &model.LastreadAt, &model.CreatedAt, &model.UpdatedAt, &model.DeletedAt, &deletedInt)
+		var deletedInt int
+		if(includePreParsed){
+			rows.Scan(&model.Id, &model.Title, &model.Content, &model.ContentRaw, &model.Views, &model.LastreadAt, &model.CreatedAt, &model.UpdatedAt, &model.DeletedAt, &deletedInt)
+		} else {
+			var ignoredContent string;
+			rows.Scan(&model.Id, &model.Title, &ignoredContent, &model.ContentRaw, &model.Views, &model.LastreadAt, &model.CreatedAt, &model.UpdatedAt, &model.DeletedAt, &deletedInt)
+		}
 		model.Deleted = utils.IntToBool(deletedInt)
 		result = append(result, model)
 	}
@@ -95,18 +101,9 @@ func (store *NoteStore) GetAllOrderByCreateDateDesc() ([]NoteModel, error) {
 }
 
 func (store *NoteStore) Create(model NoteModel) (NoteModel, error) {
-	dateNow := time.Now().Format("20060102")
-
-	model.Views = 0;
-	model.LastreadAt = "";
-	model.CreatedAt = dateNow;
-	model.UpdatedAt = dateNow;
-	model.DeletedAt = "";
-	model.Deleted = false;
-
 	// CRLF to LF
-	model.Content = strings.ReplaceAll(model.Content, "\r\n", "\n");
-	
+	model.Content = strings.ReplaceAll(model.Content, "\r\n", "\n")
+
 	valid, err := store.validateModelCreate(model)
 	if err != nil {
 		return NoteModel{}, err
@@ -115,11 +112,22 @@ func (store *NoteStore) Create(model NoteModel) (NoteModel, error) {
 		return NoteModel{}, &db_sqlite3.InvalidModelAction{}
 	}
 
+	// Automatic fields
+	dateNow := time.Now().Format("20060102")
+
+	model.Views = 0
+	model.LastreadAt = ""
+	model.CreatedAt = dateNow
+	model.UpdatedAt = ""
+	model.DeletedAt = ""
+	model.Deleted = false
+	model.ContentRaw = ParseNoteContentToRaw(model.Content)
+
 	var query string
 	if model.Id != 0 {
-		query = `INSERT INTO note(id, title, content, views, lastread_at, created_at, updated_at, deleted_at, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+		query = `INSERT INTO note(id, title, content, content_raw, views, lastread_at, created_at, updated_at, deleted_at, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 	} else {
-		query = `INSERT INTO note(title, content, views, lastread_at, created_at, updated_at, deleted_at, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+		query = `INSERT INTO note(title, content, content_raw, views, lastread_at, created_at, updated_at, deleted_at, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 	}
 
 	statement, err := store.Repository().Prepare(query)
@@ -129,9 +137,9 @@ func (store *NoteStore) Create(model NoteModel) (NoteModel, error) {
 
 	var res sql.Result
 	if model.Id != 0 {
-		res, err = store.Repository().Exec(statement, model.Id, model.Title, model.Content, model.Views, model.LastreadAt, model.CreatedAt, model.UpdatedAt, model.DeletedAt, utils.BoolToInt(model.Deleted))
+		res, err = store.Repository().Exec(statement, model.Id, model.Title, model.Content, model.ContentRaw, model.Views, model.LastreadAt, model.CreatedAt, model.UpdatedAt, model.DeletedAt, utils.BoolToInt(model.Deleted))
 	} else {
-		res, err = store.Repository().Exec(statement, model.Title, model.Content, model.Views, model.LastreadAt, model.CreatedAt, model.UpdatedAt, model.DeletedAt, utils.BoolToInt(model.Deleted))
+		res, err = store.Repository().Exec(statement, model.Title, model.Content, model.ContentRaw, model.Views, model.LastreadAt, model.CreatedAt, model.UpdatedAt, model.DeletedAt, utils.BoolToInt(model.Deleted))
 	}
 	if err != nil {
 		return NoteModel{}, err
@@ -156,16 +164,12 @@ func (store *NoteStore) UpdateById(id int, model NoteModel) (NoteModel, error) {
 		return NoteModel{}, err
 	}
 
-	dateNow := time.Now().Format("20060102")
-
-	newModel := oldModel;
-	newModel.Title = model.Title;
-	newModel.Content = model.Content;
-	newModel.UpdatedAt = dateNow;
+	newModel := oldModel
+	newModel.Title = model.Title
+	newModel.Content = model.Content
 
 	// CRLF to LF
-	newModel.Content = strings.ReplaceAll(model.Content, "\r\n", "\n");
-
+	newModel.Content = strings.ReplaceAll(model.Content, "\r\n", "\n")
 
 	valid, err := store.validateModelUpdate(oldModel, newModel)
 	if err != nil {
@@ -180,6 +184,7 @@ func (store *NoteStore) UpdateById(id int, model NoteModel) (NoteModel, error) {
 	query := `UPDATE note SET
 	title = ?,
 	content = ?,
+	content_raw = ?,
 	updated_at = ?
 	WHERE
 	id = ?
@@ -190,7 +195,12 @@ func (store *NoteStore) UpdateById(id int, model NoteModel) (NoteModel, error) {
 		return NoteModel{}, err
 	}
 
-	_, err = store.Repository().Exec(statement, newModel.Title, newModel.Content, newModel.UpdatedAt, oldModel.Id)
+	// Automatic fields
+	dateNow := time.Now().Format("20060102")
+	newModel.UpdatedAt = dateNow
+	ParseNoteContentToRaw(newModel.Content)
+
+	_, err = store.Repository().Exec(statement, newModel.Title, newModel.Content, newModel.ContentRaw, newModel.UpdatedAt, oldModel.Id)
 	if err != nil {
 		return NoteModel{}, err
 	}

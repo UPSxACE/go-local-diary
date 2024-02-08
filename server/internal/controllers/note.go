@@ -6,9 +6,9 @@ import (
 
 	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
+	"github.com/UPSxACE/go-local-diary/server/internal/models"
 	"github.com/UPSxACE/go-local-diary/server/internal/services"
 	"github.com/UPSxACE/go-local-diary/server/modules/echo_custom"
-	"github.com/UPSxACE/go-local-diary/server/modules/note_transformer"
 	"github.com/labstack/echo/v4"
 )
 
@@ -48,9 +48,9 @@ func (ctrl *NoteController) getIdRoute() func(c echo.Context) error {
 		if err != nil {
 			return err
 		}
-		contentHTML := note_transformer.ParseToHtml(note.Content)
+		contentHTML := models.ParseNoteContentToHTML(note.Content)
 
-		notes, err := services.Note.GetNotesOrderByCreateDateDesc(ctrl.app)
+		notes, err := services.Note.GetNotesOrderByCreateDateDesc(ctrl.app,"", false)
 		if err != err {
 			return err
 		}

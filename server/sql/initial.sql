@@ -22,6 +22,7 @@ CREATE INDEX IF NOT EXISTS app_config_name ON app_config('name');
 -- id -- PK, INTEGER
 -- title -- STRING, NOT NULL, MAXSIZE255
 -- content -- STRING, NOT NULL, MAXSIZE131071 (18 bits)
+-- content_raw -- STRING, NOT NULL, MAXSIZE131071 (18 bits)
 -- views -- INTEGER, NOT NULL, DEFAULT 0
 -- lastread_at -- STRING/DATE, MAXSIZE8
 -- created_at -- STRING/DATE, NOT NULL, MAXSIZE8
@@ -32,6 +33,7 @@ CREATE TABLE IF NOT EXISTS note (
 'id' INTEGER PRIMARY KEY AUTOINCREMENT,
 'title' VARCHAR(255) NOT NULL,
 'content' VARCHAR (131071) NOT NULL,
+'content_raw' VARCHAR (131071) NOT NULL,
 'views' INTEGER NOT NULL DEFAULT 0,
 'lastread_at' VARCHAR(8),
 'created_at' VARCHAR(8) NOT NULL,
@@ -40,7 +42,7 @@ CREATE TABLE IF NOT EXISTS note (
 'deleted' TINYINT(1) NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS note_title ON note('title');
-CREATE INDEX IF NOT EXISTS note_content ON note('content');
+CREATE INDEX IF NOT EXISTS note_content_raw ON note('content_raw');
 
 -- Table: note_dif
 -- Description: Stores the user's notes past versions and it's delta values since then.

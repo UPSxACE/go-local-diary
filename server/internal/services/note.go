@@ -36,14 +36,14 @@ func (service *noteService) CreateNote(app *app.App[db_sqlite3.Database_Sqlite3]
 	return true, "", nil
 }
 
-func (service *noteService) GetNotesOrderByCreateDateDesc(app *app.App[db_sqlite3.Database_Sqlite3]) (notes []models.NoteModel, err error){
+func (service *noteService) GetNotesOrderByCreateDateDesc(app *app.App[db_sqlite3.Database_Sqlite3], searchFilter string, includePreParsed bool) (notes []models.NoteModel, err error){
 	store, err := models.CreateStoreNote(app, false, nil);
 	if err != nil {
 		return nil, err;
 	}
 	defer store.Close()
 
-	models, err := store.GetAllOrderByCreateDateDesc()
+	models, err := store.GetAllOrderByCreateDateDesc(searchFilter, includePreParsed)
 	if err != nil {
 		return nil, err
 	}
