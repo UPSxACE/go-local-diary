@@ -51,12 +51,12 @@ CREATE INDEX IF NOT EXISTS note_content_raw ON note('content_raw');
 -- id -- PK, INTEGER
 -- note_id -- FK (note.id), NOT NULL, MAXSIZE255
 -- content -- STRING, NOT NULL, MAXSIZE131071 (18 bits)
--- date -- STRING/DATE, NOT NULL, MAXSIZE8
+-- edited_at -- STRING/DATE, NOT NULL, MAXSIZE8
 CREATE TABLE IF NOT EXISTS note_dif (
 'id' INTEGER PRIMARY KEY AUTOINCREMENT,
 'note_id' INTEGER NOT NULL,
-'content' VARCHAR(131071),
-'date' VARCHAR(8) NOT NULL,
+'content' VARCHAR(131071) NOT NULL,
+'edited_at' VARCHAR(8) NOT NULL,
 FOREIGN KEY('note_id') REFERENCES note('id')
 );
 CREATE INDEX IF NOT EXISTS note_dif_note_id ON note_dif('note_id');

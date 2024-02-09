@@ -26,6 +26,7 @@ type NoteModel struct {
 
 type NoteStore struct {
 	db_sqlite3.StoreBase
+	noteDifStore NoteDifStore 
 }
 
 func (store *NoteStore) validateModelRules(model NoteModel) (valid bool) {
@@ -46,7 +47,11 @@ func (store *NoteStore) validateModelDelete(model NoteModel) (valid bool, err er
 
 func CreateStoreNote(appInstance *app.App[db_sqlite3.Database_Sqlite3], useTransactions bool, context context.Context) (NoteStore, error) {
 	sb, err := db_sqlite3.CreateStore(appInstance, useTransactions, context)
-	return NoteStore{StoreBase: sb}, err
+
+	// FIXME refactor whole store/model logic so the stores can be created giving database as argument instead of app
+	noteDifStore := NoteDifStore{StoreBase: sb}
+
+	return NoteStore{StoreBase: sb, noteDifStore: noteDifStore}, err
 }
 
 func (store *NoteStore) GetFirstById(id int) (NoteModel, error) {
@@ -179,7 +184,10 @@ func (store *NoteStore) UpdateById(id int, model NoteModel) (NoteModel, error) {
 		return NoteModel{}, &db_sqlite3.InvalidModelAction{}
 	}
 
-	// TODO: implement note_dif
+	updateDate, _, err := store.noteDifStore.RegisterChange(&oldModel, &newModel)
+	if err != nil {
+		return NoteModel{}, err
+	}
 
 	query := `UPDATE note SET
 	title = ?,
@@ -196,9 +204,8 @@ func (store *NoteStore) UpdateById(id int, model NoteModel) (NoteModel, error) {
 	}
 
 	// Automatic fields
-	dateNow := time.Now().Format("20060102")
-	newModel.UpdatedAt = dateNow
-	ParseNoteContentToRaw(newModel.Content)
+	newModel.UpdatedAt = updateDate
+	newModel.ContentRaw = ParseNoteContentToRaw(newModel.Content)
 
 	_, err = store.Repository().Exec(statement, newModel.Title, newModel.Content, newModel.ContentRaw, newModel.UpdatedAt, oldModel.Id)
 	if err != nil {
