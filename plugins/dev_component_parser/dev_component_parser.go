@@ -1,6 +1,7 @@
 // Web
 
 /*
+//FIXME update comment
 The package dev_component_parser is a plugin that can be used
 to test templates(including testing them with different data)
 
@@ -54,11 +55,26 @@ func Init() *DevComponentParser {
 }
 
 /* Function used to initialize the plugin. */
-func LoadPlugin(plugins map[string]interface{}) {
-	// TODO: Refactor to set all the routes here
+func LoadPlugin(e *echo.Echo, plugins map[string]interface{}) {
+	// TODO: Refactor this code
+	getDevRoute := func (c echo.Context) error {
+		return c.Redirect(http.StatusMovedPermanently, "/dev/components")
+	}
+
+	getDevComponentsRoute := func (c echo.Context) error {
+		renderFunc := GetDevComponentParserRenderFunc(c)
+		return renderFunc(http.StatusOK, "dev-components")
+	}
+
 	fmt.Println("Loading Plugin DevComponentParser...")
 	plugins["DevComponentParser"] = Init()
+
+	e.GET("/dev", getDevRoute)
+	e.GET("/dev/components", SetDevControllerWrapper(getDevComponentsRoute, plugins))
+	e.GET("/dev/components/refresh", SetDevComponentsRefreshRoute(plugins))
 }
+
+
 
 /*
 Parses data from the JSON file. This will be automatically
@@ -191,7 +207,7 @@ func GetDevComponentParserRenderFunc(c echo.Context) func(code int, name string)
 	}
 
 	return func(code int, name string) error {
-		return c.Render(http.StatusOK, name, []Category{})
+		return c.Render(http.StatusOK, name, map[string]interface{}{})
 	}
 }
 

@@ -30,7 +30,7 @@ type Server struct {
 func (server *Server) Init() {
 	// Load plugins
 	if server.DevMode {
-		dev_component_parser.LoadPlugin(server.Plugins)
+		dev_component_parser.LoadPlugin(server.Echo, server.Plugins)
 	}
 
 	// Print server config
