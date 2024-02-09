@@ -243,7 +243,7 @@ article.lc-note-preview.compact p {
   @apply border-t border-[#1b1f232b] mt-8 pt-8;
 }
 
-.note-view footer h1 {
+.note-view footer > h1 {
   @apply text-2xl font-semibold mb-6
 }
 

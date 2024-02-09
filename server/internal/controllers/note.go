@@ -55,11 +55,16 @@ func (ctrl *NoteController) getIdRoute() func(c echo.Context) error {
 			return err
 		}
 
+		notesPreview := make([]models.NoteModelPreview, 0, len(notes))
+		for _, note := range notes {
+			notesPreview = append(notesPreview, models.NewNotePreviewModel(note, 0, 250)) 
+		}
+
 		data := map[string]any{
 			"Name": name,
 			"Note": note,
 			"ContentHTML": contentHTML,
-			"Notes": notes,
+			"Notes": notesPreview,
 		}
 		return c.Render(http.StatusOK, "note-view", data)
 	}

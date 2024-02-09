@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/UPSxACE/go-local-diary/app"
@@ -49,9 +48,6 @@ func (ctrl *IndexController) getIndexRoute() func(c echo.Context) error {
 		
 		notesPreview := make([]models.NoteModelPreview, 0, len(notes))
 		for _, note := range notes {
-			abc := models.NewNotePreviewModel(note, 0, 500);
-			colored := fmt.Sprintf("\033[34m%#v\033[0m", abc)
-			fmt.Println(colored)
 			notesPreview = append(notesPreview, models.NewNotePreviewModel(note, 0, 500)) 
 		}
 
