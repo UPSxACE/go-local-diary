@@ -6,8 +6,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-
-	"github.com/UPSxACE/go-local-diary/app"
 )
 
 type Repository interface {
@@ -20,15 +18,17 @@ type Repository interface {
 	Reset() error
 }
 
-func CreateRepository(appInstance *app.App[Database_Sqlite3], transactionMode bool, context context.Context) (Repository, error) {
+func CreateRepository(database *Database_Sqlite3, transactionMode bool, context context.Context) (Repository, error) {
+	dbInstance := database.GetInstance()
+	
 	if !transactionMode {
-		return &RepositoryNormal{db: appInstance.Database.GetInstance()}, nil
+		return &RepositoryNormal{db: dbInstance}, nil
 	}
 
 	if context == nil {
 		return &RepositoryNormal{}, errors.New("db_sqlite3.CreateRepository(): Can't call this function with transactionMode set to true, and yet have a nil context")
 	}
-	db := appInstance.Database.GetInstance();
+	db := dbInstance;
 	tx, err := db.BeginTx(context, nil)
 	if err != nil {
 		return &RepositoryNormal{}, err

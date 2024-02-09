@@ -37,9 +37,9 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 
 func (t *TemplateDevMode) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
 	// In developer mode, the templates are parsed on each request
-	tBuilder := template.Must(template.New("").Funcs(app.DefaultFuncMap).ParseGlob("server/internal/views/*/*.html"))
+	tBuilder := template.Must(template.New("").Funcs(app.DefaultFuncMap).ParseGlob("server/views/*/*.html"))
 
-	// tBuilder = template.Must(tBuilder.ParseGlob("server/internal/views/*/*/*.html"))
+	// tBuilder = template.Must(tBuilder.ParseGlob("server/views/*/*/*.html"))
 	tNew := &Template{
 		Templates: tBuilder,
 	}

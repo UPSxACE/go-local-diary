@@ -20,23 +20,19 @@ Holds the app configuration state. One instance per app.
 
 The app must be initialized with a Database, whichever type it is.
 */
-type App[DatabaseGeneric any] struct {
-	Database *DatabaseGeneric
-	DevMode  bool
-	Plugins  PluginsData
+type ServerApp struct {
+	Server  any
+	DevMode bool
 }
-
-/* Map that will hold the plugins data and state */
-type PluginsData = map[string]interface{}
 
 /* Some useful extra funcs for the templating system of html/template. */
 var DefaultFuncMap template.FuncMap = template.FuncMap{
-	"list":               list,
-	"obj":                obj,
-	"sum":                sum,
-	"sumStr":             sumStr,
-	"htmlbreaks":         htmlBreaks,
-	"easydate":           easyDate,
+	"list":       list,
+	"obj":        obj,
+	"sum":        sum,
+	"sumStr":     sumStr,
+	"htmlbreaks": htmlBreaks,
+	"easydate":   easyDate,
 }
 
 type DefMapInvalidArgs struct {

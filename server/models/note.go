@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
 	"github.com/UPSxACE/go-local-diary/utils"
 )
@@ -45,8 +44,8 @@ func (store *NoteStore) validateModelDelete(model NoteModel) (valid bool, err er
 	return true, nil
 }
 
-func CreateStoreNote(appInstance *app.App[db_sqlite3.Database_Sqlite3], useTransactions bool, context context.Context) (NoteStore, error) {
-	sb, err := db_sqlite3.CreateStore(appInstance, useTransactions, context)
+func CreateStoreNote(database *db_sqlite3.Database_Sqlite3, useTransactions bool, context context.Context) (NoteStore, error) {
+	sb, err := db_sqlite3.CreateStore(database, useTransactions, context)
 
 	// FIXME refactor whole store/model logic so the stores can be created giving database as argument instead of app
 	noteDifStore := NoteDifStore{StoreBase: sb}

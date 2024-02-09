@@ -1,11 +1,8 @@
 package db_sqlite3
 
 import (
-	"database/sql"
 	"os"
 	"strings"
-
-	"github.com/UPSxACE/go-local-diary/app"
 )
 
 /*
@@ -52,7 +49,9 @@ func OpenSqlFile(path string) (*SqlFileReader, error) {
 /*
 Execute all commands inside the sql file that was read.
 */
-func (fr *SqlFileReader) ExecuteAll(dbInstance *sql.DB) (queryThatFailed string, err error){
+func (fr *SqlFileReader) ExecuteAll(db *Database_Sqlite3) (queryThatFailed string, err error){
+	dbInstance := db.GetInstance()
+
 	var nextQuery string = "";
 
 	for i, line := range fr.data {
@@ -80,14 +79,5 @@ func (fr *SqlFileReader) ExecuteAll(dbInstance *sql.DB) (queryThatFailed string,
 
 	// fmt.Printf("Parsed: %v/%v lines\n", fr.linesParsed, fr.totalLines)
 	return "", nil
-}
-
-/*
-Execute all commands inside the sql file that was read.
-Extract the database instance from the given app instance.
-*/
-func (fr *SqlFileReader) ExecuteAllFromApp(appInstance *app.App[Database_Sqlite3]) (queryThatFailed string, err error ){
-	db := appInstance.Database.GetInstance()
-	return fr.ExecuteAll(db)
 }
 

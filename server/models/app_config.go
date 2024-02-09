@@ -6,7 +6,6 @@ import (
 	"reflect"
 	"unicode/utf8"
 
-	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
 )
 
@@ -100,8 +99,8 @@ func (store *AppConfigStore) validateModelDelete(model AppConfigModel) (valid bo
 	return true, nil
 }
 
-func CreateStoreAppConfig(appInstance *app.App[db_sqlite3.Database_Sqlite3], useTransactions bool, context context.Context) (AppConfigStore, error) {
-	sb, err := db_sqlite3.CreateStore(appInstance, useTransactions, context)
+func CreateStoreAppConfig(database *db_sqlite3.Database_Sqlite3, useTransactions bool, context context.Context) (AppConfigStore, error) {
+	sb, err := db_sqlite3.CreateStore(database, useTransactions, context)
 	return AppConfigStore{StoreBase: sb}, err
 }
 

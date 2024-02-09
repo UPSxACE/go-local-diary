@@ -39,7 +39,7 @@ import (
 )
 
 /* File that will be parsed to load the examples. */
-var jsonPath string = "./server/dev-components.json";
+var jsonPath string = "./server/dev-components.json"
 
 /* The main struct that will be stored in App.Plugins */
 type DevComponentParser struct {
@@ -54,11 +54,10 @@ func Init() *DevComponentParser {
 }
 
 /* Function used to initialize the plugin. */
-func LoadPlugin[T any](app *app.App[T]) {
-	if app.DevMode {
-		fmt.Println("Loading Plugin DevComponentParser...")
-		app.Plugins["DevComponentParser"] = Init()
-	}
+func LoadPlugin(plugins map[string]interface{}) {
+	// TODO: Refactor to set all the routes here
+	fmt.Println("Loading Plugin DevComponentParser...")
+	plugins["DevComponentParser"] = Init()
 }
 
 /*
@@ -94,10 +93,10 @@ func (devComponentParser *DevComponentParser) ParseJsonConfigFile() *DevComponen
 
 /*
 High order function to wrap a controller to inject the data
-parsed from the JSON file in the context. 
+parsed from the JSON file in the context.
 */
-func SetDevControllerWrapper[T any](controller echo.HandlerFunc, app *app.App[T]) echo.HandlerFunc {
-	parser, ok := app.Plugins["DevComponentParser"]
+func SetDevControllerWrapper(controller echo.HandlerFunc, plugins map[string]interface{}) echo.HandlerFunc {
+	parser, ok := plugins["DevComponentParser"]
 	if ok {
 		parserConverted, conversionOk := parser.(*DevComponentParser)
 		if conversionOk {
@@ -121,7 +120,6 @@ type DevComponentParserRequest struct {
 	Component int    `query:"cp"` // (index+1)
 	Example   int    `query:"e"`  // (index+1)
 }
-
 
 /*
 Struct to extend the echo.Context fields
@@ -148,7 +146,7 @@ func GetDevComponentParserRenderFunc(c echo.Context) func(code int, name string)
 
 			if requestData.Render != "" && requestData.Component != 0 && requestData.Example != 0 {
 				// Parse all templates
-				tBuilder := template.Must(template.New("").Funcs(app.DefaultFuncMap).ParseGlob("server/internal/views/*/*.html"))
+				tBuilder := template.Must(template.New("").Funcs(app.DefaultFuncMap).ParseGlob("server/views/*/*.html"))
 				// tBuilder = template.Must(tBuilder.ParseGlob("server/views/*/*/*.html"))
 
 				tNew := &echo_custom.Template{
@@ -156,11 +154,11 @@ func GetDevComponentParserRenderFunc(c echo.Context) func(code int, name string)
 				}
 
 				dataFromJson := devContext.DevCompParser.Data
-				requestedCategoryData,err1 := utils.SafeIndexAccess[Category](dataFromJson,requestData.Category)
-				requestedComponentData,err2 := utils.SafeIndexAccess[Components](requestedCategoryData.Components, requestData.Component-1)
-				requestedExampleData,err3 := utils.SafeIndexAccess[Examples](requestedComponentData.Examples,requestData.Example-1)
+				requestedCategoryData, err1 := utils.SafeIndexAccess[Category](dataFromJson, requestData.Category)
+				requestedComponentData, err2 := utils.SafeIndexAccess[Components](requestedCategoryData.Components, requestData.Component-1)
+				requestedExampleData, err3 := utils.SafeIndexAccess[Examples](requestedComponentData.Examples, requestData.Example-1)
 
-				if(err1 || err2 || err3){
+				if err1 || err2 || err3 {
 					return echo.NewHTTPError(http.StatusNotFound, "Page not found")
 				}
 
@@ -183,7 +181,7 @@ func GetDevComponentParserRenderFunc(c echo.Context) func(code int, name string)
 			}
 
 			newData := map[string]interface{}{
-				"Data": devContext.DevCompParser.Data,
+				"Data":           devContext.DevCompParser.Data,
 				"CategoryIndex":  -1,
 				"ComponentIndex": -1,
 			}
@@ -203,10 +201,10 @@ route. Whenever someone accesses the route, it will
 refresh the JSON, and then the person will be redirected
 back to whichever URL it originally came from.
 */
-func SetDevComponentsRefreshRoute[T any](app *app.App[T]) echo.HandlerFunc {
+func SetDevComponentsRefreshRoute(plugins map[string]interface{}) echo.HandlerFunc {
 	handler := func(c echo.Context) error {
 		referer := c.Request().Referer()
-		parser, ok := app.Plugins["DevComponentParser"]
+		parser, ok := plugins["DevComponentParser"]
 		if ok {
 			parserConverted, conversionOk := parser.(*DevComponentParser)
 			if conversionOk {

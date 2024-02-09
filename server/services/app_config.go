@@ -6,18 +6,12 @@ import (
 	"regexp"
 	"unicode/utf8"
 
-	"github.com/UPSxACE/go-local-diary/app"
-	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
-	"github.com/UPSxACE/go-local-diary/server/internal/models"
+	"github.com/UPSxACE/go-local-diary/server/models"
 )
 
 // NOTE: Do not call service methods inside each other, to avoid multiple instances of stores at the same time
 
-var AppConfig = appConfigService{}
-
-type appConfigService struct{}
-
-func (service *appConfigService) validateChars(str string) bool{
+func (services *Services) validateConfigChars(str string) bool{
 	return regexp.MustCompile("^[a-zA-ZÀ-ÖØ-öø-ÿ0-9_@#+-]*$").MatchString(str)
 }
 
@@ -28,8 +22,8 @@ Returns false if it is set to "0".
 If the value is not set in the app_config table yet, the record will be created with the value "0",
 and then false will be returned.
 */
-func (service *appConfigService) IsAppConfigured(app *app.App[db_sqlite3.Database_Sqlite3], context context.Context) (appConfigured bool, err error) {
-	appConfigStore, err := models.CreateStoreAppConfig(app, true, context)
+func (services *Services) IsAppConfigured(context context.Context) (appConfigured bool, err error) {
+	appConfigStore, err := models.CreateStoreAppConfig(services.database, true, context)
 	if err != nil {
 		return false, err
 	}
@@ -61,8 +55,8 @@ func (service *appConfigService) IsAppConfigured(app *app.App[db_sqlite3.Databas
 	}
 }
 
-func (service *appConfigService) GetName(app *app.App[db_sqlite3.Database_Sqlite3]) (name string, err error){
-	store, err := models.CreateStoreAppConfig(app, false, nil);
+func (services *Services) GetUserName() (name string, err error){
+	store, err := models.CreateStoreAppConfig(services.database, false, nil);
 	if err != nil {
 		return "", err;
 	}
@@ -80,8 +74,8 @@ func (service *appConfigService) GetName(app *app.App[db_sqlite3.Database_Sqlite
 Sets a configuration in app_config table.
 If the configuration already exists it will be updated, if it doesn't it will  be created.
 */
-func (service *appConfigService) SetConfiguration(app *app.App[db_sqlite3.Database_Sqlite3], context context.Context, configName string, configValue string) (newValue string, err error) {
-	store, err := models.CreateStoreAppConfig(app, true, context)
+func (services *Services) SetConfiguration(context context.Context, configName string, configValue string) (newValue string, err error) {
+	store, err := models.CreateStoreAppConfig(services.database, true, context)
 	if err != nil {
 		return "", err
 	}
@@ -116,7 +110,7 @@ func (service *appConfigService) SetConfiguration(app *app.App[db_sqlite3.Databa
 /*
 Updates user name configuration. 
 */
-func (service *appConfigService) SetNameConfiguration(app *app.App[db_sqlite3.Database_Sqlite3], context context.Context, newName string) (valid bool, validationErrorMessage string, err error) {
+func (services *Services) SetUserName(context context.Context, newName string) (valid bool, validationErrorMessage string, err error) {
 	size := utf8.RuneCountInString(newName)
 	if(size == 0){
 		return false, "Please pick a name.", nil
@@ -128,11 +122,11 @@ func (service *appConfigService) SetNameConfiguration(app *app.App[db_sqlite3.Da
 		return false, "The chosen name is too big.", nil;
 	}
 	
-	if(!service.validateChars(newName)){
+	if(!services.validateConfigChars(newName)){
 		return false, "There are invalid characters in the name.", nil;
 	}
 
-	store, err := models.CreateStoreAppConfig(app, true, context)
+	store, err := models.CreateStoreAppConfig(services.database, true, context)
 	if err != nil {
 		return false, "",  err
 	}

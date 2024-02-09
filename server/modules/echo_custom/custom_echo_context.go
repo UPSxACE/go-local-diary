@@ -3,9 +3,7 @@ package echo_custom
 import (
 	"net/http"
 
-	"github.com/UPSxACE/go-local-diary/app"
-	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
-	"github.com/UPSxACE/go-local-diary/server/internal/services"
+	"github.com/UPSxACE/go-local-diary/server/services"
 	"github.com/labstack/echo/v4"
 )
 
@@ -25,13 +23,13 @@ Generates the middleware to set the custom echo context with its variables with 
 
 - fills the field 'IsConfigured' of the context with the correct value
 */
-func GenerateCustomContextMiddleware(app *app.App[db_sqlite3.Database_Sqlite3]) func(next echo.HandlerFunc) echo.HandlerFunc {
+func GenerateCustomContextMiddleware(services *services.Services) func(next echo.HandlerFunc) echo.HandlerFunc {
 	var middleware = func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			cc := &CustomEchoContext{Context: c}
 			context := cc.Request().Context()
 			
-			configured, err := services.AppConfig.IsAppConfigured(app,context)
+			configured, err := services.IsAppConfigured(context)
 			if err != nil {
 				return err;
 			}
@@ -48,7 +46,7 @@ func GenerateCustomContextMiddleware(app *app.App[db_sqlite3.Database_Sqlite3]) 
 /** Middleware at CONTROLLER LEVEL, to redirect requests from other routes to /welcome
  *  when the app is not configured yet.
  */
-func RedirectNotConfiguredToWelcomeMiddleware(controller func (c echo.Context) error) (func (c echo.Context) error){
+func RedirectNotConfiguredToWelcomeMiddleware(next echo.HandlerFunc) echo.HandlerFunc{
 	fnc := func (c echo.Context) error {
 		cc := c.(*CustomEchoContext)
 		
@@ -65,7 +63,7 @@ func RedirectNotConfiguredToWelcomeMiddleware(controller func (c echo.Context) e
 			return cc.Redirect(http.StatusFound, "/welcome")
 		}
 
-		return controller(cc)
+		return next(cc)
 	}	 
 
 	return fnc

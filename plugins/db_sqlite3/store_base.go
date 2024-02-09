@@ -3,8 +3,6 @@ package db_sqlite3;
 import (
 	"context"
 	"errors"
-
-	"github.com/UPSxACE/go-local-diary/app"
 )
 
 type StoreBase struct {
@@ -12,8 +10,8 @@ type StoreBase struct {
 	transactionMode bool
 }
 
-func CreateStore(appInstance *app.App[Database_Sqlite3], useTransactions bool, context context.Context) (StoreBase, error){
-	rep, err := CreateRepository(appInstance, useTransactions, context)
+func CreateStore(database *Database_Sqlite3, useTransactions bool, context context.Context) (StoreBase, error){
+	rep, err := CreateRepository(database, useTransactions, context)
 	if err != nil {
 		return StoreBase{}, err
 	}

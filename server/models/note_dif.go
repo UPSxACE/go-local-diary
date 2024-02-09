@@ -3,10 +3,8 @@ package models
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
-	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
@@ -22,8 +20,8 @@ type NoteDifStore struct {
 	db_sqlite3.StoreBase
 }
 
-func CreateStoreNoteDif(appInstance *app.App[db_sqlite3.Database_Sqlite3], useTransactions bool, context context.Context) (NoteDifStore, error) {
-	sb, err := db_sqlite3.CreateStore(appInstance, useTransactions, context)
+func CreateStoreNoteDif(database *db_sqlite3.Database_Sqlite3, useTransactions bool, context context.Context) (NoteDifStore, error) {
+	sb, err := db_sqlite3.CreateStore(database, useTransactions, context)
 	return NoteDifStore{StoreBase: sb}, err
 }
 
@@ -109,6 +107,10 @@ func (store *NoteDifStore) RegisterChange(oldModel *NoteModel, validNoteModelAbo
 				finalContent = noteDif.Content
 			}
 			if i != 0 {
+				// Rebuild the string
+				// (if this process becomes too heavy, simply cache the newest note edits
+				// instead of rebuilding it all from scratch each edit, 
+			    // or make this a secondary thing that happens asynchronously)
 				patches, err := dmp.PatchFromText(noteDif.Content)
 				if err != nil {
 					return "", NoteDifModel{}, err
@@ -119,15 +121,10 @@ func (store *NoteDifStore) RegisterChange(oldModel *NoteModel, validNoteModelAbo
 						return "", NoteDifModel{}, err
 					}
 				}
-				fmt.Println("HMM")
-				colored := fmt.Sprintf("\033[31m%s\033[0m", finalContent_)
-				fmt.Println(colored)
 				finalContent = finalContent_
 			}
 		}
 
-		colored := fmt.Sprintf("\033[34m%s\033[0m", finalContent)
-		fmt.Println(colored)
 		difs := dmp.DiffMain(finalContent, validNoteModelAboutToUpdateContent.Content, false)
 		patches := dmp.PatchMake(difs)
 		patchesText := dmp.PatchToText(patches)
