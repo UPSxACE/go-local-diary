@@ -15,17 +15,17 @@ type NoteModel struct {
 	Title      string `json:"title"`
 	Content    string `json:"content"`
 	ContentRaw string `json:"contentRaw"` // automatic
-	Views      int    `json:"-"`         // automatic
-	LastreadAt string `json:"-"`         // automatic
-	CreatedAt  string `json:"createdAt"` // automatic
-	UpdatedAt  string `json:"updatedAt"` // automatic
-	DeletedAt  string `json:"-"`         // automatic
-	Deleted    bool   `json:"-"`         // automatic
+	Views      int    `json:"-"`          // automatic
+	LastreadAt string `json:"-"`          // automatic
+	CreatedAt  string `json:"createdAt"`  // automatic
+	UpdatedAt  string `json:"updatedAt"`  // automatic
+	DeletedAt  string `json:"-"`          // automatic
+	Deleted    bool   `json:"-"`          // automatic
 }
 
 type NoteStore struct {
 	db_sqlite3.StoreBase
-	noteDifStore NoteDifStore 
+	noteDifStore NoteDifStore
 }
 
 func (store *NoteStore) validateModelRules(model NoteModel) (valid bool) {
@@ -91,10 +91,10 @@ func (store *NoteStore) GetAllOrderByCreateDateDesc(searchFilter string, include
 	for rows.Next() {
 		model := NoteModel{}
 		var deletedInt int
-		if(includePreParsed){
+		if includePreParsed {
 			rows.Scan(&model.Id, &model.Title, &model.Content, &model.ContentRaw, &model.Views, &model.LastreadAt, &model.CreatedAt, &model.UpdatedAt, &model.DeletedAt, &deletedInt)
 		} else {
-			var ignoredContent string;
+			var ignoredContent string
 			rows.Scan(&model.Id, &model.Title, &ignoredContent, &model.ContentRaw, &model.Views, &model.LastreadAt, &model.CreatedAt, &model.UpdatedAt, &model.DeletedAt, &deletedInt)
 		}
 		model.Deleted = utils.IntToBool(deletedInt)
@@ -166,6 +166,11 @@ func (store *NoteStore) UpdateById(id int, model NoteModel) (NoteModel, error) {
 	oldModel, err := store.GetFirstById(id)
 	if err != nil {
 		return NoteModel{}, err
+	}
+
+	if oldModel.Title == model.Title && oldModel.Content == model.Content {
+		// if no difference just return latest
+		return oldModel, err
 	}
 
 	newModel := oldModel

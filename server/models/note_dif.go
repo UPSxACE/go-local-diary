@@ -12,6 +12,7 @@ import (
 type NoteDifModel struct {
 	Id       int    `json:"id"`
 	NoteId   int    `json:"noteId"`   // automatic
+	Title    string `json:"title"`    // automatic
 	Content  string `json:"content"`  // automatic
 	EditedAt string `json:"editedAt"` // automatic
 }
@@ -24,8 +25,6 @@ func CreateStoreNoteDif(database *db_sqlite3.Database_Sqlite3, useTransactions b
 	sb, err := db_sqlite3.CreateStore(database, useTransactions, context)
 	return NoteDifStore{StoreBase: sb}, err
 }
-
-//FIXME func GetLatestById
 
 func (store *NoteDifStore) CheckLatestByNoteId(note_id int) (itExists bool, model NoteDifModel, err error) {
 	modelFound, err := store.GetLatestByNoteId(note_id)
@@ -50,7 +49,7 @@ func (store *NoteDifStore) GetLatestByNoteId(noteId int) (NoteDifModel, error) {
 
 	row := store.Repository().QueryRow(statement, noteId)
 	var result NoteDifModel
-	row.Scan(&result.Id, &result.NoteId, &result.Content, &result.EditedAt)
+	row.Scan(&result.Id, &result.NoteId, &result.Title, &result.Content, &result.EditedAt)
 
 	if result.Id == 0 {
 		return result, &db_sqlite3.EmptyQueryResults{}
@@ -75,7 +74,7 @@ func (store *NoteDifStore) GetAllByNoteIdOrderByOldestFirst(noteId int) ([]NoteD
 	var result []NoteDifModel
 	for rows.Next() {
 		model := NoteDifModel{}
-		rows.Scan(&model.Id, &model.NoteId, &model.Content, &model.EditedAt)
+		rows.Scan(&model.Id, &model.NoteId, &model.Title, &model.Content, &model.EditedAt)
 		result = append(result, model)
 	}
 
@@ -97,20 +96,29 @@ func (store *NoteDifStore) RegisterChange(oldModel *NoteModel, validNoteModelAbo
 
 	dmp := diffmatchpatch.New()
 
+	var finalTitle string
 	var finalContent string
+
 	if first {
+		finalTitle = oldModel.Title
 		finalContent = oldModel.Content
 	}
+
 	if !first {
 		for i, noteDif := range noteDifs {
 			if i == 0 {
+				finalTitle = noteDif.Title
 				finalContent = noteDif.Content
 			}
 			if i != 0 {
-				// Rebuild the string
+				if(noteDif.Title != ""){
+					finalTitle = noteDif.Title;
+				}
+
+				// Rebuild the content string
 				// (if this process becomes too heavy, simply cache the newest note edits
-				// instead of rebuilding it all from scratch each edit, 
-			    // or make this a secondary thing that happens asynchronously)
+				// instead of rebuilding it all from scratch each edit,
+				// or make this a secondary thing that happens asynchronously)
 				patches, err := dmp.PatchFromText(noteDif.Content)
 				if err != nil {
 					return "", NoteDifModel{}, err
@@ -125,7 +133,7 @@ func (store *NoteDifStore) RegisterChange(oldModel *NoteModel, validNoteModelAbo
 			}
 		}
 
-		difs := dmp.DiffMain(finalContent, validNoteModelAboutToUpdateContent.Content, false)
+		difs := dmp.DiffMain(finalContent, oldModel.Content, false)
 		patches := dmp.PatchMake(difs)
 		patchesText := dmp.PatchToText(patches)
 		finalContent = patchesText
@@ -133,18 +141,22 @@ func (store *NoteDifStore) RegisterChange(oldModel *NoteModel, validNoteModelAbo
 
 	model := NoteDifModel{}
 	// Automatic fields
+	if(first || finalTitle != oldModel.Title){
+		model.Title = oldModel.Title
+	}
+	model.Content = finalContent
 	model.NoteId = noteId
 	dateNow := time.Now().Format("20060102150405")
 	model.EditedAt = dateNow
-	model.Content = finalContent
+	
 
-	query := `INSERT INTO note_dif(note_id, content, edited_at) VALUES (?, ?, ?)`
+	query := `INSERT INTO note_dif(note_id, title, content, edited_at) VALUES (?, ?, ?, ?)`
 	statement, err := store.Repository().Prepare(query)
 	if err != nil {
 		return "", NoteDifModel{}, err
 	}
 
-	res, err := store.Repository().Exec(statement, model.NoteId, model.Content, model.EditedAt)
+	res, err := store.Repository().Exec(statement, model.NoteId, model.Title, model.Content, model.EditedAt)
 	if err != nil {
 		return "", NoteDifModel{}, err
 	}
