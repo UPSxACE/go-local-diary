@@ -33,6 +33,7 @@ var DefaultFuncMap template.FuncMap = template.FuncMap{
 	"sumStr":     sumStr,
 	"htmlbreaks": htmlBreaks,
 	"easydate":   easyDate,
+	"easydatetime": easyDateTime,
 }
 
 type DefMapInvalidArgs struct {
@@ -103,17 +104,43 @@ func htmlBreaks(str string) template.HTML {
 }
 
 func easyDate(str string) string {
-	if utf8.RuneCountInString(str) != 8 {
+	strSize := utf8.RuneCountInString(str)
+	if strSize != 8 && strSize != 14 {
 		return ""
 	}
-	parsedTime, err := time.Parse("20060102", str)
+	var parsedTime time.Time; var err error;
+	if (strSize == 8){
+		parsedTime, err = time.Parse("20060102", str)
+	} 
+	if(strSize == 14){
+		parsedTime, err = time.Parse("20060102150405", str)
+	}
 	if err != nil {
 		return ""
 	}
 
-	year := parsedTime.Year()
-	month := parsedTime.Month()
-	day := parsedTime.Day()
+	return parsedTime.Format("02 January, 2006")
+}
 
-	return fmt.Sprintf("%v %v, %v", day, month, year)
+func easyDateTime(str string) template.HTML {
+	strSize := utf8.RuneCountInString(str)
+	if strSize != 8 && strSize != 14 {
+		return ""
+	}
+	
+	var parsedTime time.Time; var err error;
+	if (strSize == 8){
+		parsedTime, err = time.Parse("20060102", str)
+	} 
+	if(strSize == 14){
+		parsedTime, err = time.Parse("20060102150405", str)
+	}
+	if err != nil {
+		colored := fmt.Sprintf("\033[34m%s\033[0m", err)
+		fmt.Println(colored)
+		return ""
+	}
+
+	formated := parsedTime.Format("02 January, 2006<br>03:04 PM")
+	return template.HTML(formated)
 }

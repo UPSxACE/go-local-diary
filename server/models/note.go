@@ -117,7 +117,7 @@ func (store *NoteStore) Create(model NoteModel) (NoteModel, error) {
 	}
 
 	// Automatic fields
-	dateNow := time.Now().Format("20060102")
+	dateNow := time.Now().Format("20060102150405")
 
 	model.Views = 0
 	model.LastreadAt = ""

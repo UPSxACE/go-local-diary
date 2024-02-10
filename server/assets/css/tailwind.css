@@ -126,7 +126,7 @@ article.lc-note-preview .menu-icon {
 }
 
 article.lc-note-preview .date-creation {
-  @apply text-gray-400;
+  @apply text-gray-400 text-end;
 
   @apply text-xs;
   @apply xs:text-sm;
@@ -209,7 +209,7 @@ article.lc-note-preview.compact p {
 }
 
 .note-view header .date-creation {
-  @apply text-gray-500;
+  @apply text-gray-500 text-end;
 }
 
 .note-view section.content {

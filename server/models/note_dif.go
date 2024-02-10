@@ -134,7 +134,7 @@ func (store *NoteDifStore) RegisterChange(oldModel *NoteModel, validNoteModelAbo
 	model := NoteDifModel{}
 	// Automatic fields
 	model.NoteId = noteId
-	dateNow := time.Now().Format("20060102")
+	dateNow := time.Now().Format("20060102150405")
 	model.EditedAt = dateNow
 	model.Content = finalContent
 
