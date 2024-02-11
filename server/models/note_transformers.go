@@ -30,6 +30,16 @@ var lineStartMatches = []match{
 		replaceStart: "<h1>",
 		replaceEnd:   "</h1>",
 	},
+	{
+		matchStart: "#img:",
+		replaceStart: "<img src=\"",
+		replaceEnd: "\">",
+	},
+	{
+		matchStart: "#img-sm:",
+		replaceStart: "<img class=\"small\" src=\"",
+		replaceEnd: "\">",
+	},
 }
 var pairMatches = []match{
 	{

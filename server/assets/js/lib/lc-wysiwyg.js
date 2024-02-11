@@ -99,6 +99,16 @@ export class Editor {
         replaceStart: "<h1>",
         replaceEnd: "</h1>",
       },
+      {
+        matchStart: "#img:",
+        replaceStart: '<img src="',
+        replaceEnd: '">',
+      },
+      {
+        matchStart: "#img-sm:",
+        replaceStart: '<img class="small" src="',
+        replaceEnd: '">',
+      },
     ];
 
     const pairMatches = [

@@ -73,6 +73,13 @@
   @apply bg-lgray border border-bgray2 hover:border-gray-700 text-gray-700 font-medium;
 }
 
+.lc-btn-icon.neutral svg {
+  @apply stroke-[#c7c7c7];
+}
+.lc-btn-icon.neutral:hover svg {
+  @apply  stroke-[#374151];
+}
+
 /** Lc Inputs */
 .lc-input {
   @apply border border-bgray2 p-2 px-[0.75rem];
@@ -237,6 +244,14 @@ article.lc-note-preview.compact p {
 .note-view section.content h2 + p,
 .note-view section.content h3 + p {
   @apply mt-3;
+}
+
+.note-view section.content img {
+  @apply w-[75%] h-auto ml-auto mr-auto xs:w-[60%] sm:w-[50%]
+}
+
+.note-view section.content img.small {
+  @apply w-[40%] h-auto ml-auto mr-auto xs:w-[35%] sm:w-[25%]
 }
 
 .note-view footer {
