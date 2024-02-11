@@ -12,7 +12,7 @@
             </article>
         </div>
         <div id="sidebar-info-wrapper" class="flex w-[400px] h-full transition-all duration-400">
-            <div x-init="$resizeableBar($el, $el.parentNode);" class="resize-bar w-1 h-full bg-bgray cursor-col-resize"></div>
+            <div id="resize-bar" x-init="" @htmx:load.window="$resizeableBar($el, $el.parentNode);" class="resize-bar w-1 h-full bg-bgray cursor-col-resize"></div>
             {{template "dev-components-showcase-sideinfo" .}}
         </div>
         

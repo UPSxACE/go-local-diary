@@ -53,5 +53,6 @@ window.$resizeableBar = (nodeBar, nodeTarget) => {
     isMoving = false;
     nodeTarget.classList.toggle("no-transition", false);
   }
+
   return;
 };
