@@ -9,12 +9,12 @@
     hx-target="#main"
     hx-select="#main"
     hx-swap="outerHTML show:no-scroll"
-    class="flex w-full items-center max-w-screen-2xl"
+    class="flex w-full items-center max-w-screen-2xl flex-wrap gap-2"
   >
-    <span class="text-2xl  font-medium">Create new note</span>
-    <a href="/" class="lc-btn neutral ml-auto">Discard</a>
+    <span class="text-2xl  font-medium w-full sm:w-fit">Create new note</span>
+    <a href="/" class="lc-btn neutral justify-center !w-[calc(50%-0.25rem)] sm:!w-fit sm:ml-auto">Discard</a>
     <button
-      class="lc-btn ml-3"
+      class="lc-btn justify-center !w-[calc(50%-0.25rem)] sm:!w-fit"
       onclick="noteEditor.submitNewNote()"
       hx-encoding="multipart/form-data"
       hx-trigger="none"

@@ -39,11 +39,11 @@
 }
 
 .min-h-screen-nav {
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - 60px);
 }
 
 .min-h-screen-nav {
-  min-height: calc(100svh - 80px);
+  min-height: calc(100svh - 60px);
 }
 
 /** Lc Buttons */
@@ -51,7 +51,7 @@
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
-  @apply bg-red-500 hover:bg-red-700 text-white rounded-[0.275rem] py-[0.5rem] px-4 flex w-fit items-center;
+  @apply bg-red-500 hover:bg-red-700 text-white rounded-[0.275rem] py-[0.5rem] px-4 flex w-fit items-center transition-all duration-200;
 }
 
 .lc-btn-icon {
@@ -60,21 +60,21 @@
 }
 
 .lc-btn-icon svg {
-  @apply w-[1.1rem] h-[1.1rem] ml-1 stroke-white;
+  @apply w-[1.1rem] h-[1.1rem] ml-1 stroke-white transition-all duration-200;
 }
 
 .lc-btn.secondary,
 .lc-btn-icon.secondary {
-  @apply bg-white hover:bg-lgray border border-gray-700 text-gray-700 font-medium;
+  @apply bg-white border border-bmain hover:border-gray-400 text-gray-700 font-medium;
 }
 
 .lc-btn.neutral,
 .lc-btn-icon.neutral {
-  @apply bg-lgray border border-bgray2 hover:border-gray-700 text-gray-700 font-medium;
+  @apply bg-lgray border border-bmain hover:border-gray-400 text-gray-700 font-medium;
 }
 
 .lc-btn-icon.neutral svg {
-  @apply stroke-[#c7c7c7];
+  @apply stroke-1 stroke-[#374151];
 }
 .lc-btn-icon.neutral:hover svg {
   @apply  stroke-[#374151];
@@ -82,7 +82,7 @@
 
 /** Lc Inputs */
 .lc-input {
-  @apply border border-bgray2 p-2 px-[0.75rem];
+  @apply border border-bmain p-2 px-[0.75rem] transition-all duration-200;
   outline: none;
 }
 
@@ -96,18 +96,23 @@ fieldset.lc-input-icon input {
 }
 
 fieldset.lc-input-icon svg {
-  @apply stroke-gray-400;
+  @apply stroke-gray-400 transition-all duration-200;
 }
 
 .lc-input.round,
 fieldset.lc-input-icon.round {
   @apply rounded-[0.15rem];
 }
+/* 
+.lc-input.focusable:hover,
+fieldset.lc-input-icon.focusable:hover {
+  @apply border-red-500;
+} */
 
 .lc-input.focusable:focus,
 fieldset.lc-input-icon.focusable:focus-within {
   @apply border-red-500 shadow-red-400;
-  box-shadow: 0px 0px 4px 0px var(--tw-shadow-color);
+  /* box-shadow: 0px 0px 4px 0px var(--tw-shadow-color); */
 }
 
 .lc-input.focusable:focus svg,
@@ -117,7 +122,7 @@ fieldset.lc-input-icon.focusable:focus-within svg {
 
 /** Lc Notes Preview */
 article.lc-note-preview {
-  @apply overflow-hidden w-[300px] border-4 border-gray-300 px-4 py-3 rounded-md;
+  @apply overflow-hidden w-[300px] border border-bmain px-4 py-3 rounded-md;
 }
 
 article.lc-note-preview .wrapper {
@@ -199,7 +204,7 @@ article.lc-note-preview.compact p {
 }
 
 .note-view header .bottom {
-  @apply border-t border-b pt-2 pb-2 border-[#1b1f232b] mt-8 mb-8;
+  @apply border-t border-b pt-2 pb-2 border-bsec mt-8 mb-8;
 }
 
 .note-view header .author-name {
@@ -255,7 +260,7 @@ article.lc-note-preview.compact p {
 }
 
 .note-view footer {
-  @apply border-t border-[#1b1f232b] mt-8 pt-8;
+  @apply border-t border-bsec mt-8 pt-8;
 }
 
 .note-view footer > h1 {

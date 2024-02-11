@@ -10,6 +10,8 @@ module.exports = {
       },
       colors: {
         lgray: "#f6f9fc", // backgrounds (light gray)
+        bmain: "#d0d7de", // main border color //TODO: check if the others are still necessary (look where they are used)
+        bsec: "#eeeeee", // secondary border color
         bgray: "#e1e4e6", // borders (border gray)
         bgray2: "#d9d9d9",
         bgray3: "#a4a4a4",

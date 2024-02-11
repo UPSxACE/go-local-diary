@@ -1,5 +1,5 @@
 #lc-wysiwyg {
-  border: 1px solid rgb(217 217 217);
+  border: 1px solid #d0d7de;
   width: 100%;
   min-height: 350px;
   border-radius: 0.5rem;
@@ -11,10 +11,12 @@
 #lc-wysiwyg header {
   /* height: 52px; */
   background-color: rgb(246 249 252);
-  border-bottom: 1px solid rgb(217 217 217);
+  border-bottom: 1px solid #d0d7de;
   display: flex;
   align-items: center;
   padding: 12px 14px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 #lc-wysiwyg header .buttons {
@@ -36,7 +38,7 @@
 
 #lc-wysiwyg:not(.preview) header .buttons .button[data-role="edit"],
 #lc-wysiwyg.preview header .buttons .button[data-role="preview"] {
-  border: 1px solid #a4a4a4;
+  border: 1px solid #d0d7de;
   border-radius: 0.25rem;
   background-color: white;
   font-weight: 500;
@@ -61,10 +63,6 @@
   outline: none;
 }
 
-#lc-wysiwyg .preview-content-area {
-  /* overflow-wrap: anywhere; */
-}
-
 
 #lc-wysiwyg:not(.preview) textarea.edit-content-area {
   background-color: transparent;
@@ -85,6 +83,36 @@
   overflow: hidden;
 }
 
+/** Responsive */
+
 #lc-wysiwyg .word-counter {
-  margin-left: auto;
+  width: 100%;
+  text-align: center;
+  order: -1;
+}
+
+#lc-wysiwyg header .buttons{
+  width: 100%;
+}
+
+#lc-wysiwyg header .buttons button {
+  width: 50%;
+}
+
+
+@media (min-width: 450px) {
+  #lc-wysiwyg .word-counter {
+    margin-left: auto;
+    width: unset;
+    order: unset;
+    text-align: right;
+  }
+
+  #lc-wysiwyg header .buttons{
+    width: unset;
+  }
+  
+  #lc-wysiwyg header .buttons button {
+    width: unset;
+  }
 }

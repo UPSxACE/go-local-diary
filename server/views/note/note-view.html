@@ -17,7 +17,7 @@
           <button class="lc-btn-icon neutral !p-[0.5rem]">
             <i
               class="!mx-1 !h-[22px] !w-[22px]"
-              data-feather="trash-2"
+              data-feather="trash"
             ></i>
           </button>
           <a class="lc-btn" href="/note/{{.Note.Id}}/edit">Edit</a>
@@ -58,7 +58,7 @@
           href="/note/{{.Id}}"
           class="block !w-[calc(100%/2-0.75rem/2)] md:!w-[calc(100%/3-1.5rem/3)]"
         >
-          <article class="lc-note-preview compact !w-full">
+          <article class="spc-hover lc-note-preview compact !w-full">
             <div class="wrapper">
               <header>
                 <span class="date-creation">{{easydate .CreatedAt}}</span>

@@ -4,7 +4,7 @@
   class="flex flex-col items-center min-h-screen-nav px-5 py-4 md:px-10 md:py-8"
 >
   <header
-    class="flex w-full max-w-screen-2xl"
+    class="flex w-full max-w-screen-2xl flex-wrap gap-4"
     hx-boost="true"
     hx-push-url="true"
     hx-target="#main"
@@ -12,8 +12,9 @@
     hx-swap="outerHTML show:no-scroll"
   >
     <fieldset
-      class="lc-input-icon round focusable w-[50%] md:w-[unset] min-w-[100px] md:min-w-[450px]"
+      class="spc-hover lc-input-icon round focusable max-sm:w-full max-xl:w-[calc(50%-0.75rem)] max-2xl:w-[calc(100%/3-1rem)] w-[calc(100%/4-4.5rem/4)]"
     >
+    <i class="mr-2" data-feather="search"></i>
       <input
         id="search-notes"
         name="search-notes"
@@ -21,9 +22,8 @@
         type="text"
         placeholder="Search"
       />
-      <i data-feather="search"></i>
     </fieldset>
-    <a href="/new" class="lc-btn ml-auto">Add Note</a>
+    <a href="/new" class="lc-btn ml-auto !w-full sm:!w-fit justify-center">Add Note</a>
   </header>
   <section id="notes" class="flex flex-col flex-1 max-w-screen-2xl w-full">
     {{if .Notes}}
@@ -38,9 +38,9 @@
       {{range .Notes}}
       <a
         href="/note/{{.Id}}"
-        class="block max-sm:w-full max-xl:w-[calc(50%-0.75rem)] max-2xl:w-[calc(100%/3-1rem)] w-[calc(100%/4-4.5rem/4)]"
+        class="block max-sm:w-full max-xl:w-[calc(50%-0.75rem)] max-2xl:w-[calc(100%/3-1rem)] w-[calc(100%/4-4.5rem/4)] transition-all duration-200"
       >
-        <article class="lc-note-preview !w-full !h-full">
+        <article class="spc-hover lc-note-preview !w-full !h-full">
           <div class="wrapper">
             <header>
               <span class="date-creation">{{easydate .CreatedAt}}</span>
