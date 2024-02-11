@@ -259,6 +259,10 @@ article.lc-note-preview.compact p {
   @apply w-[40%] h-auto ml-auto mr-auto xs:w-[35%] sm:w-[25%]
 }
 
+.note-view section.content img.full {
+  @apply w-full
+}
+
 .note-view footer {
   @apply border-t border-bsec mt-8 pt-8;
 }

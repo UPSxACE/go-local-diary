@@ -109,6 +109,11 @@ export class Editor {
         replaceStart: '<img class="small" src="',
         replaceEnd: '">',
       },
+      {
+        matchStart: "#img-full:",
+        replaceStart: '<img class="full" src="',
+        replaceEnd: '">',
+      },
     ];
 
     const pairMatches = [

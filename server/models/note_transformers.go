@@ -12,6 +12,7 @@ type match struct {
 	matchEnd     string
 	replaceStart string
 	replaceEnd   string
+	replaceRaw string
 }
 
 var lineStartMatches = []match{
@@ -34,11 +35,18 @@ var lineStartMatches = []match{
 		matchStart: "#img:",
 		replaceStart: "<img src=\"",
 		replaceEnd: "\">",
+		replaceRaw: "<image>",
 	},
 	{
 		matchStart: "#img-sm:",
 		replaceStart: "<img class=\"small\" src=\"",
 		replaceEnd: "\">",
+		replaceRaw: "<image>",
+	},
+	{
+		matchStart: "#img-full:",
+        replaceStart: "<img class=\"full\" src=\"",
+		replaceRaw: "<image>",
 	},
 }
 var pairMatches = []match{
@@ -80,6 +88,8 @@ func parse(content string, parseStrategy string) string {
 					var replacedStr string;
 					if(parseStrategy == PARSE_TO_HTML){
 						replacedStr = lineStartMatch.replaceStart + line[length:] + lineStartMatch.replaceEnd
+					} else if(lineStartMatch.replaceRaw!= ""){
+						replacedStr = lineStartMatch.replaceRaw
 					} else {
 						replacedStr = line[length:]
 					}
@@ -136,7 +146,11 @@ func parse(content string, parseStrategy string) string {
 		}
 
 		// Add parsed line to the result string
-		result += finalLine
+		if(parseStrategy == PARSE_TO_HTML){
+			result += finalLine
+		} else {
+			result +=  finalLine + "\n"
+		}
 	}
 
 	return result
