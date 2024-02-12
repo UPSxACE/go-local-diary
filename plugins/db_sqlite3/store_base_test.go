@@ -3,15 +3,17 @@ package db_sqlite3
 import (
 	"context"
 	"testing"
+
 	"github.com/UPSxACE/go-local-diary/utils/testhelper"
 )
 
 func TestCreateStore(t *testing.T) {
-	app, db := getTestAppInstanceAndDb()
+	dbWrapper := Init(true, ":memory:");
+	db := dbWrapper.GetInstance()
 	defer db.Close()
 
 	// Create normal store
-	nstore, err := CreateStore(app, false, nil)
+	nstore, err := CreateStore(dbWrapper, false, nil)
 	testhelper.ExpectNoError(t, err)
 	testhelper.ExpectEqual(t, nstore.TransactionMode(), false)
 	testhelper.ExpectDifferent(t, nstore.Repository(), (Repository)(nil))
@@ -24,7 +26,7 @@ func TestCreateStore(t *testing.T) {
 
 	// Create transaction store
 	ctx := context.Background()
-	tstore, err := CreateStore(app, true, ctx)
+	tstore, err := CreateStore(dbWrapper, true, ctx)
 	testhelper.ExpectNoError(t, err)
 	testhelper.ExpectEqual(t, tstore.TransactionMode(), true)
 	testhelper.ExpectDifferent(t, tstore.Repository(), (Repository)(nil))

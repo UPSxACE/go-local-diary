@@ -22,12 +22,13 @@ func TestOpenSqlFileErrorUnexistant(t *testing.T) {
 }
 
 func TestExecuteAll(t *testing.T) {
-	app, db := getTestAppInstanceAndDb()
+	dbWrapper := Init(true, ":memory:");
+	db := dbWrapper.GetInstance()
 	defer db.Close()
 
 	fr, err := OpenSqlFile(filePath)
 	testhelper.ExpectNoError(t, err)
-	_, err = fr.ExecuteAllFromApp(app)
+	_, err = fr.ExecuteAll(dbWrapper)
 	testhelper.ExpectNoError(t, err)
 
 	th := testhelper.CreateTestHelper[any, any]()
@@ -47,12 +48,13 @@ func TestExecuteAll(t *testing.T) {
 }
 
 func TestExecuteAllError(t *testing.T) {
-	app, db := getTestAppInstanceAndDb()
+	dbWrapper := Init(true, ":memory:");
+	db := dbWrapper.GetInstance()
 	defer db.Close()
 
 	fr, err := OpenSqlFile(fileWithErrorPath)
 	testhelper.ExpectNoError(t, err)
-	queryThatFailed, err := fr.ExecuteAllFromApp(app)
+	queryThatFailed, err := fr.ExecuteAll(dbWrapper)
 	testhelper.ExpectError(t, err)
 
 	th := testhelper.CreateTestHelper[any, any]()

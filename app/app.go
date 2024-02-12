@@ -20,7 +20,7 @@ Holds the app configuration state. One instance per app.
 
 The app must be initialized with a Database, whichever type it is.
 */
-type ServerApp struct {
+type App struct {
 	Server  any
 	DevMode bool
 }

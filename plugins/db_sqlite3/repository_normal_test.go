@@ -9,10 +9,11 @@ import (
 )
 
 func TestUseRepositoryNormal(t *testing.T) {
-	app, db := getTestAppInstanceAndDb()
+	dbWrapper := Init(true, ":memory:");
+	db := dbWrapper.GetInstance()
 	defer db.Close()
 
-	rep, err := CreateRepository(app, false, nil)
+	rep, err := CreateRepository(dbWrapper, false, nil)
 	testhelper.ExpectNoError(t, err)
 
 	nrep := testhelper.ExpectType[*RepositoryNormal](t, rep)
@@ -78,10 +79,11 @@ func TestUseRepositoryNormal(t *testing.T) {
 }
 
 func TestRepositoryNormalInvalidQueries(t *testing.T) {
-	app, db := getTestAppInstanceAndDb()
+	dbWrapper := Init(true, ":memory:");
+	db := dbWrapper.GetInstance()
 	defer db.Close()
 
-	rep, err := CreateRepository(app, false, nil)
+	rep, err := CreateRepository(dbWrapper, false, nil)
 	testhelper.ExpectNoError(t, err)
 
 	// valid

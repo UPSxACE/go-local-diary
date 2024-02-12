@@ -2,34 +2,21 @@ package db_sqlite3
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 
-	"github.com/UPSxACE/go-local-diary/app"
 	"github.com/UPSxACE/go-local-diary/utils/testhelper"
 )
-
-func getTestAppInstance() *app.App[Database_Sqlite3] {
-	app := app.App[Database_Sqlite3]{
-		Database: Init(true),
-	}
-	return &app
-}
-
-func getTestAppInstanceAndDb() (*app.App[Database_Sqlite3], *sql.DB){
-	app := getTestAppInstance()
-	db := app.Database.GetInstance();
-	return app, db
-}
 
 func getTestContext() context.Context{
 	return context.Background();
 }
 
 func TestCreateRepositoryNormal(t *testing.T) {
-	app := getTestAppInstance();
+	dbWrapper := Init(true, ":memory:");
+	db := dbWrapper.GetInstance()
+	defer db.Close()
 
-	rep,err := CreateRepository(app, false, getTestContext());
+	rep,err := CreateRepository(dbWrapper, false, getTestContext());
 	testhelper.ExpectNoError(t, err)
 
 	// context should be nil because normal repositories don't need it
@@ -38,9 +25,11 @@ func TestCreateRepositoryNormal(t *testing.T) {
 }
 
 func TestCreateRepositoryTx(t *testing.T) {
-	app := getTestAppInstance();
+	dbWrapper := Init(true, ":memory:");
+	db := dbWrapper.GetInstance()
+	defer db.Close()
 
-	rep,err := CreateRepository(app, true, getTestContext());
+	rep,err := CreateRepository(dbWrapper, true, getTestContext());
 	testhelper.ExpectNoError(t, err)
 	
 	// context should NOT be nil because repositories that use transactions need it
@@ -49,8 +38,10 @@ func TestCreateRepositoryTx(t *testing.T) {
 }
 
 func TestCreateRepositoryTxErrorNoContext(t *testing.T){
-	app := getTestAppInstance();
+	dbWrapper := Init(true, ":memory:");
+	db := dbWrapper.GetInstance()
+	defer db.Close()
 
-	_,err := CreateRepository(app, true, nil);
+	_,err := CreateRepository(dbWrapper, true, nil);
 	testhelper.ExpectError(t, err)
 }

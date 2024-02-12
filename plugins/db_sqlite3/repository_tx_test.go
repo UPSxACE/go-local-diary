@@ -10,12 +10,13 @@ import (
 )
 
 func TestUseRepositoryTx(t *testing.T) {
-	app, db := getTestAppInstanceAndDb()
+	dbWrapper := Init(true, ":memory:");
+	db := dbWrapper.GetInstance()
 	defer db.Close()
 
 	ctx := context.Background()
 
-	rep, err := CreateRepository(app, true, ctx)
+	rep, err := CreateRepository(dbWrapper, true, ctx)
 	testhelper.ExpectNoError(t, err)
 
 	trep := testhelper.ExpectType[*RepositoryTx](t, rep)
@@ -97,12 +98,13 @@ func TestUseRepositoryTx(t *testing.T) {
 }
 
 func TestRepositoryTxInvalidQueries(t *testing.T) {
-	app, db := getTestAppInstanceAndDb()
+	dbWrapper := Init(true, ":memory:");
+	db := dbWrapper.GetInstance()
 	defer db.Close()
 
 	ctx := context.Background()
 
-	rep, err := CreateRepository(app, true, ctx)
+	rep, err := CreateRepository(dbWrapper, true, ctx)
 	testhelper.ExpectNoError(t, err)
 
 	// valid

@@ -10,15 +10,20 @@ import (
 	"fmt"
 
 	"github.com/UPSxACE/go-local-diary/plugins/db_sqlite3"
-	"github.com/UPSxACE/go-local-diary/server"
+	"github.com/UPSxACE/go-local-diary/server/server"
 )
 
 func main() {
 	devFlag := flag.Bool("dev", false, "Run server on developer mode")
 	flag.Parse()
 
+	dbPath := "my.db";
+	if(*devFlag){
+		dbPath = "my_dev.db";
+	}
+
 	// Init server with Sqlite
-	db := db_sqlite3.Init(*devFlag)
+	db := db_sqlite3.Init(*devFlag, dbPath)
 
 	server := server.NewServer(db, *devFlag)
 

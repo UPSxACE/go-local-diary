@@ -6,14 +6,8 @@ import (
 	"github.com/UPSxACE/go-local-diary/utils/testhelper"
 )
 
-func TestInit(t *testing.T) {
-	dbWrapper := Init(true)
-	db := dbWrapper.GetInstance()
-	db.Close()
-}
-
 func TestGetTables(t *testing.T) {
-	dbWrapper := Init(true);
+	dbWrapper := Init(true, ":memory:");
 	db := dbWrapper.GetInstance()
 	defer db.Close()
 

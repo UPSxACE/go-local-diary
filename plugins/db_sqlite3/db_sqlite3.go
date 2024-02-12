@@ -1,5 +1,3 @@
-// Web, Api, App
-
 /*
 The package db_sqlite is a plugin that shall be used to plug a sqlite3 database driver
 into the app. It comes also with the Repository interface that must be used to create models,
@@ -21,20 +19,18 @@ type Database_Sqlite3 struct {
 	version  string
 }
 
-func Init(devMode bool) *Database_Sqlite3 {
-	// Setup db file
-	dbPath := "my.db"
-	if devMode {
-		os.Remove("my_dev.db")
-		file, err := os.Create("my_dev.db")
+func Init(devMode bool, path string) *Database_Sqlite3 {
+	// If devmode, reset db
+	if devMode && path != ":memory:" {
+		os.Remove(path)
+		file, err := os.Create(path)
 		if err != nil {
 			log.Fatal(err)
 		}
 		file.Close()
-		dbPath = "my_dev.db"
 	}
 
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := sql.Open("sqlite3", path)
 	if devMode {
 		db.SetMaxOpenConns(1) // NOTE: Necessary when using ":memory:" connection
 	}
