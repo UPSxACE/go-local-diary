@@ -10,6 +10,21 @@ Local Diary is a lightweight and intuitive web application developed in Golang f
 <!-- # Preview -->
 <!-- <screenshot > gif of app being used> -->
 
+# Project Abandoned
+
+**Note: This project is no longer actively maintained.**
+
+This repository has been abandoned in favor of another similar project, more focused on the web.
+It will not receive further updates or support. 
+
+In case you're interested on it check:
+
+[https://github.com/UPSxACE/my-diary](https://github.com/UPSxACE/my-diary)
+
+[https://github.com/UPSxACE/my-diary-web](https://github.com/UPSxACE/my-diary-web)
+
+[https://github.com/UPSxACE/my-diary-api](https://github.com/UPSxACE/my-diary-api)
+
 # Features
 
 * **Local:** Your notes are stored locally, ensuring total privacy and accessibility whenever you need them.
